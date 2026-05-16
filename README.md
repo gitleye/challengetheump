@@ -4,10 +4,10 @@
 
 A public analytics dashboard tracking MLB's 2026 ABS (Automated Ball-Strike) Challenge System — challenge success rates, net run value, and whether teams that challenge more actually win more.
 
-Live: [strikezone.io](https://strikezone.io) | Data: updated daily during the MLB season
+Live: [challengetheump.com](https://challengetheump.com) | Data: updated daily during the MLB season
 
-![Build](https://github.com/leyeoyelami/abs-dashboard/actions/workflows/deploy.yml/badge.svg)
-![Data Refresh](https://github.com/leyeoyelami/abs-dashboard/actions/workflows/daily-data-refresh.yml/badge.svg)
+![Build](https://github.com/leyeoyelami/challengetheump/actions/workflows/deploy.yml/badge.svg)
+![Data Refresh](https://github.com/leyeoyelami/challengetheump/actions/workflows/daily-data-refresh.yml/badge.svg)
 
 ---
 
@@ -28,8 +28,8 @@ Live: [strikezone.io](https://strikezone.io) | Data: updated daily during the ML
 
 ```bash
 # Clone
-git clone https://github.com/leyeoyelami/abs-dashboard
-cd abs-dashboard
+git clone https://github.com/leyeoyelami/challengetheump
+cd challengetheump
 
 # Install dependencies
 pnpm install
@@ -67,7 +67,7 @@ See [scripts/README.md](scripts/README.md) for full pipeline documentation.
 ## Project Structure
 
 ```
-abs-dashboard/
+challengetheump/
 ├── .github/
 │   ├── dependabot.yml           # Dependency update automation
 │   └── workflows/
@@ -102,7 +102,7 @@ abs-dashboard/
 No environment variables are required for v1. The site is fully static.
 
 If needed in the future, Cloudflare Pages environment variables can be configured at:
-**Cloudflare Dashboard > Pages > abs-dashboard > Settings > Environment variables**
+**Cloudflare Dashboard > Pages > challengetheump > Settings > Environment variables**
 
 The pipeline uses no secrets — all data sources are public APIs.
 

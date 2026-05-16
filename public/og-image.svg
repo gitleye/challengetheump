@@ -1,0 +1,39 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#0A0A0B"/>
+
+  <!-- Grid background -->
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#D4FF3D" stroke-width="0.5" opacity="0.06"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+
+  <!-- Strike zone box (decorative) -->
+  <rect x="850" y="120" width="220" height="350" rx="6" stroke="#D4FF3D" stroke-width="3" fill="#D4FF3D" fill-opacity="0.03"/>
+  <line x1="850" y1="237" x2="1070" y2="237" stroke="#D4FF3D" stroke-width="1" opacity="0.2"/>
+  <line x1="850" y1="354" x2="1070" y2="354" stroke="#D4FF3D" stroke-width="1" opacity="0.2"/>
+  <line x1="923" y1="120" x2="923" y2="470" stroke="#D4FF3D" stroke-width="1" opacity="0.2"/>
+  <line x1="997" y1="120" x2="997" y2="470" stroke="#D4FF3D" stroke-width="1" opacity="0.2"/>
+
+  <!-- Accent dot inside zone -->
+  <circle cx="960" cy="290" r="24" fill="#D4FF3D" opacity="0.3"/>
+  <circle cx="960" cy="290" r="10" fill="#D4FF3D" opacity="0.7"/>
+
+  <!-- Brand -->
+  <text x="80" y="200" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="800" fill="#EDEDEF">Strike<tspan fill="#D4FF3D">Zone</tspan></text>
+
+  <!-- Tagline -->
+  <text x="80" y="280" font-family="system-ui, -apple-system, sans-serif" font-size="32" font-weight="400" fill="#8B8B8E">Does beating the robot umpire</text>
+  <text x="80" y="325" font-family="system-ui, -apple-system, sans-serif" font-size="32" font-weight="400" fill="#8B8B8E">win you games?</text>
+
+  <!-- Subtitle -->
+  <text x="80" y="410" font-family="system-ui, -apple-system, sans-serif" font-size="22" font-weight="500" fill="#D4FF3D">MLB ABS Challenge Analytics</text>
+  <text x="80" y="445" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="400" fill="#5A5A5D">Updated daily from Baseball Savant</text>
+
+  <!-- URL -->
+  <text x="80" y="540" font-family="ui-monospace, monospace" font-size="20" font-weight="500" fill="#5A5A5D">challengetheump.com</text>
+
+  <!-- Bottom accent line -->
+  <rect x="0" y="620" width="1200" height="10" fill="#D4FF3D"/>
+</svg>

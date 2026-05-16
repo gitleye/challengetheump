@@ -5,6 +5,7 @@ import Stat from '@/components/ui/Stat.astro';
 import Badge from '@/components/ui/Badge.astro';
 import SampleSizeWarning from '@/components/ui/SampleSizeWarning.astro';
 import Tooltip from '@/components/ui/Tooltip.astro';
+import ShareButton from '@/components/ui/ShareButton.astro';
 import type { TeamsData, TeamRecord, PlayersData } from '@/lib/types';
 import { formatRate, formatWpa, formatWinPct } from '@/lib/stats';
 import teamsData from '@/data/teams.json';
@@ -30,6 +31,8 @@ const teamPlayers = allPlayers
 const netOt = team.challenges.net_overturns;
 const netOtStr = netOt > 0 ? `+${netOt}` : String(netOt);
 const hasWarnings = team.sample_warnings && team.sample_warnings.length > 0;
+
+const shareText = `The ${team.team_name} have a ${formatRate(team.challenges.success_rate)} ABS challenge success rate (${formatWpa(team.challenges.challenge_wpa)} Net RV) this season. https://challengetheump.com/teams/${team.team_id.toLowerCase()}`;
 ---
 
 <BaseLayout
@@ -122,6 +125,9 @@ const hasWarnings = team.sample_warnings && team.sample_warnings.length > 0;
             delta={netOt}
           />
         </Card>
+      </div>
+      <div class="mt-3 flex justify-end">
+        <ShareButton text={shareText} />
       </div>
     </section>
 
