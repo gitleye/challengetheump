@@ -20,7 +20,7 @@ const {
   noIndex = false,
 } = Astro.props;
 
-const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://strikezone.io';
+const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://challengetheump.com';
 const canonical = canonicalUrl ?? new URL(Astro.url.pathname, siteUrl).href;
 const fullOgImage = new URL(ogImage, siteUrl).href;
 const siteName = 'StrikeZone';
@@ -30,6 +30,17 @@ const fullTitle = title === 'Home'
 ---
 
 <!doctype html>
+<!--
+  ╔═══════════════════════════════════════════════════════╗
+  ║  StrikeZone — challengetheump.com                          ║
+  ║  Built by Leye Oyelami                               ║
+  ║                                                      ║
+  ║  "The umpire is always right,                        ║
+  ║   except when Hawk-Eye disagrees."                   ║
+  ║                                                      ║
+  ║  Open source: github.com/leyeoyelami/challengetheump   ║
+  ╚═══════════════════════════════════════════════════════╝
+-->
 <html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
@@ -80,11 +91,11 @@ const fullTitle = title === 'Home'
         "@context": "https://schema.org",
         "@type": "WebSite",
         "name": "StrikeZone",
-        "url": "https://strikezone.io",
+        "url": "https://challengetheump.com",
         "description": "MLB ABS Challenge System analytics dashboard",
         "potentialAction": {
           "@type": "SearchAction",
-          "target": "https://strikezone.io/teams?q={search_term_string}",
+          "target": "https://challengetheump.com/teams?q={search_term_string}",
           "query-input": "required name=search_term_string"
         }
       }

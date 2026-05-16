@@ -2,4 +2,4 @@
 # https://developers.cloudflare.com/pages/configuration/redirects/
 
 # www → apex
-https://www.strikezone.io/* https://strikezone.io/:splat 301
+https://www.challengetheump.com/* https://challengetheump.com/:splat 301

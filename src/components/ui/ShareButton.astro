@@ -1,0 +1,56 @@
+---
+interface Props {
+  text: string;
+  class?: string;
+}
+const { text, class: cls = '' } = Astro.props;
+---
+
+<button
+  type="button"
+  class:list={[
+    'share-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-caption font-medium',
+    'bg-elevated border border-border text-text-tertiary',
+    'hover:text-accent hover:border-accent/50 transition-colors cursor-pointer',
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-accent',
+    cls,
+  ]}
+  data-share-text={text}
+  aria-label="Copy stat to clipboard"
+>
+  <svg class="w-3.5 h-3.5 share-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+      d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+  </svg>
+  <span class="share-label">Share</span>
+</button>
+
+<script>
+  document.querySelectorAll('.share-btn').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const text = (btn as HTMLElement).dataset.shareText || '';
+      const label = btn.querySelector('.share-label');
+      try {
+        await navigator.clipboard.writeText(text);
+        if (label) {
+          label.textContent = 'Copied!';
+          setTimeout(() => { label.textContent = 'Share'; }, 2000);
+        }
+      } catch {
+        // Fallback for older browsers
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        if (label) {
+          label.textContent = 'Copied!';
+          setTimeout(() => { label.textContent = 'Share'; }, 2000);
+        }
+      }
+    });
+  });
+</script>

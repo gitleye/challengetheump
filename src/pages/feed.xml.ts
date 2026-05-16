@@ -7,7 +7,7 @@ import metadata from '@/data/metadata.json';
 const league = leagueData as unknown as LeagueSummary;
 const { teams } = teamsData as unknown as TeamsData;
 
-const site = 'https://strikezone.io';
+const site = 'https://challengetheump.com';
 
 function escapeXml(s: string): string {
   return s
