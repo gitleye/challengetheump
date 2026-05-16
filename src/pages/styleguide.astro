@@ -1,0 +1,237 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Card from '@/components/ui/Card.astro';
+import Stat from '@/components/ui/Stat.astro';
+import Badge from '@/components/ui/Badge.astro';
+import Tooltip from '@/components/ui/Tooltip.astro';
+import SampleSizeWarning from '@/components/ui/SampleSizeWarning.astro';
+import Sparkline from '@/components/ui/Sparkline.astro';
+---
+
+<BaseLayout title="Styleguide" noIndex={true}>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
+    <div>
+      <h1 class="text-h1 font-display font-bold text-text-primary mb-1">Design System</h1>
+      <p class="text-body text-text-tertiary">Visual QA for the StrikeZone brand and component library.</p>
+    </div>
+
+    <!-- Colors ------------------------------------------------------------ -->
+    <section>
+      <h2 class="text-h3 font-display font-bold text-text-primary mb-4">Colors</h2>
+      <div class="grid grid-cols-4 sm:grid-cols-7 gap-3">
+        <div class="text-center">
+          <div class="h-14 rounded-md bg-base border border-border"></div>
+          <p class="text-caption text-text-tertiary mt-1">base</p>
+        </div>
+        <div class="text-center">
+          <div class="h-14 rounded-md bg-surface border border-border"></div>
+          <p class="text-caption text-text-tertiary mt-1">surface</p>
+        </div>
+        <div class="text-center">
+          <div class="h-14 rounded-md bg-elevated border border-border"></div>
+          <p class="text-caption text-text-tertiary mt-1">elevated</p>
+        </div>
+        <div class="text-center">
+          <div class="h-14 rounded-md bg-accent"></div>
+          <p class="text-caption text-text-tertiary mt-1">accent</p>
+        </div>
+        <div class="text-center">
+          <div class="h-14 rounded-md bg-success"></div>
+          <p class="text-caption text-text-tertiary mt-1">success</p>
+        </div>
+        <div class="text-center">
+          <div class="h-14 rounded-md bg-danger"></div>
+          <p class="text-caption text-text-tertiary mt-1">danger</p>
+        </div>
+        <div class="text-center">
+          <div class="h-14 rounded-md bg-warning"></div>
+          <p class="text-caption text-text-tertiary mt-1">warning</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Typography -------------------------------------------------------- -->
+    <section>
+      <h2 class="text-h3 font-display font-bold text-text-primary mb-4">Typography</h2>
+      <Card>
+        <div class="space-y-4">
+          <p class="text-display-xl font-display font-black text-text-primary">Display XL</p>
+          <p class="text-display-lg font-display font-black text-text-primary">Display LG</p>
+          <p class="text-h1 font-display font-bold text-text-primary">Heading 1</p>
+          <p class="text-h2 font-display font-bold text-text-primary">Heading 2</p>
+          <p class="text-h3 font-display font-bold text-text-primary">Heading 3</p>
+          <p class="text-body-lg text-text-primary">Body Large — Inter variable</p>
+          <p class="text-body text-text-secondary">Body — Inter variable, secondary</p>
+          <p class="text-body-sm text-text-tertiary">Body Small — tertiary</p>
+          <p class="text-caption text-text-tertiary">Caption — smallest body text</p>
+          <p class="font-mono text-body text-accent">Mono — JetBrains Mono, accent</p>
+          <p class="text-stat-xl font-mono font-bold text-text-primary">+5.44</p>
+          <p class="text-stat font-mono text-text-primary">58.4%</p>
+        </div>
+      </Card>
+    </section>
+
+    <!-- Badges ------------------------------------------------------------ -->
+    <section>
+      <h2 class="text-h3 font-display font-bold text-text-primary mb-4">Badges</h2>
+      <div class="flex flex-wrap gap-3">
+        <Badge variant="default">Default</Badge>
+        <Badge variant="success">Success</Badge>
+        <Badge variant="danger">Danger</Badge>
+        <Badge variant="warning">Warning</Badge>
+        <Badge variant="accent">Accent</Badge>
+        <Badge variant="accent">2026 Season · Live</Badge>
+      </div>
+    </section>
+
+    <!-- Stats ------------------------------------------------------------- -->
+    <section>
+      <h2 class="text-h3 font-display font-bold text-text-primary mb-4">Stats</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <Card class="text-center">
+          <Stat value="+5.44" label="Net Run Value" size="lg" accent />
+        </Card>
+        <Card class="text-center">
+          <Stat value="58.4%" label="Success Rate" size="lg" />
+        </Card>
+        <Card class="text-center">
+          <Stat value="2,748" label="Total Challenges" size="lg" />
+        </Card>
+        <Card class="text-center">
+          <Stat value="-0.4%" label="K Rate vs 2025" size="lg" delta={-0.004} />
+        </Card>
+        <Card class="text-center">
+          <Stat value="+12" label="Net Overturns" size="xl" accent />
+        </Card>
+        <Card class="text-center">
+          <Stat value="53" label="Challenges" size="md" />
+        </Card>
+      </div>
+    </section>
+
+    <!-- Cards ------------------------------------------------------------- -->
+    <section>
+      <h2 class="text-h3 font-display font-bold text-text-primary mb-4">Cards</h2>
+      <div class="space-y-4">
+        <Card title="Card with title" cta={{ label: 'View all →', href: '#' }}>
+          <p class="text-body-sm text-text-secondary">Card content goes here.</p>
+        </Card>
+        <Card>
+          <p class="text-body-sm text-text-secondary">Card without title — plain elevated surface.</p>
+        </Card>
+      </div>
+    </section>
+
+    <!-- Tooltips ---------------------------------------------------------- -->
+    <section>
+      <h2 class="text-h3 font-display font-bold text-text-primary mb-4">Tooltips</h2>
+      <Card>
+        <div class="flex flex-wrap gap-6">
+          <Tooltip text="Net run value above expected from ABS challenges.">Net RV</Tooltip>
+          <Tooltip text="Win Probability Added from successful challenges.">Challenge WPA</Tooltip>
+          <Tooltip text="Overturns gained minus overturns conceded to opponents.">Net Overturns</Tooltip>
+        </div>
+      </Card>
+    </section>
+
+    <!-- Warnings ---------------------------------------------------------- -->
+    <section>
+      <h2 class="text-h3 font-display font-bold text-text-primary mb-4">Sample Size Warnings</h2>
+      <div class="space-y-3">
+        <SampleSizeWarning message="Small sample: only 12 challenges — success rate may not be stable." />
+        <SampleSizeWarning message="Rolling 30-day WPA based on fewer than 10 events." />
+      </div>
+    </section>
+
+    <!-- Sparklines -------------------------------------------------------- -->
+    <section>
+      <h2 class="text-h3 font-display font-bold text-text-primary mb-4">Sparklines</h2>
+      <Card>
+        <div class="flex flex-wrap gap-8 items-center">
+          <div>
+            <p class="text-caption text-text-tertiary mb-1">Uptrend</p>
+            <Sparkline values={[1, 2, 1.5, 3, 2.5, 4, 3.8, 5]} width={80} height={28} />
+          </div>
+          <div>
+            <p class="text-caption text-text-tertiary mb-1">Downtrend</p>
+            <Sparkline values={[5, 4.2, 3.8, 4, 3, 2.5, 2, 1]} width={80} height={28} />
+          </div>
+          <div>
+            <p class="text-caption text-text-tertiary mb-1">Flat</p>
+            <Sparkline values={[3, 3.1, 2.9, 3, 3.2, 3, 2.8, 3.1]} width={80} height={28} />
+          </div>
+        </div>
+      </Card>
+    </section>
+
+    <!-- Tables ------------------------------------------------------------ -->
+    <section>
+      <h2 class="text-h3 font-display font-bold text-text-primary mb-4">Data Table</h2>
+      <Card noPadding>
+        <div class="overflow-x-auto">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th class="w-8">#</th>
+                <th>Team</th>
+                <th class="text-right">Net RV</th>
+                <th class="text-right">Success%</th>
+                <th class="text-right">Win%</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="font-mono text-text-tertiary">1</td>
+                <td class="font-medium text-text-primary">St. Louis Cardinals</td>
+                <td class="text-right font-mono font-bold text-accent">+5.44</td>
+                <td class="text-right font-mono">61.5%</td>
+                <td class="text-right font-mono text-text-secondary">.590</td>
+              </tr>
+              <tr>
+                <td class="font-mono text-text-tertiary">2</td>
+                <td class="font-medium text-text-primary">Houston Astros</td>
+                <td class="text-right font-mono font-bold text-accent">+4.12</td>
+                <td class="text-right font-mono">58.2%</td>
+                <td class="text-right font-mono text-text-secondary">.556</td>
+              </tr>
+              <tr>
+                <td class="font-mono text-text-tertiary">3</td>
+                <td class="font-medium text-text-primary">New York Yankees</td>
+                <td class="text-right font-mono font-bold text-accent">+3.88</td>
+                <td class="text-right font-mono">55.9%</td>
+                <td class="text-right font-mono text-text-secondary">.548</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </section>
+
+    <!-- Delta classes ----------------------------------------------------- -->
+    <section>
+      <h2 class="text-h3 font-display font-bold text-text-primary mb-4">Delta Indicators</h2>
+      <Card>
+        <div class="flex gap-8 font-mono text-body">
+          <span class="delta-positive">+0.044 ↑</span>
+          <span class="delta-negative">-0.021 ↓</span>
+          <span class="text-text-secondary">0.000 —</span>
+        </div>
+      </Card>
+    </section>
+
+    <!-- Buttons ----------------------------------------------------------- -->
+    <section>
+      <h2 class="text-h3 font-display font-bold text-text-primary mb-4">Buttons / Links</h2>
+      <Card>
+        <div class="flex flex-wrap gap-3">
+          <a href="#" class="inline-flex items-center gap-2 px-5 py-2.5 bg-accent text-black font-semibold rounded-md text-body-sm hover:bg-accent/90 transition-colors shadow-glow">
+            Primary CTA →
+          </a>
+          <a href="#" class="inline-flex items-center gap-2 px-5 py-2.5 bg-elevated border border-border text-text-secondary font-medium rounded-md text-body-sm hover:text-text-primary hover:border-accent/50 transition-colors">
+            Secondary
+          </a>
+        </div>
+      </Card>
+    </section>
+  </div>
+</BaseLayout>

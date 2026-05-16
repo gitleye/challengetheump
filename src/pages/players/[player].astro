@@ -1,5 +1,9 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import Card from '@/components/ui/Card.astro';
+import Stat from '@/components/ui/Stat.astro';
+import Badge from '@/components/ui/Badge.astro';
+import SampleSizeWarning from '@/components/ui/SampleSizeWarning.astro';
 import type { PlayersData, PlayerRecord } from '@/lib/types';
 import { formatRate } from '@/lib/stats';
 import playersData from '@/data/players.json';
@@ -13,57 +17,162 @@ export async function getStaticPaths() {
 }
 
 const { player } = Astro.props as { player: PlayerRecord };
+
+const successRateFormatted = formatRate(player.challenges.success_rate);
+const isBatter = player.challenges.role === 'batter';
+const isCatcher = player.challenges.role === 'catcher';
+const isPitcher = player.challenges.role === 'pitcher';
+const hasWarnings = player.sample_warnings && player.sample_warnings.length > 0;
+
+const roleLabel: Record<string, string> = {
+  batter: 'Batter',
+  catcher: 'Catcher',
+  pitcher: 'Pitcher',
+};
+
+// MLB headshot URL pattern
+const headshotUrl = `https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_213,q_auto:best/v1/people/${player.player_id}/headshot/67/current`;
 ---
 
 <BaseLayout
   title={player.name}
-  description={`ABS Challenge System stats for ${player.name}: ${player.challenges.total_challenges} challenges, ${(player.challenges.success_rate != null ? (player.challenges.success_rate * 100).toFixed(1) : '—')}% success rate.`}
+  description={`ABS Challenge System stats for ${player.name}: ${player.challenges.total_challenges} challenges, ${successRateFormatted} success rate.`}
 >
-  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-    <!-- Breadcrumb -->
-    <nav class="text-sm text-slate-500 mb-6" aria-label="Breadcrumb">
-      <ol class="flex items-center gap-2">
-        <li><a href="/players" class="hover:underline">Players</a></li>
-        <li aria-hidden="true">›</li>
-        <li class="text-slate-900 font-medium" aria-current="page">{player.name}</li>
-      </ol>
-    </nav>
+  <!-- JSON-LD structured data -->
+  <script is:inline type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": player.name,
+    "jobTitle": `Professional Baseball Player (${player.position})`,
+    "memberOf": {
+      "@type": "SportsTeam",
+      "name": player.team_id
+    }
+  })} />
 
-    <div class="flex items-start justify-between mb-8">
-      <div>
-        <h1 class="text-3xl font-display font-bold">{player.name}</h1>
-        <p class="text-slate-500 mt-1">{player.position} · {player.team_id}</p>
-      </div>
-    </div>
+  <!-- Breadcrumb + header ------------------------------------------------- -->
+  <section class="border-b border-border">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-10">
+      <nav class="text-body-sm text-text-tertiary mb-6" aria-label="Breadcrumb">
+        <ol class="flex items-center gap-2">
+          <li>
+            <a href={player.challenges.role === 'catcher' ? '/players' : `/players/${player.challenges.role}s`} class="hover:text-accent transition-colors">
+              Players
+            </a>
+          </li>
+          <li aria-hidden="true" class="text-text-tertiary">›</li>
+          <li class="text-text-primary font-medium" aria-current="page">{player.name}</li>
+        </ol>
+      </nav>
 
-    <!-- Stats -->
-    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-10">
-      <div class="bg-white rounded-lg shadow-sm p-6 text-center">
-        <p class="text-3xl font-bold text-brand-navy">{player.challenges.total_challenges}</p>
-        <p class="text-sm text-slate-600 mt-1">Challenges</p>
-      </div>
-      <div class="bg-white rounded-lg shadow-sm p-6 text-center">
-        <p class="text-3xl font-bold text-brand-navy">{formatRate(player.challenges.success_rate)}</p>
-        <p class="text-sm text-slate-600 mt-1">Success Rate</p>
-      </div>
-      {player.challenges.role === 'batter' && (
-        <>
-          <div class="bg-white rounded-lg shadow-sm p-6 text-center">
-            <p class="text-3xl font-bold text-brand-navy">{player.challenges.strikeouts_avoided ?? '—'}</p>
-            <p class="text-sm text-slate-600 mt-1">K's Avoided</p>
+      <div class="flex items-start gap-5">
+        <img
+          src={headshotUrl}
+          alt={`${player.name} headshot`}
+          width="80"
+          height="80"
+          class="w-20 h-20 rounded-lg bg-elevated border border-border object-cover shrink-0"
+          loading="eager"
+        />
+        <div>
+          <div class="flex items-center gap-3 flex-wrap mb-1">
+            <h1 class="text-h1 font-display font-bold text-text-primary">{player.name}</h1>
+            <Badge variant="default">{roleLabel[player.challenges.role] ?? player.challenges.role}</Badge>
           </div>
-          <div class="bg-white rounded-lg shadow-sm p-6 text-center">
-            <p class="text-3xl font-bold text-brand-navy">{player.challenges.walks_gained ?? '—'}</p>
-            <p class="text-sm text-slate-600 mt-1">Walks Gained</p>
-          </div>
-        </>
-      )}
-      {(player.challenges.role === 'catcher' || player.challenges.role === 'pitcher') && (
-        <div class="bg-white rounded-lg shadow-sm p-6 text-center">
-          <p class="text-3xl font-bold text-brand-navy">{player.challenges.overturns_generated ?? '—'}</p>
-          <p class="text-sm text-slate-600 mt-1">Overturns Generated</p>
+          <p class="text-body text-text-secondary">
+            {player.position} &middot;
+            <a href={`/teams/${player.team_id.toLowerCase()}`} class="hover:text-accent transition-colors">
+              {player.team_id}
+            </a>
+          </p>
         </div>
-      )}
+      </div>
     </div>
+  </section>
+
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <!-- Sample warnings --------------------------------------------------- -->
+    {hasWarnings && (
+      <div class="space-y-2">
+        {player.sample_warnings.map((w) => (
+          <SampleSizeWarning message={w.message} />
+        ))}
+      </div>
+    )}
+
+    <!-- Stats grid -------------------------------------------------------- -->
+    <section aria-labelledby="player-stats-heading">
+      <h2 id="player-stats-heading" class="sr-only">Challenge Statistics</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+        <Card class="text-center">
+          <Stat
+            value={String(player.challenges.total_challenges)}
+            label="Challenges"
+            size="lg"
+          />
+        </Card>
+        <Card class="text-center">
+          <Stat
+            value={successRateFormatted}
+            label="Success Rate"
+            size="lg"
+            accent
+          />
+        </Card>
+        {isBatter && (
+          <>
+            <Card class="text-center">
+              <Stat
+                value={String(player.challenges.strikeouts_avoided ?? '—')}
+                label="Ks Avoided"
+                size="lg"
+              />
+            </Card>
+            <Card class="text-center">
+              <Stat
+                value={String(player.challenges.walks_gained ?? '—')}
+                label="BBs Gained"
+                size="lg"
+              />
+            </Card>
+          </>
+        )}
+        {(isCatcher || isPitcher) && (
+          <Card class="text-center">
+            <Stat
+              value={String(player.challenges.overturns_generated ?? '—')}
+              label="Overturns Generated"
+              size="lg"
+            />
+          </Card>
+        )}
+      </div>
+    </section>
+
+    <!-- Context ----------------------------------------------------------- -->
+    <Card title="Challenge Context">
+      <dl class="grid grid-cols-2 gap-x-8 gap-y-4 text-body-sm">
+        <div>
+          <dt class="text-text-tertiary">Role</dt>
+          <dd class="text-text-primary font-medium mt-0.5">{roleLabel[player.challenges.role] ?? player.challenges.role}</dd>
+        </div>
+        <div>
+          <dt class="text-text-tertiary">Team</dt>
+          <dd class="text-text-primary font-medium mt-0.5">
+            <a href={`/teams/${player.team_id.toLowerCase()}`} class="hover:text-accent transition-colors">
+              {player.team_id}
+            </a>
+          </dd>
+        </div>
+        <div>
+          <dt class="text-text-tertiary">Total Challenges</dt>
+          <dd class="text-text-primary font-mono font-medium mt-0.5">{player.challenges.total_challenges}</dd>
+        </div>
+        <div>
+          <dt class="text-text-tertiary">Successful Challenges</dt>
+          <dd class="text-text-primary font-mono font-medium mt-0.5">{player.challenges.successful_challenges}</dd>
+        </div>
+      </dl>
+    </Card>
   </div>
 </BaseLayout>

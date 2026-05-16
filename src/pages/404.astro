@@ -1,0 +1,49 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="404 — Called Out" noIndex={true}>
+  <div class="flex-1 flex items-center justify-center px-4 py-20">
+    <div class="text-center max-w-lg">
+      <!-- Strike zone SVG -->
+      <div class="mb-8 inline-block">
+        <svg width="120" height="140" viewBox="0 0 120 140" fill="none" aria-hidden="true" class="opacity-30">
+          <rect x="10" y="10" width="100" height="120" rx="4" stroke="currentColor" stroke-width="2" stroke-dasharray="8 4" />
+          <line x1="10" y1="50" x2="110" y2="50" stroke="currentColor" stroke-width="1" stroke-dasharray="4 4" />
+          <line x1="10" y1="90" x2="110" y2="90" stroke="currentColor" stroke-width="1" stroke-dasharray="4 4" />
+          <line x1="43" y1="10" x2="43" y2="130" stroke="currentColor" stroke-width="1" stroke-dasharray="4 4" />
+          <line x1="77" y1="10" x2="77" y2="130" stroke="currentColor" stroke-width="1" stroke-dasharray="4 4" />
+          <!-- Ball indicator -->
+          <circle cx="60" cy="70" r="12" fill="#D4FF3D" opacity="0.2" />
+          <text x="60" y="75" text-anchor="middle" fill="#D4FF3D" font-size="14" font-weight="bold">?</text>
+        </svg>
+      </div>
+
+      <p class="text-stat-lg font-mono font-bold text-accent mb-2">404</p>
+      <h1 class="text-h1 font-display font-bold text-text-primary mb-4">
+        Called Out Looking
+      </h1>
+      <p class="text-body text-text-secondary mb-8">
+        That page doesn't exist — and unlike a bad strike call, you can't challenge this one.
+      </p>
+
+      <div class="flex gap-3 justify-center flex-wrap">
+        <a
+          href="/"
+          class="inline-flex items-center gap-2 px-5 py-2.5 bg-accent text-black font-semibold
+            rounded-md text-body-sm hover:bg-accent/90 transition-colors shadow-glow"
+        >
+          Back to home
+        </a>
+        <a
+          href="/teams"
+          class="inline-flex items-center gap-2 px-5 py-2.5 bg-elevated border border-border
+            text-text-secondary font-medium rounded-md text-body-sm
+            hover:text-text-primary hover:border-accent/50 transition-colors"
+        >
+          View teams
+        </a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

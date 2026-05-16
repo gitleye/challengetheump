@@ -1,59 +1,162 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import Card from '@/components/ui/Card.astro';
+import Badge from '@/components/ui/Badge.astro';
 ---
 
 <BaseLayout
   title="About"
-  description="Why the ABS Dashboard was built, who built it, and how to contribute."
+  description="Why the StrikeZone dashboard was built, the tech stack, and how to contribute."
 >
-  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-    <h1 class="text-3xl font-display font-bold mb-2">About</h1>
-    <p class="text-slate-600 mb-10">Why this exists and how it works.</p>
-
-    <div class="prose prose-slate max-w-none space-y-8">
-      <section>
-        <h2 class="text-xl font-display font-bold">The Question</h2>
-        <p class="text-slate-700 mt-4">
-          MLB's 2026 ABS Challenge System gives teams 2 challenges per game to dispute ball-strike
-          calls using Hawk-Eye camera data. The obvious question became: do teams that win more
-          challenges actually win more games?
-        </p>
-        <p class="text-slate-700 mt-3">
-          This dashboard was built to answer that question with real data, not vibes. It tracks
-          challenge performance, weights outcomes by game leverage (WPA), and compares challenge
-          efficiency to actual win percentage.
-        </p>
-      </section>
-
-      <section>
-        <h2 class="text-xl font-display font-bold">Why Build This</h2>
-        <p class="text-slate-700 mt-4">
-          Box scores track runs, hits, and errors. No public site was aggregating ABS challenge
-          performance in a clean, searchable format and connecting it to standings. This fills that gap.
-        </p>
-      </section>
-
-      <section>
-        <h2 class="text-xl font-display font-bold">Stack & Open Source</h2>
-        <p class="text-slate-700 mt-4">
-          Built with Astro, Tailwind CSS, Chart.js, and a Python data pipeline powered by
-          <code>pybaseball</code>. Data refreshes daily via GitHub Actions and deploys to Cloudflare
-          Pages as a fully static site — no servers, no database, no tracking.
-        </p>
-        <p class="text-slate-700 mt-3">
-          Source code is available on GitHub under the MIT license. Contributions, bug reports,
-          and data corrections are welcome.
-        </p>
-      </section>
-
-      <section>
-        <h2 class="text-xl font-display font-bold">Disclaimer</h2>
-        <p class="text-slate-700 mt-4 text-sm">
-          This site is not affiliated with MLB, any team, or Baseball Savant. All data is sourced
-          from publicly available APIs. Metrics are computed independently and may differ from
-          official statistics.
-        </p>
-      </section>
+  <!-- Page header --------------------------------------------------------- -->
+  <section class="border-b border-border">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <Badge variant="accent" class="mb-4">About this project</Badge>
+      <h1 class="text-h1 font-display font-bold text-text-primary mb-2">About StrikeZone</h1>
+      <p class="text-body text-text-secondary">Why this exists, who built it, and how.</p>
     </div>
+  </section>
+
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
+    <!-- The Question ------------------------------------------------------ -->
+    <Card>
+      <h2 class="text-h3 font-display font-bold text-text-primary mb-4">The Question</h2>
+      <div class="space-y-3 text-body text-text-secondary">
+        <p>
+          MLB's 2026 ABS Challenge System is the most significant rule change since the designated hitter.
+          For the first time, players can dispute ball-strike calls using Hawk-Eye camera data — and
+          umpires get overruled on the spot.
+        </p>
+        <p>
+          Every fan watching a game now asks the same thing:
+          <strong class="text-text-primary">does beating the robot umpire actually help you win?</strong>
+        </p>
+        <p>
+          We built StrikeZone to answer that with data. Not vibes, not hot takes — actual challenge
+          outcomes correlated with actual results. Updated every day from Baseball Savant.
+        </p>
+      </div>
+    </Card>
+
+    <!-- Why Build This ---------------------------------------------------- -->
+    <Card>
+      <h2 class="text-h3 font-display font-bold text-text-primary mb-4">Why Build This</h2>
+      <div class="space-y-3 text-body text-text-secondary">
+        <p>
+          Box scores track runs, hits, and errors. Baseball Savant has the raw ABS leaderboard.
+          But nobody was connecting challenge performance to standings in a clean, searchable format
+          with proper sample size warnings and an honest take on what the numbers actually mean.
+        </p>
+        <p>
+          StrikeZone fills that gap. It's the kind of site we wanted to exist, so we built it.
+        </p>
+      </div>
+    </Card>
+
+    <!-- Who -------------------------------------------------------------- -->
+    <Card>
+      <h2 class="text-h3 font-display font-bold text-text-primary mb-4">Who Built This</h2>
+      <div class="space-y-3 text-body text-text-secondary">
+        <p>
+          Built by <strong class="text-text-primary">Leye Oyelami</strong> — software engineer,
+          baseball fan, and builder of things that make data legible.
+        </p>
+        <p>
+          This is an open-source project. The code, the data, and the methodology are all public.
+          If you find an error, have a suggestion, or want to contribute, the repo is open.
+        </p>
+        <div class="flex flex-wrap gap-3 mt-4">
+          <a
+            href="https://github.com/leyeoyelami/abs-dashboard"
+            class="inline-flex items-center gap-2 px-4 py-2 bg-elevated border border-border
+              text-text-secondary font-medium rounded-md text-body-sm
+              hover:text-text-primary hover:border-accent/50 transition-colors"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            GitHub ↗
+          </a>
+          <a
+            href="https://github.com/leyeoyelami"
+            class="inline-flex items-center gap-2 px-4 py-2 bg-elevated border border-border
+              text-text-secondary font-medium rounded-md text-body-sm
+              hover:text-text-primary hover:border-accent/50 transition-colors"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Profile ↗
+          </a>
+        </div>
+      </div>
+    </Card>
+
+    <!-- Stack ------------------------------------------------------------- -->
+    <Card title="Tech Stack">
+      <div class="space-y-3 text-body-sm text-text-secondary">
+        <p>
+          Fully static. No server, no database, no tracking. Ships zero JavaScript by default
+          (tables with sorting are the exception).
+        </p>
+        <div class="grid sm:grid-cols-2 gap-x-8 gap-y-3 mt-4">
+          <div class="flex gap-3">
+            <span class="text-accent font-bold mt-0.5 shrink-0">→</span>
+            <div>
+              <strong class="text-text-primary">Astro</strong>
+              <p class="text-text-tertiary">Static site generator. Zero JS by default.</p>
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <span class="text-accent font-bold mt-0.5 shrink-0">→</span>
+            <div>
+              <strong class="text-text-primary">Tailwind CSS</strong>
+              <p class="text-text-tertiary">Utility-first. CSS custom properties for theming.</p>
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <span class="text-accent font-bold mt-0.5 shrink-0">→</span>
+            <div>
+              <strong class="text-text-primary">Chart.js</strong>
+              <p class="text-text-tertiary">Lazy-loaded. Accessible table fallbacks.</p>
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <span class="text-accent font-bold mt-0.5 shrink-0">→</span>
+            <div>
+              <strong class="text-text-primary">Python Pipeline</strong>
+              <p class="text-text-tertiary">pybaseball, pandas, pydantic, structlog.</p>
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <span class="text-accent font-bold mt-0.5 shrink-0">→</span>
+            <div>
+              <strong class="text-text-primary">GitHub Actions</strong>
+              <p class="text-text-tertiary">Daily refresh at 11:00 UTC.</p>
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <span class="text-accent font-bold mt-0.5 shrink-0">→</span>
+            <div>
+              <strong class="text-text-primary">Cloudflare Pages</strong>
+              <p class="text-text-tertiary">Edge-deployed on every commit.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Card>
+
+    <!-- License ----------------------------------------------------------- -->
+    <Card>
+      <h2 class="text-h3 font-display font-bold text-text-primary mb-3">License & Disclaimer</h2>
+      <div class="space-y-2 text-body-sm text-text-tertiary">
+        <p>
+          Code and derived data are released under the <strong class="text-text-secondary">MIT License</strong>.
+          Raw data is sourced from publicly available MLB APIs and Baseball Savant.
+        </p>
+        <p>
+          This site is not affiliated with MLB, any team, or Baseball Savant. Metrics are computed
+          independently and may differ from official statistics. Not intended for gambling.
+        </p>
+      </div>
+    </Card>
   </div>
 </BaseLayout>

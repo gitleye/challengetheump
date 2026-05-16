@@ -1,0 +1,66 @@
+---
+interface Props {
+  values: number[];
+  width?: number;
+  height?: number;
+  color?: string;
+  class?: string;
+  label?: string;
+}
+
+const {
+  values,
+  width = 80,
+  height = 24,
+  color = '#D4FF3D',
+  class: cls = '',
+  label = 'trend',
+} = Astro.props;
+
+// Generate SVG polyline from values
+function toPolyline(vals: number[], w: number, h: number): string {
+  if (vals.length < 2) return '';
+  const min = Math.min(...vals);
+  const max = Math.max(...vals);
+  const range = max - min || 1;
+  const pad = 2;
+  return vals
+    .map((v, i) => {
+      const x = pad + (i / (vals.length - 1)) * (w - pad * 2);
+      const y = h - pad - ((v - min) / range) * (h - pad * 2);
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    })
+    .join(' ');
+}
+
+const points = toPolyline(values, width, height);
+const trend = values.length >= 2
+  ? values[values.length - 1] > values[0]
+    ? 'up'
+    : values[values.length - 1] < values[0]
+    ? 'down'
+    : 'flat'
+  : 'flat';
+const trendColor = trend === 'up' ? '#22C55E' : trend === 'down' ? '#EF4444' : color;
+---
+
+<svg
+  width={width}
+  height={height}
+  viewBox={`0 0 ${width} ${height}`}
+  class:list={['inline-block align-middle', cls]}
+  role="img"
+  aria-label={`${label} trend chart`}
+  fill="none"
+>
+  {points && (
+    <polyline
+      points={points}
+      stroke={trendColor}
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      fill="none"
+    />
+  )}
+</svg>

@@ -1,0 +1,19 @@
+---
+interface Props {
+  message: string;
+  class?: string;
+}
+const { message, class: cls = '' } = Astro.props;
+---
+
+<div
+  class:list={[
+    'flex items-start gap-2 bg-warning/10 border border-warning/30 rounded-md px-3 py-2',
+    cls,
+  ]}
+  role="alert"
+  aria-live="polite"
+>
+  <span class="text-warning text-body-sm mt-px flex-shrink-0" aria-hidden="true">⚠</span>
+  <p class="text-body-sm text-warning/90">{message}</p>
+</div>

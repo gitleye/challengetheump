@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://abs-dashboard.pages.dev/sitemap.xml
+Sitemap: https://strikezone.io/sitemap-index.xml

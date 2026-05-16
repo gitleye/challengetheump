@@ -186,12 +186,16 @@ def team_id_from_record(record: dict) -> str:
 def fetch_all_abs_data(season: int) -> dict[str, Optional[list[dict]]]:
     """
     Fetch all ABS leaderboard data in one call. Returns dict of lists.
+
+    Note: the default all-players endpoint returns only batters (player_at_bat == id).
+    There is no pitcher-specific challenge endpoint — catchers initiate defensive challenges.
     """
     logger.info(f"Fetching Baseball Savant ABS data for season {season}")
     return {
         "batting_team": fetch_team_batting_challenges(season),
         "catching_team": fetch_team_catching_challenges(season),
         "players": fetch_player_challenges(season),
+        "batters": fetch_batter_challenges(season),
         "catchers": fetch_catcher_challenges(season),
     }
 

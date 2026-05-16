@@ -14,28 +14,32 @@ interface Props {
 
 const {
   title,
-  description = 'Track MLB ABS Challenge System performance: success rates, Win Probability Added, and whether beating the robot umpire correlates with winning.',
+  description = 'Track MLB ABS Challenge System performance — challenge success rates, net run value, and whether beating the robot umpire actually wins you games.',
   ogImage = '/og-image.png',
   canonicalUrl,
   noIndex = false,
 } = Astro.props;
 
-const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://abs-dashboard.pages.dev';
+const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://strikezone.io';
 const canonical = canonicalUrl ?? new URL(Astro.url.pathname, siteUrl).href;
 const fullOgImage = new URL(ogImage, siteUrl).href;
-const fullTitle = title === 'Home' ? 'ABS Dashboard — MLB Challenge System Analytics' : `${title} | ABS Dashboard`;
+const siteName = 'StrikeZone';
+const fullTitle = title === 'Home'
+  ? `${siteName} — MLB ABS Challenge Analytics`
+  : `${title} | ${siteName}`;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#0A0A0B" />
 
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
-    {noIndex && <meta name="robots" content="noindex, nofollow" />}
+    {noIndex && <meta name="robots" content="noindex,nofollow" />}
     <link rel="canonical" href={canonical} />
 
     <!-- Open Graph -->
@@ -46,7 +50,7 @@ const fullTitle = title === 'Home' ? 'ABS Dashboard — MLB Challenge System Ana
     <meta property="og:image" content={fullOgImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:site_name" content="ABS Dashboard" />
+    <meta property="og:site_name" content={siteName} />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -54,15 +58,43 @@ const fullTitle = title === 'Home' ? 'ABS Dashboard — MLB Challenge System Ana
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={fullOgImage} />
 
-    <!-- Favicon -->
+    <!-- Icons -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title="StrikeZone RSS" href="/feed.xml" />
 
-    <!-- Sitemap -->
-    <link rel="sitemap" href="/sitemap.xml" />
+    <!-- Inline theme script — must run before first paint to prevent flash -->
+    <script is:inline>
+      (function () {
+        var stored = localStorage.getItem('theme');
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var theme = stored === 'light' ? 'light' : stored === 'dark' ? 'dark' : (prefersDark ? 'dark' : 'light');
+        document.documentElement.classList.remove('dark', 'light');
+        document.documentElement.classList.add(theme);
+      })();
+    </script>
+
+    <!-- JSON-LD structured data -->
+    <script is:inline type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "StrikeZone",
+        "url": "https://strikezone.io",
+        "description": "MLB ABS Challenge System analytics dashboard",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://strikezone.io/teams?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }
+    </script>
   </head>
-  <body class="min-h-screen bg-brand-cream text-slate-900 flex flex-col">
+
+  <body class="min-h-screen bg-base text-text-primary flex flex-col font-body">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <Header />
-    <main id="main-content" class="flex-1">
+    <main id="main-content" class="flex-1 animate-fade-in">
       <slot />
     </main>
     <Footer lastUpdated={metadata.last_updated} season={metadata.season} />

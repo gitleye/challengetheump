@@ -1,8 +1,16 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import type { TeamsData, TeamRecord } from '@/lib/types';
+import Card from '@/components/ui/Card.astro';
+import Stat from '@/components/ui/Stat.astro';
+import Badge from '@/components/ui/Badge.astro';
+import SampleSizeWarning from '@/components/ui/SampleSizeWarning.astro';
+import Tooltip from '@/components/ui/Tooltip.astro';
+import type { TeamsData, TeamRecord, PlayersData } from '@/lib/types';
 import { formatRate, formatWpa, formatWinPct } from '@/lib/stats';
 import teamsData from '@/data/teams.json';
+import playersData from '@/data/players.json';
+
+const allPlayers = (playersData as unknown as PlayersData).players;
 
 export async function getStaticPaths() {
   const { teams } = teamsData as unknown as TeamsData;
@@ -13,72 +21,222 @@ export async function getStaticPaths() {
 }
 
 const { team } = Astro.props as { team: TeamRecord };
+
+// Players on this team
+const teamPlayers = allPlayers
+  .filter((p) => p.team_id === team.team_id)
+  .sort((a, b) => b.challenges.total_challenges - a.challenges.total_challenges);
+
+const netOt = team.challenges.net_overturns;
+const netOtStr = netOt > 0 ? `+${netOt}` : String(netOt);
+const hasWarnings = team.sample_warnings && team.sample_warnings.length > 0;
 ---
 
 <BaseLayout
   title={team.team_name}
-  description={`ABS Challenge System stats for the ${team.team_name}: success rates, WPA, and correlation with win percentage.`}
+  description={`ABS Challenge System stats for the ${team.team_name}: ${team.challenges.total_challenges} challenges, ${formatRate(team.challenges.success_rate)} success rate, ${formatWpa(team.challenges.challenge_wpa)} net run value.`}
 >
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-    <!-- Breadcrumb -->
-    <nav class="text-sm text-slate-500 mb-6" aria-label="Breadcrumb">
-      <ol class="flex items-center gap-2">
-        <li><a href="/teams" class="hover:underline">Teams</a></li>
-        <li aria-hidden="true">›</li>
-        <li class="text-slate-900 font-medium" aria-current="page">{team.team_name}</li>
-      </ol>
-    </nav>
+  <!-- JSON-LD structured data -->
+  <script is:inline type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "SportsTeam",
+    "name": team.team_name,
+    "sport": "Baseball",
+    "memberOf": {
+      "@type": "SportsOrganization",
+      "name": "Major League Baseball"
+    }
+  })} />
 
-    <!-- Team header -->
-    <div class="flex items-start justify-between mb-8">
-      <div>
-        <h1 class="text-3xl font-display font-bold">{team.team_name}</h1>
-        <p class="text-slate-500 mt-1">{team.division} · {team.wins}–{team.losses} · {formatWinPct(team.win_pct)}</p>
-      </div>
-      {team.data_quality !== 'ok' && (
-        <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-1 rounded">
-          {team.data_quality === 'stale' ? 'Data may be stale' : 'Partial data'}
-        </span>
-      )}
-    </div>
+  <!-- Breadcrumb + header ------------------------------------------------- -->
+  <section class="border-b border-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-10">
+      <nav class="text-body-sm text-text-tertiary mb-6" aria-label="Breadcrumb">
+        <ol class="flex items-center gap-2">
+          <li><a href="/teams" class="hover:text-accent transition-colors">Teams</a></li>
+          <li aria-hidden="true" class="text-text-tertiary">›</li>
+          <li class="text-text-primary font-medium" aria-current="page">{team.team_name}</li>
+        </ol>
+      </nav>
 
-    <!-- Key stats grid -->
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
-      <div class="bg-white rounded-lg shadow-sm p-6 text-center">
-        <p class="text-3xl font-bold text-brand-navy">{formatWpa(team.challenges.challenge_wpa)}</p>
-        <p class="text-sm text-slate-600 mt-1">Challenge WPA</p>
-      </div>
-      <div class="bg-white rounded-lg shadow-sm p-6 text-center">
-        <p class="text-3xl font-bold text-brand-navy">{formatRate(team.challenges.success_rate)}</p>
-        <p class="text-sm text-slate-600 mt-1">Success Rate</p>
-      </div>
-      <div class="bg-white rounded-lg shadow-sm p-6 text-center">
-        <p class="text-3xl font-bold text-brand-navy">{team.challenges.total_challenges}</p>
-        <p class="text-sm text-slate-600 mt-1">Total Challenges</p>
-      </div>
-      <div class="bg-white rounded-lg shadow-sm p-6 text-center">
-        <p class="text-3xl font-bold text-brand-navy">
-          {team.challenges.net_overturns > 0 ? `+${team.challenges.net_overturns}` : team.challenges.net_overturns}
-        </p>
-        <p class="text-sm text-slate-600 mt-1">Net Overturns</p>
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-3 flex-wrap mb-1">
+            <h1 class="text-h1 font-display font-bold text-text-primary">{team.team_name}</h1>
+            <Badge variant={team.league === 'AL' ? 'default' : 'accent'}>{team.league}</Badge>
+            {team.data_quality !== 'ok' && (
+              <Badge variant="warning">
+                {team.data_quality === 'stale' ? 'Stale data' : 'Partial data'}
+              </Badge>
+            )}
+          </div>
+          <p class="text-body text-text-secondary">
+            {team.division} &middot; {team.wins}–{team.losses} &middot; {formatWinPct(team.win_pct)}
+          </p>
+        </div>
       </div>
     </div>
+  </section>
 
-    <!-- Sample warnings -->
-    {team.sample_warnings.length > 0 && (
-      <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-8">
-        <p class="text-sm font-medium text-yellow-800">Small sample size warnings:</p>
-        <ul class="mt-2 space-y-1">
-          {team.sample_warnings.map((w) => (
-            <li class="text-sm text-yellow-700">• {w.message}</li>
-          ))}
-        </ul>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <!-- Sample warnings --------------------------------------------------- -->
+    {hasWarnings && (
+      <div class="space-y-2">
+        {team.sample_warnings.map((w) => (
+          <SampleSizeWarning message={w.message} />
+        ))}
       </div>
     )}
 
-    <!-- Chart placeholder (wired up in pages-content prompt) -->
-    <div class="bg-white rounded-lg shadow-sm p-8 text-center text-slate-400 border border-dashed border-slate-200">
-      <p>Rolling 30-day Challenge WPA chart — coming in the next build phase</p>
-    </div>
+    <!-- Key stats --------------------------------------------------------- -->
+    <section aria-labelledby="stats-heading">
+      <h2 id="stats-heading" class="sr-only">Key Statistics</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <Card class="text-center">
+          <Stat
+            value={formatWpa(team.challenges.challenge_wpa)}
+            label="Net Run Value"
+            size="lg"
+            accent
+          />
+        </Card>
+        <Card class="text-center">
+          <Stat
+            value={formatRate(team.challenges.success_rate)}
+            label="Success Rate"
+            size="lg"
+          />
+        </Card>
+        <Card class="text-center">
+          <Stat
+            value={String(team.challenges.total_challenges)}
+            label="Total Challenges"
+            size="lg"
+          />
+        </Card>
+        <Card class="text-center">
+          <Stat
+            value={netOtStr}
+            label="Net Overturns"
+            size="lg"
+            delta={netOt}
+          />
+        </Card>
+      </div>
+    </section>
+
+    <!-- Breakdown table --------------------------------------------------- -->
+    <section aria-labelledby="breakdown-heading">
+      <Card
+        title="Challenge Breakdown"
+        noPadding
+      >
+        <div class="overflow-x-auto">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th class="text-right">
+                  <Tooltip text="Total challenges initiated.">Challenges</Tooltip>
+                </th>
+                <th class="text-right">
+                  <Tooltip text="Challenges resulting in an overturn.">Overturns</Tooltip>
+                </th>
+                <th class="text-right">
+                  <Tooltip text="Overturns ÷ challenges.">Success%</Tooltip>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Offense (batting) -->
+              <tr>
+                <td class="font-medium text-text-primary">Offense (batting)</td>
+                <td class="text-right font-mono">{team.challenges.offense_challenges}</td>
+                <td class="text-right font-mono">—</td>
+                <td class="text-right font-mono">—</td>
+              </tr>
+              <!-- Defense (pitching/catching) -->
+              <tr>
+                <td class="font-medium text-text-primary">Defense (pitching/catching)</td>
+                <td class="text-right font-mono">{team.challenges.defense_challenges}</td>
+                <td class="text-right font-mono">—</td>
+                <td class="text-right font-mono">—</td>
+              </tr>
+              <!-- Total -->
+              <tr class="font-semibold border-t border-border">
+                <td class="text-text-primary">Total</td>
+                <td class="text-right font-mono">{team.challenges.total_challenges}</td>
+                <td class="text-right font-mono">{team.challenges.successful_challenges}</td>
+                <td class="text-right font-mono">{formatRate(team.challenges.success_rate)}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="px-6 py-4 border-t border-border grid grid-cols-2 sm:grid-cols-4 gap-4 text-body-sm">
+          <div>
+            <p class="text-text-tertiary">Net RV</p>
+            <p class="font-mono font-bold text-accent">{formatWpa(team.challenges.challenge_wpa)}</p>
+          </div>
+          <div>
+            <p class="text-text-tertiary">Net Overturns</p>
+            <p class:list={['font-mono font-bold', netOt >= 0 ? 'delta-positive' : 'delta-negative']}>{netOtStr}</p>
+          </div>
+          <div>
+            <p class="text-text-tertiary">Ks Gained</p>
+            <p class="font-mono text-text-primary">{team.challenges.strikeouts_gained}</p>
+          </div>
+          <div>
+            <p class="text-text-tertiary">BBs Erased</p>
+            <p class="font-mono text-text-primary">{team.challenges.walks_erased}</p>
+          </div>
+        </div>
+      </Card>
+    </section>
+
+    <!-- Player breakdown ---------------------------------------------------- -->
+    {teamPlayers.length > 0 && (
+      <section aria-labelledby="players-heading">
+        <Card
+          title="Players on This Team"
+          noPadding
+        >
+          <div class="overflow-x-auto">
+            <table class="data-table w-full">
+              <thead>
+                <tr>
+                  <th class="w-auto">Player</th>
+                  <th class="w-24">Role</th>
+                  <th class="text-right w-28">Challenges</th>
+                  <th class="text-right w-28">Success%</th>
+                  <th class="text-right w-28 hidden sm:table-cell">Overturns</th>
+                </tr>
+              </thead>
+              <tbody>
+                {teamPlayers.map((p) => (
+                  <tr>
+                    <td>
+                      <a
+                        href={`/players/${p.player_id}`}
+                        class="font-medium text-text-primary hover:text-accent transition-colors"
+                      >
+                        {p.name}
+                      </a>
+                    </td>
+                    <td class="text-text-tertiary capitalize">{p.challenges.role}</td>
+                    <td class="text-right font-mono">{p.challenges.total_challenges}</td>
+                    <td class="text-right font-mono text-accent font-bold">
+                      {formatRate(p.challenges.success_rate)}
+                    </td>
+                    <td class="text-right font-mono text-text-secondary hidden sm:table-cell">
+                      {p.challenges.successful_challenges}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      </section>
+    )}
   </div>
 </BaseLayout>

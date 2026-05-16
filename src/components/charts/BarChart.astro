@@ -1,0 +1,131 @@
+---
+interface Props {
+  labels: string[];
+  values: number[];
+  color?: string;
+  title?: string;
+  yLabel?: string;
+  horizontal?: boolean;
+  height?: number;
+  class?: string;
+  id?: string;
+}
+
+const {
+  labels,
+  values,
+  color = '#D4FF3D',
+  title,
+  yLabel,
+  horizontal = false,
+  height = 300,
+  class: cls = '',
+  id,
+} = Astro.props;
+
+const chartId = id || `bar-${Math.random().toString(36).slice(2, 8)}`;
+const chartData = JSON.stringify({ labels, values, color, horizontal, yLabel });
+---
+
+<div class:list={['relative', cls]}>
+  {title && <p class="text-body-sm font-medium text-text-secondary mb-3">{title}</p>}
+  <canvas id={chartId} height={height} aria-label={title || 'Bar chart'} role="img"></canvas>
+
+  <details class="mt-2">
+    <summary class="text-caption text-text-tertiary cursor-pointer hover:text-text-secondary">
+      View as table
+    </summary>
+    <div class="mt-2 overflow-x-auto">
+      <table class="text-body-sm w-full">
+        <thead>
+          <tr>
+            <th class="text-left py-1 px-2 text-text-tertiary">Label</th>
+            <th class="text-right py-1 px-2 text-text-tertiary">Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          {labels.map((label, i) => (
+            <tr class="border-t border-border/30">
+              <td class="py-1 px-2 text-text-secondary">{label}</td>
+              <td class="py-1 px-2 text-right font-mono text-text-primary">{values[i]}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </details>
+</div>
+
+<script define:vars={{ chartId, chartData }}>
+  (function () {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const init = () => {
+      const canvas = document.getElementById(chartId);
+      if (!canvas || !(canvas instanceof HTMLCanvasElement)) return;
+
+      import('/node_modules/chart.js/auto/auto.js')
+        .catch(() => import('https://cdn.jsdelivr.net/npm/chart.js@4/auto/auto.min.js'))
+        .then(({ default: Chart }) => {
+          const p = JSON.parse(chartData);
+          const gridColor = 'rgba(255,255,255,0.06)';
+          const labelColor = 'rgba(161,161,170,1)';
+
+          new Chart(canvas, {
+            type: 'bar',
+            data: {
+              labels: p.labels,
+              datasets: [{
+                data: p.values,
+                backgroundColor: p.values.map((v) =>
+                  v >= 0 ? 'rgba(212,255,61,0.7)' : 'rgba(239,68,68,0.7)'
+                ),
+                borderColor: p.values.map((v) =>
+                  v >= 0 ? '#D4FF3D' : '#EF4444'
+                ),
+                borderWidth: 1,
+                borderRadius: 3,
+              }],
+            },
+            options: {
+              indexAxis: p.horizontal ? 'y' : 'x',
+              responsive: true,
+              animation: { duration: 500 },
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  backgroundColor: '#1C1C20',
+                  borderColor: '#2A2A30',
+                  borderWidth: 1,
+                  titleColor: '#F5F5F7',
+                  bodyColor: '#A1A1AA',
+                  padding: 10,
+                },
+              },
+              scales: {
+                x: {
+                  grid: { color: gridColor },
+                  ticks: { color: labelColor, font: { family: 'Inter', size: 11 }, maxRotation: p.horizontal ? 0 : 45 },
+                },
+                y: {
+                  grid: { color: gridColor },
+                  ticks: { color: labelColor, font: { family: 'JetBrains Mono', size: 11 } },
+                  ...(p.yLabel ? { title: { display: true, text: p.yLabel, color: labelColor } } : {}),
+                },
+              },
+            },
+          });
+        });
+    };
+
+    if ('IntersectionObserver' in window) {
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach((e) => { if (e.isIntersecting) { init(); obs.disconnect(); } });
+      }, { threshold: 0.1 });
+      const el = document.getElementById(chartId);
+      if (el) obs.observe(el);
+    } else {
+      init();
+    }
+  })();
+</script>

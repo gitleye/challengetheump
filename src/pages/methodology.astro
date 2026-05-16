@@ -1,102 +1,238 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import Card from '@/components/ui/Card.astro';
+import Badge from '@/components/ui/Badge.astro';
+import type { MetricsGlossary } from '@/lib/types';
+import { formatDate } from '@/lib/stats';
+import glossaryData from '@/data/metrics_glossary.json';
+import metadata from '@/data/metadata.json';
+
+const glossary = glossaryData as unknown as MetricsGlossary;
 ---
 
 <BaseLayout
   title="Methodology"
-  description="How the ABS Dashboard computes challenge success rates, Win Probability Added, and other metrics. Data sources, caveats, and known limitations."
+  description="How the ABS Dashboard computes challenge success rates, net run value, and other metrics. Data sources, caveats, and known limitations."
 >
-  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-    <h1 class="text-3xl font-display font-bold mb-2">Methodology</h1>
-    <p class="text-slate-600 mb-10">
-      How the data is fetched, what the metrics mean, and where to be skeptical.
-    </p>
-
-    <div class="prose prose-slate max-w-none space-y-8">
-      <section aria-labelledby="data-sources-heading">
-        <h2 id="data-sources-heading" class="text-xl font-display font-bold">Data Sources</h2>
-        <ul class="mt-4 space-y-3 text-slate-700">
-          <li>
-            <strong>Baseball Savant / ABS endpoint</strong> — Primary source for challenge counts,
-            overturn decisions, and which party initiated each challenge. Updated daily.
-          </li>
-          <li>
-            <strong>pybaseball / Statcast</strong> — Pitch-by-pitch data used to cross-reference
-            challenge outcomes and compute pitch-level context.
-          </li>
-          <li>
-            <strong>MLB Stats API</strong> — Team standings, game results, and win percentage.
-          </li>
-        </ul>
-      </section>
-
-      <section aria-labelledby="metrics-heading">
-        <h2 id="metrics-heading" class="text-xl font-display font-bold">Key Metrics</h2>
-
-        <div class="mt-4 space-y-6">
-          <div>
-            <h3 class="font-semibold">Challenge WPA (Win Probability Added)</h3>
-            <p class="text-slate-700 mt-1">
-              For each successful challenge, we record the change in Win Probability from before to
-              after the overturned call. WPA is summed across all successful challenges for a team
-              or player. This is the headline metric — it captures not just whether a team wins
-              challenges, but whether they win <em>important</em> challenges.
-            </p>
-            <p class="text-slate-600 mt-2 text-sm italic">
-              Caveat: WPA is highly context-dependent and can swing dramatically on a single at-bat.
-              We surface confidence intervals and sample size warnings throughout the site.
-            </p>
-          </div>
-
-          <div>
-            <h3 class="font-semibold">Success Rate</h3>
-            <p class="text-slate-700 mt-1">
-              Overturned challenges ÷ total challenges. Simple, but misleading without context — a
-              team with 2/3 challenges is not better than a team with 40/70 challenges.
-            </p>
-          </div>
-
-          <div>
-            <h3 class="font-semibold">Net Overturns</h3>
-            <p class="text-slate-700 mt-1">
-              Overturns in a team's favor minus overturns against them. A team could have a high
-              success rate but negative net overturns if they challenge rarely while their opponents
-              challenge frequently.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section aria-labelledby="caveats-heading">
-        <h2 id="caveats-heading" class="text-xl font-display font-bold">Caveats & Known Issues</h2>
-        <ul class="mt-4 space-y-3 text-slate-700">
-          <li>
-            The 2026 season is the first with ABS at scale. Sample sizes are small through mid-season.
-            We will add rolling confidence intervals as the season progresses.
-          </li>
-          <li>
-            Not all challenge outcomes are available in real time. Data may lag by 24–48 hours after
-            late-night games.
-          </li>
-          <li>
-            Win Probability models differ across sources. We use a standard Statcast WPA model, which
-            is not the same as ESPN or Baseball Reference.
-          </li>
-        </ul>
-      </section>
-
-      <section aria-labelledby="pipeline-heading">
-        <h2 id="pipeline-heading" class="text-xl font-display font-bold">Pipeline</h2>
-        <p class="text-slate-700 mt-4">
-          Data is fetched daily via a GitHub Actions workflow, validated against strict Pydantic
-          schemas, and committed as static JSON files. The site is rebuilt and redeployed on every
-          commit via Cloudflare Pages. There is no runtime server — all data is baked in at build time.
-        </p>
-        <p class="text-slate-700 mt-3">
-          The full pipeline source is available on GitHub. See <code>scripts/README.md</code> for
-          instructions to run it locally.
-        </p>
-      </section>
+  <!-- Page header --------------------------------------------------------- -->
+  <section class="border-b border-border">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <Badge variant="default" class="mb-4">How it works</Badge>
+      <h1 class="text-h1 font-display font-bold text-text-primary mb-2">Methodology</h1>
+      <p class="text-body text-text-secondary">
+        How the data is fetched, what the metrics mean, and where to be skeptical.
+      </p>
     </div>
+  </section>
+
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
+    <!-- What is ABS? ------------------------------------------------------ -->
+    <Card>
+      <h2 class="text-h3 font-display font-bold text-text-primary mb-4">
+        What is the ABS Challenge System?
+      </h2>
+      <div class="space-y-3 text-body text-text-secondary">
+        <p>
+          Starting in 2026, MLB deployed the Automated Ball-Strike (ABS) system in all 30 ballparks.
+          Hawk-Eye cameras track every pitch in 3D and determine whether it passed through the
+          rulebook strike zone.
+        </p>
+        <p>
+          Each team gets <strong class="text-text-primary">two challenges per game</strong>. A batter
+          can challenge a called strike; a catcher can challenge a called ball. If the ABS system
+          disagrees with the umpire, the call is overturned on the spot. If the challenge fails, the
+          team loses that challenge for the rest of the game.
+        </p>
+        <p>
+          The result: umpires are now accountable to a machine. And teams have a strategic decision
+          every time they disagree — is this call worth burning a challenge?
+        </p>
+      </div>
+      <!-- Strike zone diagram -->
+      <div class="mt-6 flex justify-center">
+        <svg width="200" height="240" viewBox="0 0 200 240" fill="none" class="opacity-60" aria-label="Strike zone diagram" role="img">
+          <!-- Home plate -->
+          <polygon points="70,220 100,235 130,220 130,215 70,215" fill="rgb(var(--color-elevated))" stroke="currentColor" stroke-width="1.5" />
+          <!-- Zone box -->
+          <rect x="55" y="50" width="90" height="150" rx="2" stroke="#D4FF3D" stroke-width="2" fill="rgb(212 255 61 / 0.05)" />
+          <!-- Grid lines -->
+          <line x1="55" y1="100" x2="145" y2="100" stroke="#D4FF3D" stroke-width="0.5" opacity="0.4" />
+          <line x1="55" y1="150" x2="145" y2="150" stroke="#D4FF3D" stroke-width="0.5" opacity="0.4" />
+          <line x1="85" y1="50" x2="85" y2="200" stroke="#D4FF3D" stroke-width="0.5" opacity="0.4" />
+          <line x1="115" y1="50" x2="115" y2="200" stroke="#D4FF3D" stroke-width="0.5" opacity="0.4" />
+          <!-- Ball example (outside) -->
+          <circle cx="35" cy="120" r="8" fill="#EF4444" opacity="0.6" />
+          <text x="35" y="124" text-anchor="middle" fill="#EF4444" font-size="8" font-weight="bold">B</text>
+          <!-- Strike example (inside) -->
+          <circle cx="100" cy="90" r="8" fill="#22C55E" opacity="0.6" />
+          <text x="100" y="94" text-anchor="middle" fill="#22C55E" font-size="8" font-weight="bold">S</text>
+          <!-- Labels -->
+          <text x="100" y="30" text-anchor="middle" fill="currentColor" font-size="11" opacity="0.5">Strike Zone</text>
+          <text x="35" y="145" text-anchor="middle" fill="currentColor" font-size="9" opacity="0.4">Outside</text>
+        </svg>
+      </div>
+    </Card>
+
+    <!-- Data Sources ------------------------------------------------------- -->
+    <Card title="Where the Data Comes From">
+      <ul class="space-y-4 text-body text-text-secondary">
+        <li class="flex gap-3">
+          <span class="text-accent font-bold mt-0.5 shrink-0">1.</span>
+          <div>
+            <strong class="text-text-primary">Baseball Savant — ABS Leaderboard</strong>
+            <p class="mt-1">Primary source. We scrape the ABS Challenge leaderboard pages
+            (batting-team, catching-team, individual batter, individual catcher views). Data is
+            embedded as inline JavaScript on the page and parsed via regex. Updated daily at 11:00 UTC.</p>
+          </div>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-accent font-bold mt-0.5 shrink-0">2.</span>
+          <div>
+            <strong class="text-text-primary">MLB Stats API — Standings</strong>
+            <p class="mt-1">Team records (wins, losses, win%) come from
+            <code class="bg-elevated px-1 py-0.5 rounded text-accent font-mono text-caption">statsapi.mlb.com/api/v1/standings</code>.
+            Used to correlate challenge performance with actual winning.</p>
+          </div>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-accent font-bold mt-0.5 shrink-0">3.</span>
+          <div>
+            <strong class="text-text-primary">MLB Stats API — League Hitting</strong>
+            <p class="mt-1">Strikeout and walk rates at the league level, for year-over-year deltas on the homepage.</p>
+          </div>
+        </li>
+      </ul>
+      <p class="mt-4 text-body-sm text-text-tertiary">
+        Last refreshed: {formatDate(metadata.last_updated)}. Pipeline version: {metadata.pipeline_version}.
+      </p>
+    </Card>
+
+    <!-- Metric definitions from glossary ---------------------------------- -->
+    <Card title="How We Calculate Each Metric">
+      <div class="space-y-8">
+        {glossary.metrics.map((metric) => (
+          <div class="border-b border-border pb-6 last:border-0 last:pb-0">
+            <h3 class="text-body font-semibold text-text-primary mb-1">{metric.label}</h3>
+            <p class="text-body-sm text-text-secondary">{metric.definition}</p>
+            {metric.formula && (
+              <p class="mt-2">
+                <code class="bg-elevated px-2 py-1 rounded text-accent font-mono text-caption">
+                  {metric.formula}
+                </code>
+              </p>
+            )}
+            {metric.unit && (
+              <p class="text-caption text-text-tertiary mt-1">Unit: {metric.unit}</p>
+            )}
+            {metric.caveats.length > 0 && (
+              <ul class="mt-2 space-y-1">
+                {metric.caveats.map((c) => (
+                  <li class="flex gap-2 text-caption text-text-tertiary">
+                    <span class="text-warning shrink-0">⚠</span>
+                    <span>{c}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        ))}
+      </div>
+    </Card>
+
+    <!-- Known Limitations ------------------------------------------------- -->
+    <Card title="Known Limitations">
+      <ul class="space-y-3 text-body-sm text-text-secondary">
+        <li class="flex gap-3">
+          <span class="text-warning font-bold mt-0.5 shrink-0">⚠</span>
+          <span>
+            <strong class="text-text-primary">Small samples.</strong> Through mid-season, most teams have
+            fewer than 100 challenges. Rates are volatile. We show sample size warnings throughout the site.
+          </span>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-warning font-bold mt-0.5 shrink-0">⚠</span>
+          <span>
+            <strong class="text-text-primary">No true WPA.</strong> Baseball Savant's ABS leaderboard provides
+            <code class="bg-elevated px-1 py-0.5 rounded text-accent font-mono text-caption">net_net_runs</code>
+            (net run value vs. expected), not pitch-level Win Probability Added. We label this "Net RV"
+            to be precise. It doesn't weight by game leverage.
+          </span>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-warning font-bold mt-0.5 shrink-0">⚠</span>
+          <span>
+            <strong class="text-text-primary">Data lag.</strong> Challenge data may lag 24–48 hours after
+            late-night games. The footer shows the last refresh timestamp.
+          </span>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-warning font-bold mt-0.5 shrink-0">⚠</span>
+          <span>
+            <strong class="text-text-primary">Selection bias.</strong> Teams that challenge more often
+            may have a higher success rate because they're more selective — or a lower rate because they
+            challenge marginal pitches. We don't adjust for challenge selectivity.
+          </span>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-warning font-bold mt-0.5 shrink-0">⚠</span>
+          <span>
+            <strong class="text-text-primary">Correlation ≠ causation.</strong> If good challenge teams
+            win more, it could be that better organizations are better at everything. We compute Pearson r
+            but never claim a causal relationship.
+          </span>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-warning font-bold mt-0.5 shrink-0">⚠</span>
+          <span>
+            <strong class="text-text-primary">Division labels.</strong> Team division may show as "Unknown"
+            when the MLB Stats API doesn't fully hydrate division metadata. Cosmetic only.
+          </span>
+        </li>
+      </ul>
+    </Card>
+
+    <!-- Verify it yourself ------------------------------------------------ -->
+    <Card title="Verify the Data Yourself">
+      <div class="space-y-3 text-body-sm text-text-secondary">
+        <p>This project is fully open source. You can verify every number.</p>
+        <ul class="space-y-2">
+          <li class="flex gap-3">
+            <span class="text-accent font-bold mt-0.5 shrink-0">→</span>
+            <span>
+              <strong class="text-text-primary">Primary source:</strong>
+              <a href="https://baseballsavant.mlb.com/leaderboard/abs-challenges" class="text-accent hover:underline" target="_blank" rel="noopener noreferrer">
+                Baseball Savant ABS Leaderboard ↗
+              </a>
+            </span>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-accent font-bold mt-0.5 shrink-0">→</span>
+            <span>
+              <strong class="text-text-primary">Source code:</strong>
+              <a href="https://github.com/leyeoyelami/abs-dashboard" class="text-accent hover:underline" target="_blank" rel="noopener noreferrer">
+                GitHub repository ↗
+              </a>
+              — see <code class="bg-elevated px-1 py-0.5 rounded text-accent font-mono text-caption">scripts/</code> for the full pipeline.
+            </span>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-accent font-bold mt-0.5 shrink-0">→</span>
+            <span>
+              <strong class="text-text-primary">Run locally:</strong>
+              <code class="bg-elevated px-1 py-0.5 rounded text-accent font-mono text-caption">python scripts/run.py</code>
+              fetches fresh data and regenerates all JSON files.
+            </span>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-accent font-bold mt-0.5 shrink-0">→</span>
+            <span>
+              <strong class="text-text-primary">Raw JSON:</strong> All computed data lives in
+              <code class="bg-elevated px-1 py-0.5 rounded text-accent font-mono text-caption">src/data/*.json</code>
+              and is committed to the repo. You can diff any refresh.
+            </span>
+          </li>
+        </ul>
+      </div>
+    </Card>
   </div>
 </BaseLayout>

@@ -1,6 +1,7 @@
 ---
+import ThemeToggle from '@/components/ui/ThemeToggle.astro';
+
 const navLinks = [
-  { href: '/', label: 'Home' },
   { href: '/teams', label: 'Teams' },
   { href: '/players', label: 'Players' },
   { href: '/methodology', label: 'Methodology' },
@@ -10,28 +11,37 @@ const navLinks = [
 const currentPath = Astro.url.pathname;
 ---
 
-<header class="bg-brand-navy text-white shadow-md" role="banner">
-  <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Primary navigation">
-    <div class="flex items-center justify-between h-16">
-      <!-- Logo / wordmark -->
-      <a href="/" class="flex items-center gap-2 font-display text-xl font-bold hover:text-brand-gold transition-colors" aria-label="ABS Dashboard — Home">
-        <span aria-hidden="true">⚾</span>
-        <span>ABS Dashboard</span>
-      </a>
+<header
+  class="sticky top-0 z-40 bg-base/90 backdrop-blur-md border-b border-border"
+  role="banner"
+>
+  <nav
+    class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between"
+    aria-label="Primary navigation"
+  >
+    <!-- Wordmark -->
+    <a
+      href="/"
+      class="flex items-center gap-2 group"
+      aria-label="StrikeZone — Home"
+    >
+      <img src="/logo.svg" alt="StrikeZone" width="120" height="28" class="h-7 w-auto" />
+    </a>
 
-      <!-- Desktop nav -->
-      <ul class="hidden md:flex items-center gap-1" role="list">
+    <!-- Desktop nav + theme toggle -->
+    <div class="hidden md:flex items-center gap-1">
+      <ul class="flex items-center gap-1" role="list">
         {navLinks.map(({ href, label }) => {
-          const isActive = href === '/' ? currentPath === '/' : currentPath.startsWith(href);
+          const isActive = currentPath.startsWith(href);
           return (
             <li>
               <a
                 href={href}
                 class:list={[
-                  'px-3 py-2 rounded text-sm font-medium transition-colors',
+                  'px-3 py-1.5 rounded-md text-body-sm font-medium transition-colors duration-200',
                   isActive
-                    ? 'bg-white/10 text-white'
-                    : 'text-white/75 hover:text-white hover:bg-white/10',
+                    ? 'text-accent bg-accent/10'
+                    : 'text-text-secondary hover:text-text-primary hover:bg-elevated',
                 ]}
                 aria-current={isActive ? 'page' : undefined}
               >
@@ -41,29 +51,43 @@ const currentPath = Astro.url.pathname;
           );
         })}
       </ul>
+      <div class="ml-3 pl-3 border-l border-border">
+        <ThemeToggle />
+      </div>
+    </div>
 
-      <!-- Mobile nav toggle — JS-free, using checkbox hack -->
-      <label class="md:hidden cursor-pointer p-2 rounded hover:bg-white/10" for="mobile-nav-toggle" aria-label="Toggle mobile menu">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+    <!-- Mobile: theme toggle + hamburger -->
+    <div class="md:hidden flex items-center gap-2">
+      <ThemeToggle />
+      <label
+        for="mobile-nav-toggle"
+        class="w-8 h-8 rounded-md border border-border flex items-center justify-center
+          text-text-secondary hover:text-text-primary hover:border-accent cursor-pointer
+          transition-colors"
+        aria-label="Toggle menu"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
         </svg>
       </label>
     </div>
+  </nav>
 
-    <!-- Mobile nav (CSS-only toggle) -->
-    <input type="checkbox" id="mobile-nav-toggle" class="hidden peer" aria-hidden="true" />
-    <ul class="hidden peer-checked:flex flex-col pb-3 gap-1 md:hidden" role="list">
+  <!-- Mobile menu (CSS-only toggle) -->
+  <input type="checkbox" id="mobile-nav-toggle" class="sr-only peer" />
+  <div class="hidden peer-checked:block md:hidden border-t border-border bg-base">
+    <ul class="px-4 py-3 space-y-1" role="list">
       {navLinks.map(({ href, label }) => {
-        const isActive = href === '/' ? currentPath === '/' : currentPath.startsWith(href);
+        const isActive = currentPath.startsWith(href);
         return (
           <li>
             <a
               href={href}
               class:list={[
-                'block px-3 py-2 rounded text-sm font-medium',
+                'block px-3 py-2 rounded-md text-body-sm font-medium transition-colors',
                 isActive
-                  ? 'bg-white/10 text-white'
-                  : 'text-white/75 hover:text-white hover:bg-white/10',
+                  ? 'text-accent bg-accent/10'
+                  : 'text-text-secondary hover:text-text-primary hover:bg-elevated',
               ]}
               aria-current={isActive ? 'page' : undefined}
             >
@@ -73,5 +97,5 @@ const currentPath = Astro.url.pathname;
         );
       })}
     </ul>
-  </nav>
+  </div>
 </header>

@@ -1,0 +1,5 @@
+# Cloudflare Pages redirects
+# https://developers.cloudflare.com/pages/configuration/redirects/
+
+# www → apex
+https://www.strikezone.io/* https://strikezone.io/:splat 301

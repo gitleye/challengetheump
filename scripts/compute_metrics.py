@@ -217,15 +217,10 @@ def _compute_players(fetch, now: str) -> PlayersData:  # type: ignore[no-untyped
             if pr:
                 records.append(pr)
 
-    # Batters — filter players by role from the all-players list
-    if fetch.abs_players:
-        batters = [r for r in fetch.abs_players if safe_int(r.get("player_at_bat")) == 1 or r.get("bat_id")]
-        # Fallback: if no role indicator, use all who aren't catchers
-        catcher_ids = {rec.get("fielder_2") for rec in (fetch.abs_catchers or [])}
-        if not batters:
-            batters = [r for r in fetch.abs_players if r.get("id") not in catcher_ids]
-
-        for rec in sorted(batters, key=lambda r: safe_int(r.get("n_challenges")), reverse=True)[:50]:
+    # Batters — use dedicated batter endpoint, fall back to all-players
+    batter_source = fetch.abs_batters or fetch.abs_players
+    if batter_source:
+        for rec in sorted(batter_source, key=lambda r: safe_int(r.get("n_challenges")), reverse=True)[:50]:
             pr = _player_record_from_savant(rec, PlayerRole.BATTER)
             if pr:
                 records.append(pr)

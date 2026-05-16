@@ -6,12 +6,12 @@ import playersData from '@/data/players.json';
 
 const { players } = playersData as unknown as PlayersData;
 const isDataReady = players.length > 0;
-const filtered = players.filter((p) => p.challenges.role === 'catcher');
+const filtered = players.filter((p) => p.challenges.role === 'batter');
 ---
 
 <BaseLayout
-  title="Players — Catchers"
-  description="Top catchers ranked by ABS Challenge volume and success rate."
+  title="Players — Batters"
+  description="Top batters ranked by ABS Challenge volume and success rate."
 >
   <section class="border-b border-border">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -29,7 +29,7 @@ const filtered = players.filter((p) => p.challenges.role === 'catcher');
         </p>
       </div>
     ) : (
-      <PlayerTable players={filtered} role="catcher" />
+      <PlayerTable players={filtered} role="batter" />
     )}
   </div>
 </BaseLayout>
