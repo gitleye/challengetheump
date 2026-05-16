@@ -14,6 +14,25 @@ const glossary = glossaryData as unknown as MetricsGlossary;
   title="Methodology"
   description="How the ABS Dashboard computes challenge success rates, net run value, and other metrics. Data sources, caveats, and known limitations."
 >
+  <!-- Dataset structured data -->
+  <script is:inline type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    "name": "MLB ABS Challenge System Data",
+    "description": "Daily-updated dataset of MLB ABS Challenge System outcomes including challenge counts, overturn rates, and net run value by team and player.",
+    "url": "https://challengetheump.com/methodology",
+    "license": "https://opensource.org/licenses/MIT",
+    "creator": {
+      "@type": "Person",
+      "name": "Leye Oyelami"
+    },
+    "distribution": {
+      "@type": "DataDownload",
+      "encodingFormat": "application/json",
+      "contentUrl": "https://github.com/leyeoyelami/challengetheump/tree/main/src/data"
+    }
+  })} />
+
   <!-- Page header --------------------------------------------------------- -->
   <section class="border-b border-border">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
