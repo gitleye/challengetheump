@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 40" fill="none" role="img" aria-label="Challenge The Ump">
   <!-- Strike zone rectangle logomark -->
-  <rect x="2" y="8" width="20" height="24" rx="2" stroke="#D4FF3D" stroke-width="2" fill="none"/>
+  <rect x="2" y="8" width="20" height="24" rx="2" stroke="currentColor" stroke-width="2" fill="none" class="logo-mark"/>
   <!-- Inner dotted zone lines -->
-  <line x1="2" y1="21" x2="22" y2="21" stroke="#D4FF3D" stroke-width="0.75" stroke-dasharray="2 2"/>
+  <line x1="2" y1="21" x2="22" y2="21" stroke="currentColor" stroke-width="0.75" stroke-dasharray="2 2" class="logo-mark"/>
   <!-- Wordmark -->
-  <text x="32" y="27" font-family="Space Grotesk, system-ui, sans-serif" font-size="18" font-weight="700" letter-spacing="-0.03em" fill="#F5F5F7">
-    Challenge <tspan fill="#D4FF3D">The Ump</tspan>
+  <text x="32" y="27" font-family="Space Grotesk, system-ui, sans-serif" font-size="18" font-weight="700" letter-spacing="-0.03em" fill="currentColor">
+    Challenge <tspan class="logo-accent">The Ump</tspan>
   </text>
 </svg>

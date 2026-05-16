@@ -39,12 +39,28 @@ html.light {
   --color-elevated: 245 245 248;
   --color-border: 220 220 228;
   --color-text-primary: 15 15 20;
-  --color-text-secondary: 80 80 96;
-  --color-text-tertiary: 140 140 156;
+  --color-text-secondary: 60 60 75;
+  --color-text-tertiary: 100 100 120;
+  --color-accent: #4A7A00;
 
   --chart-grid: rgba(0, 0, 0, 0.06);
-  --chart-label: rgba(80, 80, 96, 1);
+  --chart-label: rgba(60, 60, 75, 1);
 }
+
+/* Override accent color for light mode — #D4FF3D has no contrast on white */
+html.light .text-accent { color: var(--color-accent) !important; }
+html.light .bg-accent { background-color: var(--color-accent) !important; }
+html.light .border-accent { border-color: var(--color-accent) !important; }
+html.light .shadow-glow { box-shadow: 0 0 30px rgb(74 122 0 / 0.15); }
+html.light .bg-accent\/10 { background-color: rgb(74 122 0 / 0.1) !important; }
+html.light .hover\:text-accent:hover { color: var(--color-accent) !important; }
+html.light .hover\:border-accent\/50:hover { border-color: rgb(74 122 0 / 0.5) !important; }
+html.light .hover\:border-accent:hover { border-color: var(--color-accent) !important; }
+html.light .delta-positive { color: #15803D; }
+html.light .delta-negative { color: #DC2626; }
+html.light .logo-accent { fill: var(--color-accent); }
+html.light svg rect[stroke="#D4FF3D"],
+html.light svg line[stroke="#D4FF3D"] { stroke: var(--color-accent); }
 
 /* ---- Base styles ------------------------------------------------------- */
 @layer base {
