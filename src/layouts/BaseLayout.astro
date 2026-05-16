@@ -23,7 +23,7 @@ const {
 const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://challengetheump.com';
 const canonical = canonicalUrl ?? new URL(Astro.url.pathname, siteUrl).href;
 const fullOgImage = new URL(ogImage, siteUrl).href;
-const siteName = 'StrikeZone';
+const siteName = 'Challenge The Ump';
 const fullTitle = title === 'Home'
   ? `${siteName} — MLB ABS Challenge Analytics`
   : `${title} | ${siteName}`;
@@ -32,7 +32,7 @@ const fullTitle = title === 'Home'
 <!doctype html>
 <!--
   ╔═══════════════════════════════════════════════════════╗
-  ║  StrikeZone — challengetheump.com                          ║
+  ║  Challenge The Ump — challengetheump.com                    ║
   ║  Built by Leye Oyelami                               ║
   ║                                                      ║
   ║  "The umpire is always right,                        ║
@@ -72,7 +72,7 @@ const fullTitle = title === 'Home'
     <!-- Icons -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="sitemap" href="/sitemap-index.xml" />
-    <link rel="alternate" type="application/rss+xml" title="StrikeZone RSS" href="/feed.xml" />
+    <link rel="alternate" type="application/rss+xml" title="Challenge The Ump RSS" href="/feed.xml" />
 
     <!-- Inline theme script — must run before first paint to prevent flash -->
     <script is:inline>
@@ -90,7 +90,7 @@ const fullTitle = title === 'Home'
       {
         "@context": "https://schema.org",
         "@type": "WebSite",
-        "name": "StrikeZone",
+        "name": "Challenge The Ump",
         "url": "https://challengetheump.com",
         "description": "MLB ABS Challenge System analytics dashboard",
         "potentialAction": {

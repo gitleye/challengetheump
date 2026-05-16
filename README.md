@@ -1,4 +1,4 @@
-# StrikeZone
+# Challenge The Ump
 
 **Does beating the robot umpire win you games?**
 

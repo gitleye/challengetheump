@@ -35,7 +35,7 @@ export const GET: APIRoute = () => {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>StrikeZone — MLB ABS Challenge Analytics</title>
+    <title>Challenge The Ump — MLB ABS Challenge Analytics</title>
     <description>Daily updates on MLB ABS Challenge System performance, success rates, and team rankings.</description>
     <link>${site}</link>
     <atom:link href="${site}/feed.xml" rel="self" type="application/rss+xml" />
