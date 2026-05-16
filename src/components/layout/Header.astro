@@ -25,7 +25,13 @@ const currentPath = Astro.url.pathname;
       class="flex items-center gap-2 group"
       aria-label="Challenge The Ump — Home"
     >
-      <img src="/logo.svg" alt="Challenge The Ump" width="180" height="28" class="h-7 w-auto" />
+      <svg viewBox="0 0 280 40" fill="none" role="img" aria-label="Challenge The Ump" class="h-7 w-auto">
+        <rect x="2" y="8" width="20" height="24" rx="2" stroke="#D4FF3D" stroke-width="2" fill="none"/>
+        <line x1="2" y1="21" x2="22" y2="21" stroke="#D4FF3D" stroke-width="0.75" stroke-dasharray="2 2"/>
+        <text x="32" y="27" font-family="Space Grotesk, system-ui, sans-serif" font-size="18" font-weight="700" letter-spacing="-0.03em" fill="currentColor">
+          Challenge <tspan fill="#D4FF3D" class="logo-accent">The Ump</tspan>
+        </text>
+      </svg>
     </a>
 
     <!-- Desktop nav + theme toggle -->

@@ -25,7 +25,7 @@ const canonical = canonicalUrl ?? new URL(Astro.url.pathname, siteUrl).href;
 const fullOgImage = new URL(ogImage, siteUrl).href;
 const siteName = 'Challenge The Ump';
 const fullTitle = title === 'Home'
-  ? `${siteName} — MLB ABS Challenge Analytics`
+  ? `${siteName} — MLB ABS Challenge System Analytics`
   : `${title} | ${siteName}`;
 ---
 
@@ -79,7 +79,7 @@ const fullTitle = title === 'Home'
       (function () {
         var stored = localStorage.getItem('theme');
         var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        var theme = stored === 'light' ? 'light' : stored === 'dark' ? 'dark' : (prefersDark ? 'dark' : 'light');
+        var theme = stored === 'light' ? 'light' : 'dark';
         document.documentElement.classList.remove('dark', 'light');
         document.documentElement.classList.add(theme);
       })();

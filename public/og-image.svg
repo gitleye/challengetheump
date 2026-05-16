@@ -31,8 +31,12 @@
   <text x="80" y="410" font-family="system-ui, -apple-system, sans-serif" font-size="22" font-weight="500" fill="#D4FF3D">MLB ABS Challenge Analytics</text>
   <text x="80" y="445" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="400" fill="#5A5A5D">Updated daily from Baseball Savant</text>
 
+  <!-- CTA -->
+  <rect x="80" y="500" width="280" height="50" rx="6" fill="#D4FF3D"/>
+  <text x="220" y="532" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="700" fill="#0A0A0B" text-anchor="middle">Explore the data →</text>
+
   <!-- URL -->
-  <text x="80" y="540" font-family="ui-monospace, monospace" font-size="20" font-weight="500" fill="#5A5A5D">challengetheump.com</text>
+  <text x="400" y="532" font-family="ui-monospace, monospace" font-size="18" font-weight="500" fill="#5A5A5D">challengetheump.com</text>
 
   <!-- Bottom accent line -->
   <rect x="0" y="620" width="1200" height="10" fill="#D4FF3D"/>

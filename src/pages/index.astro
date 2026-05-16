@@ -106,7 +106,7 @@ const gamesThrough = metadata.games_through ? formatDateShort(metadata.games_thr
 
   <!-- League snapshot ----------------------------------------------------- -->
   <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12" aria-labelledby="league-heading">
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-6">
       <h2 id="league-heading" class="text-h2 font-display font-bold text-text-primary">
         Season at a Glance
       </h2>
@@ -144,9 +144,6 @@ const gamesThrough = metadata.games_through ? formatDateShort(metadata.games_thr
             : '—'}
           label="K Rate vs. 2025"
           size="lg"
-          delta={isDataReady && league.k_rate && league.k_rate_prior_season
-            ? league.k_rate - league.k_rate_prior_season
-            : null}
         />
       </Card>
     </div>
