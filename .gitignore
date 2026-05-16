@@ -82,6 +82,9 @@ coverage/
 logs/
 *.log
 
+# Marketing drafts (personal, not for public repo)
+marketing/
+
 # Temp
 tmp/
 temp/
