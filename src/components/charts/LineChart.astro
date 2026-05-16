@@ -83,7 +83,6 @@ const chartData = JSON.stringify({ labels, datasets });
         .then(({ default: Chart }) => {
           const parsed = JSON.parse(chartData);
           const colors = ['#D4FF3D', '#22C55E', '#60A5FA', '#F472B6', '#FB923C'];
-          const style = getComputedStyle(document.documentElement);
           const gridColor = 'rgba(255,255,255,0.06)';
           const labelColor = 'rgba(161,161,170,1)';
 
