@@ -1,0 +1,59 @@
+{
+  "metrics": [
+    {
+      "key": "challenge_wpa",
+      "label": "Challenge WPA",
+      "definition": "Sum of Win Probability Added across all successful ABS challenges for a team or player.",
+      "formula": "Σ delta_home_win_exp for overturned pitches (adjusted for team perspective)",
+      "caveats": [
+        "WPA is context-dependent — a challenge in a blowout contributes nearly zero.",
+        "Based on Statcast WPA model, which may differ from ESPN or Baseball Reference.",
+        "Small samples (< 5 successful challenges) are highly volatile."
+      ],
+      "unit": "win probability units (0–1 scale)"
+    },
+    {
+      "key": "success_rate",
+      "label": "Challenge Success Rate",
+      "definition": "Proportion of ABS challenges that resulted in an overturned call.",
+      "formula": "successful_challenges / total_challenges",
+      "caveats": [
+        "Does not weight by leverage — a meaningless challenge counts the same as a game-changing one.",
+        "Samples below 10 challenges are flagged as unreliable."
+      ],
+      "unit": "proportion (0–1)"
+    },
+    {
+      "key": "net_overturns",
+      "label": "Net Overturns",
+      "definition": "Overturns in a team's favor minus overturns against them.",
+      "formula": "overturns_for - overturns_against",
+      "caveats": [
+        "Does not capture leverage — a team can have positive net overturns but negative WPA."
+      ],
+      "unit": "integer"
+    },
+    {
+      "key": "usage_rate",
+      "label": "Challenge Usage Rate",
+      "definition": "Challenges used per available challenge opportunity.",
+      "formula": "total_challenges / total_challenge_opportunities",
+      "caveats": [
+        "Total opportunities is estimated (2 per game per team) — actual availability varies."
+      ],
+      "unit": "proportion (0–1)"
+    },
+    {
+      "key": "win_pct_expected",
+      "label": "Expected Win%",
+      "definition": "Pythagorean win expectancy based on runs scored and allowed.",
+      "formula": "RS^1.83 / (RS^1.83 + RA^1.83)",
+      "caveats": [
+        "Exponent 1.83 is the MLB-calibrated Pythagorean exponent (James, 1980).",
+        "Deviations from actual W% suggest luck or bullpen performance."
+      ],
+      "unit": "proportion (0–1)"
+    }
+  ],
+  "generated": "2026-05-16T20:27:20.774773Z"
+}

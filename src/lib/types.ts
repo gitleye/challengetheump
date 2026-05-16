@@ -3,7 +3,7 @@
  * These must stay in sync with the Pydantic schemas in scripts/lib/schemas.py.
  * Do not edit manually — regenerate from the Python pipeline (see scripts/README.md).
  *
- * Generated: placeholder (run scripts/run.py to regenerate)
+ * Generated: 2026-05-16T20:27:20.774773Z
  */
 
 // ---- Data quality -------------------------------------------------------
