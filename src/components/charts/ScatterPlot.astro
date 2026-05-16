@@ -60,94 +60,98 @@ const chartData = JSON.stringify({ points, xLabel, yLabel });
   </details>
 </div>
 
-<script define:vars={{ chartId, chartData }}>
+<script define:vars={{ chartId, chartData }} is:inline>
   (function () {
+    window.__scatterQueue = window.__scatterQueue || [];
+    window.__scatterQueue.push({ chartId: chartId, chartData: chartData });
+  })();
+</script>
+
+<script>
+  import Chart from 'chart.js/auto';
+
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  function renderScatter(chartId: string, chartData: string) {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const init = () => {
       const canvas = document.getElementById(chartId);
       if (!canvas || !(canvas instanceof HTMLCanvasElement)) return;
 
-      import('/node_modules/chart.js/auto/auto.js')
-        .catch(() => import('https://cdn.jsdelivr.net/npm/chart.js@4/auto/auto.min.js'))
-        .then(({ default: Chart }) => {
-          const p = JSON.parse(chartData);
-          const gridColor = 'rgba(255,255,255,0.06)';
-          const labelColor = 'rgba(161,161,170,1)';
+      const p = JSON.parse(chartData);
+      const gridColor = 'rgba(255,255,255,0.06)';
+      const labelColor = 'rgba(161,161,170,1)';
 
-          new Chart(canvas, {
-            type: 'scatter',
-            data: {
-              datasets: [{
-                data: p.points.map((pt) => ({ x: pt.x, y: pt.y })),
-                backgroundColor: 'rgba(212,255,61,0.65)',
-                borderColor: '#D4FF3D',
-                borderWidth: 1,
-                pointRadius: 6,
-                pointHoverRadius: 8,
-              }],
-            },
-            options: {
-              responsive: true,
-              animation: { duration: 600 },
-              plugins: {
-                legend: { display: false },
-                tooltip: {
-                  backgroundColor: '#1C1C20',
-                  borderColor: '#2A2A30',
-                  borderWidth: 1,
-                  titleColor: '#F5F5F7',
-                  bodyColor: '#A1A1AA',
-                  padding: 10,
-                  callbacks: {
-                    title: (items) => {
-                      const idx = items[0]?.dataIndex;
-                      return p.points[idx]?.label || '';
-                    },
-                    label: (item) =>
-                      `${p.xLabel}: ${item.parsed.x.toFixed(2)} | ${p.yLabel}: ${(item.parsed.y * 100).toFixed(1)}%`,
-                  },
-                },
-              },
-              scales: {
-                x: {
-                  title: { display: true, text: p.xLabel, color: labelColor, font: { size: 11 } },
-                  grid: { color: gridColor },
-                  ticks: { color: labelColor, font: { family: 'JetBrains Mono', size: 11 } },
-                },
-                y: {
-                  title: { display: true, text: p.yLabel, color: labelColor, font: { size: 11 } },
-                  grid: { color: gridColor },
-                  ticks: {
-                    color: labelColor,
-                    font: { family: 'JetBrains Mono', size: 11 },
-                    callback: (v) => `${(Number(v) * 100).toFixed(0)}%`,
-                  },
-                },
-              },
-            },
+      const teamLabelsPlugin = {
+        id: 'teamLabels-' + chartId,
+        afterDatasetsDraw(chart: any) {
+          const ctx = chart.ctx;
+          const meta = chart.getDatasetMeta(0);
+          ctx.save();
+          ctx.font = '10px Inter';
+          ctx.fillStyle = 'rgba(161,161,170,0.8)';
+          ctx.textAlign = 'center';
+          meta.data.forEach((point: any, i: number) => {
+            const { x, y } = point.getProps(['x', 'y']);
+            ctx.fillText(p.points[i]?.label || '', x, y - 10);
           });
+          ctx.restore();
+        },
+      };
 
-          // Draw team labels
-          const plugin = {
-            id: 'teamLabels',
-            afterDatasetsDraw(chart) {
-              const ctx = chart.ctx;
-              const meta = chart.getDatasetMeta(0);
-              ctx.save();
-              ctx.font = '10px Inter';
-              ctx.fillStyle = 'rgba(161,161,170,0.8)';
-              ctx.textAlign = 'center';
-              meta.data.forEach((point, i) => {
-                const { x, y } = point.getProps(['x', 'y']);
-                ctx.fillText(p.points[i]?.label || '', x, y - 10);
-              });
-              ctx.restore();
+      new Chart(canvas, {
+        type: 'scatter',
+        data: {
+          datasets: [{
+            data: p.points.map((pt: any) => ({ x: pt.x, y: pt.y })),
+            backgroundColor: 'rgba(212,255,61,0.65)',
+            borderColor: '#D4FF3D',
+            borderWidth: 1,
+            pointRadius: 6,
+            pointHoverRadius: 8,
+          }],
+        },
+        options: {
+          responsive: true,
+          animation: { duration: 600 },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#1C1C20',
+              borderColor: '#2A2A30',
+              borderWidth: 1,
+              titleColor: '#F5F5F7',
+              bodyColor: '#A1A1AA',
+              padding: 10,
+              callbacks: {
+                title: (items) => {
+                  const idx = items[0]?.dataIndex;
+                  return p.points[idx]?.label || '';
+                },
+                label: (item) =>
+                  `${p.xLabel}: ${item.parsed.x.toFixed(2)} | ${p.yLabel}: ${(item.parsed.y * 100).toFixed(1)}%`,
+              },
             },
-          };
-          // Re-register plugin (Chart.js v4)
-          chart.register?.(plugin);
-        });
+          },
+          scales: {
+            x: {
+              title: { display: true, text: p.xLabel, color: labelColor, font: { size: 11 } },
+              grid: { color: gridColor },
+              ticks: { color: labelColor, font: { family: 'JetBrains Mono', size: 11 } },
+            },
+            y: {
+              title: { display: true, text: p.yLabel, color: labelColor, font: { size: 11 } },
+              grid: { color: gridColor },
+              ticks: {
+                color: labelColor,
+                font: { family: 'JetBrains Mono', size: 11 },
+                callback: (v) => `${(Number(v) * 100).toFixed(0)}%`,
+              },
+            },
+          },
+        },
+        plugins: [teamLabelsPlugin],
+      });
     };
 
     if ('IntersectionObserver' in window) {
@@ -159,5 +163,9 @@ const chartData = JSON.stringify({ points, xLabel, yLabel });
     } else {
       init();
     }
-  })();
+  }
+
+  // Process any queued scatter charts
+  const queue = (window as any).__scatterQueue || [];
+  queue.forEach((item: any) => renderScatter(item.chartId, item.chartData));
 </script>
