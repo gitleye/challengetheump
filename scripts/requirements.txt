@@ -1,19 +1,19 @@
 # Core data pipeline dependencies
-# Pinned to ensure reproducible builds across environments.
-# Bump versions intentionally, not automatically.
+# Pinned to ensure reproducible builds.
+# Note: Python 3.12 is used in CI (GitHub Actions); 3.14 is supported locally.
 
-pybaseball==2.2.7
-pandas==2.2.3
-requests==2.32.3
-pydantic==2.10.4
-structlog==24.4.0
+pandas>=2.2,<4.0
+numpy>=1.26,<3.0
+requests>=2.31,<3.0
+pydantic>=2.6,<3.0
+structlog>=24.0,<26.0
 
-# Type safety and schema export
-datamodel-code-generator==0.26.4
+# Baseball data
+pybaseball>=2.2
+
+# HTTP
+urllib3>=2.0,<3.0
 
 # Development / testing
-pytest==8.3.4
-pytest-cov==6.0.0
-
-# HTTP utilities
-urllib3==2.2.3
+pytest>=8.0
+pytest-cov>=5.0
