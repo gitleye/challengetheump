@@ -79,8 +79,16 @@ const chartData = JSON.stringify({ points, xLabel, yLabel });
       if (!canvas || !(canvas instanceof HTMLCanvasElement)) return;
 
       const p = JSON.parse(chartData);
-      const gridColor = 'rgba(255,255,255,0.06)';
-      const labelColor = 'rgba(161,161,170,1)';
+      const isLight = document.documentElement.classList.contains('light');
+      const gridColor = isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.06)';
+      const labelColor = isLight ? 'rgba(60,60,75,1)' : 'rgba(161,161,170,1)';
+      const dotBg = isLight ? 'rgba(74,122,0,0.65)' : 'rgba(212,255,61,0.65)';
+      const dotBorder = isLight ? '#4A7A00' : '#D4FF3D';
+      const tooltipBg = isLight ? '#FFFFFF' : '#1C1C20';
+      const tooltipBorder = isLight ? '#DCDCE4' : '#2A2A30';
+      const tooltipTitle = isLight ? '#0F0F14' : '#F5F5F7';
+      const tooltipBody = isLight ? '#3C3C4B' : '#A1A1AA';
+      const teamLabelColor = isLight ? 'rgba(60,60,75,0.8)' : 'rgba(161,161,170,0.8)';
 
       const teamLabelsPlugin = {
         id: 'teamLabels-' + chartId,
@@ -89,7 +97,7 @@ const chartData = JSON.stringify({ points, xLabel, yLabel });
           const meta = chart.getDatasetMeta(0);
           ctx.save();
           ctx.font = '10px Inter';
-          ctx.fillStyle = 'rgba(161,161,170,0.8)';
+          ctx.fillStyle = teamLabelColor;
           ctx.textAlign = 'center';
           meta.data.forEach((point: any, i: number) => {
             const { x, y } = point.getProps(['x', 'y']);
@@ -104,8 +112,8 @@ const chartData = JSON.stringify({ points, xLabel, yLabel });
         data: {
           datasets: [{
             data: p.points.map((pt: any) => ({ x: pt.x, y: pt.y })),
-            backgroundColor: 'rgba(212,255,61,0.65)',
-            borderColor: '#D4FF3D',
+            backgroundColor: dotBg,
+            borderColor: dotBorder,
             borderWidth: 1,
             pointRadius: 6,
             pointHoverRadius: 8,
@@ -117,11 +125,11 @@ const chartData = JSON.stringify({ points, xLabel, yLabel });
           plugins: {
             legend: { display: false },
             tooltip: {
-              backgroundColor: '#1C1C20',
-              borderColor: '#2A2A30',
+              backgroundColor: tooltipBg,
+              borderColor: tooltipBorder,
               borderWidth: 1,
-              titleColor: '#F5F5F7',
-              bodyColor: '#A1A1AA',
+              titleColor: tooltipTitle,
+              bodyColor: tooltipBody,
               padding: 10,
               callbacks: {
                 title: (items) => {
