@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 40" fill="none" role="img" aria-label="StrikeZone">
+  <!-- Strike zone rectangle logomark -->
+  <rect x="2" y="8" width="20" height="24" rx="2" stroke="#D4FF3D" stroke-width="2" fill="none"/>
+  <!-- Inner dotted zone lines -->
+  <line x1="2" y1="21" x2="22" y2="21" stroke="#D4FF3D" stroke-width="0.75" stroke-dasharray="2 2"/>
+  <!-- Wordmark -->
+  <text x="32" y="27" font-family="Space Grotesk, system-ui, sans-serif" font-size="18" font-weight="700" letter-spacing="-0.03em" fill="#F5F5F7">
+    Strike<tspan fill="#D4FF3D">Zone</tspan>
+  </text>
+</svg>

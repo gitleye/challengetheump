@@ -10,39 +10,60 @@ const { lastUpdated, season } = Astro.props;
 const isPlaceholder = lastUpdated === '1970-01-01T00:00:00Z';
 ---
 
-<footer class="bg-brand-navy text-white/70 py-8 mt-auto" role="contentinfo">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
+<footer class="border-t border-border bg-surface mt-auto" role="contentinfo">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+      <!-- Brand + update info -->
       <div>
-        <p>
-          <strong class="text-white">ABS Dashboard</strong> — {season} MLB Season
-        </p>
-        <p class="mt-1">
+        <a href="/" class="text-h3 font-display font-bold text-text-primary hover:text-accent transition-colors">
+          Strike<span class="text-accent">Zone</span>
+        </a>
+        <p class="text-body-sm text-text-tertiary mt-1">
           {isPlaceholder
-            ? 'Data not yet loaded. Run the pipeline to populate.'
-            : `Data through ${formatDate(lastUpdated)}`}
+            ? 'Data pipeline not yet run.'
+            : `${season} MLB season · updated ${formatDate(lastUpdated)}`}
         </p>
       </div>
+
+      <!-- Links -->
       <nav aria-label="Footer navigation">
-        <ul class="flex gap-4" role="list">
-          <li><a href="/methodology" class="hover:text-white transition-colors">Methodology</a></li>
-          <li><a href="/about" class="hover:text-white transition-colors">About</a></li>
+        <ul class="flex flex-wrap gap-4 text-body-sm" role="list">
+          <li>
+            <a href="/methodology" class="text-text-secondary hover:text-accent transition-colors">
+              Methodology
+            </a>
+          </li>
+          <li>
+            <a href="/about" class="text-text-secondary hover:text-accent transition-colors">
+              About
+            </a>
+          </li>
           <li>
             <a
               href="https://baseballsavant.mlb.com/abs"
-              class="hover:text-white transition-colors"
+              class="text-text-secondary hover:text-accent transition-colors"
               target="_blank"
               rel="noopener noreferrer"
             >
-              Baseball Savant
+              Baseball Savant ↗
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://github.com/leyeoyelami/abs-dashboard"
+              class="text-text-secondary hover:text-accent transition-colors"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              GitHub ↗
             </a>
           </li>
         </ul>
       </nav>
     </div>
-    <p class="mt-4 text-xs text-white/40 text-center">
-      Data sourced from Baseball Savant / MLB Statcast. Not affiliated with MLB or any team.
-      Open source — <a href="https://github.com/leyeoyelami/abs-dashboard" class="hover:text-white/70 underline">GitHub</a>.
+
+    <p class="mt-6 text-caption text-text-tertiary">
+      Data via Baseball Savant / MLB Statcast. Not affiliated with MLB. MIT license.
     </p>
   </div>
 </footer>

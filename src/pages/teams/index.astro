@@ -1,5 +1,8 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import Card from '@/components/ui/Card.astro';
+import Badge from '@/components/ui/Badge.astro';
+import Tooltip from '@/components/ui/Tooltip.astro';
 import type { TeamsData } from '@/lib/types';
 import { formatRate, formatWpa, formatWinPct } from '@/lib/stats';
 import teamsData from '@/data/teams.json';
@@ -7,7 +10,7 @@ import teamsData from '@/data/teams.json';
 const { teams } = teamsData as unknown as TeamsData;
 const isDataReady = teams.length > 0;
 
-// Sort by challenge WPA descending by default
+// Pre-sort by Net RV descending (default)
 const sorted = [...teams].sort(
   (a, b) => (b.challenges.challenge_wpa ?? -Infinity) - (a.challenges.challenge_wpa ?? -Infinity)
 );
@@ -15,63 +18,219 @@ const sorted = [...teams].sort(
 
 <BaseLayout
   title="Teams"
-  description="MLB team leaderboard ranked by ABS Challenge Win Probability Added. See which teams are getting the most value from the ABS Challenge System."
+  description="MLB team leaderboard ranked by ABS Challenge Net Run Value. See which teams are getting the most value from the ABS Challenge System."
 >
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-    <h1 class="text-3xl font-display font-bold mb-2">Team Leaderboard</h1>
-    <p class="text-slate-600 mb-8">
-      Ranked by Challenge WPA — the total Win Probability Added from successful ABS challenges.
-    </p>
+  <!-- Page header --------------------------------------------------------- -->
+  <section class="border-b border-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div class="flex items-end justify-between gap-4 flex-wrap">
+        <div>
+          <div class="flex items-center gap-3 mb-2">
+            <h1 class="text-h1 font-display font-bold text-text-primary">Team Leaderboard</h1>
+            {isDataReady && <Badge variant="accent">2026 Season</Badge>}
+          </div>
+          <p class="text-body text-text-secondary">
+            Ranked by Challenge Net Run Value — how much run value each team has extracted from the ABS system.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
 
+  <!-- Filters + table ----------------------------------------------------- -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
     {!isDataReady ? (
-      <div class="rounded-lg border-2 border-dashed border-slate-300 p-12 text-center text-slate-500">
-        <p class="text-lg font-medium">Data pipeline not yet run</p>
-        <p class="mt-2 text-sm">Run <code class="bg-slate-100 px-1 py-0.5 rounded">python scripts/run.py</code> to populate.</p>
+      <div class="rounded-lg border-2 border-dashed border-border p-16 text-center">
+        <p class="text-body-lg font-medium text-text-secondary">Data pipeline not yet run</p>
+        <p class="mt-2 text-body-sm text-text-tertiary">
+          Run <code class="bg-elevated px-1.5 py-0.5 rounded text-accent font-mono">python scripts/run.py</code> to populate.
+        </p>
       </div>
     ) : (
-      <div class="overflow-x-auto rounded-lg shadow-sm border border-slate-200">
-        <table class="w-full text-sm">
-          <thead class="bg-slate-50">
-            <tr>
-              <th class="text-left py-3 px-4 font-semibold text-slate-600">#</th>
-              <th class="text-left py-3 px-4 font-semibold text-slate-600">Team</th>
-              <th class="text-right py-3 px-4 font-semibold text-slate-600">WPA</th>
-              <th class="text-right py-3 px-4 font-semibold text-slate-600">Challenges</th>
-              <th class="text-right py-3 px-4 font-semibold text-slate-600">Success%</th>
-              <th class="text-right py-3 px-4 font-semibold text-slate-600">Net OT</th>
-              <th class="text-right py-3 px-4 font-semibold text-slate-600">W%</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-100">
-            {sorted.map((team, i) => (
-              <tr class="hover:bg-slate-50 transition-colors">
-                <td class="py-3 px-4 text-slate-400">{i + 1}</td>
-                <td class="py-3 px-4">
-                  <a href={`/teams/${team.team_id.toLowerCase()}`} class="font-medium text-brand-navy hover:underline">
-                    {team.team_name}
-                  </a>
-                  <span class="ml-2 text-xs text-slate-400">{team.division}</span>
-                </td>
-                <td class="py-3 px-4 text-right font-mono font-medium">
-                  {formatWpa(team.challenges.challenge_wpa)}
-                </td>
-                <td class="py-3 px-4 text-right">
-                  {team.challenges.total_challenges}
-                </td>
-                <td class="py-3 px-4 text-right">
-                  {formatRate(team.challenges.success_rate)}
-                </td>
-                <td class="py-3 px-4 text-right font-mono">
-                  {team.challenges.net_overturns > 0 ? `+${team.challenges.net_overturns}` : team.challenges.net_overturns}
-                </td>
-                <td class="py-3 px-4 text-right">
-                  {formatWinPct(team.win_pct)}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div>
+        <!-- Filter bar -->
+        <div class="flex items-center gap-3 mb-6" id="filter-bar">
+          <span class="text-body-sm text-text-tertiary">Filter:</span>
+          <button data-filter="all" class="filter-btn active px-3 py-1.5 rounded-md text-body-sm font-medium transition-colors bg-accent text-black">
+            All ({sorted.length})
+          </button>
+          <button data-filter="AL" class="filter-btn px-3 py-1.5 rounded-md text-body-sm font-medium transition-colors bg-elevated border border-border text-text-secondary hover:text-text-primary hover:border-accent/50">
+            AL ({sorted.filter(t => t.league === 'AL').length})
+          </button>
+          <button data-filter="NL" class="filter-btn px-3 py-1.5 rounded-md text-body-sm font-medium transition-colors bg-elevated border border-border text-text-secondary hover:text-text-primary hover:border-accent/50">
+            NL ({sorted.filter(t => t.league === 'NL').length})
+          </button>
+        </div>
+
+        <Card noPadding>
+          <div class="overflow-x-auto">
+            <table class="data-table w-full" id="teams-table">
+              <thead>
+                <tr>
+                  <th class="w-12 sortable" data-col="rank">#</th>
+                  <th class="w-auto sortable" data-col="name">Team</th>
+                  <th class="text-right w-24 sortable" data-col="wpa">
+                    <Tooltip text="Net run value above expected from ABS challenges. Higher = more value extracted.">
+                      Net RV
+                    </Tooltip>
+                  </th>
+                  <th class="text-right w-28 sortable" data-col="rate">
+                    <Tooltip text="Percentage of challenges resulting in an overturn.">
+                      Success%
+                    </Tooltip>
+                  </th>
+                  <th class="text-right w-28 hidden md:table-cell sortable" data-col="challenges">
+                    Challenges
+                  </th>
+                  <th class="text-right w-24 hidden md:table-cell sortable" data-col="netot">
+                    <Tooltip text="Overturns gained minus overturns conceded.">
+                      Net OT
+                    </Tooltip>
+                  </th>
+                  <th class="text-right w-20 sortable" data-col="winpct">Win%</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sorted.map((team, i) => {
+                  const netOt = team.challenges.net_overturns;
+                  const netOtStr = netOt > 0 ? `+${netOt}` : String(netOt);
+                  return (
+                    <tr
+                      data-league={team.league}
+                      data-wpa={team.challenges.challenge_wpa ?? ''}
+                      data-rate={team.challenges.success_rate ?? ''}
+                      data-challenges={team.challenges.total_challenges}
+                      data-netot={netOt}
+                      data-winpct={team.win_pct}
+                      data-name={team.team_name}
+                    >
+                      <td class="text-text-tertiary font-mono rank-cell">{i + 1}</td>
+                      <td>
+                        <a
+                          href={`/teams/${team.team_id.toLowerCase()}`}
+                          class="font-medium text-text-primary hover:text-accent transition-colors"
+                        >
+                          {team.team_name}
+                        </a>
+                        <span class="ml-2 text-caption text-text-tertiary">{team.league}</span>
+                      </td>
+                      <td class="text-right font-mono font-bold text-accent">
+                        {formatWpa(team.challenges.challenge_wpa)}
+                      </td>
+                      <td class="text-right font-mono">
+                        {formatRate(team.challenges.success_rate)}
+                      </td>
+                      <td class="text-right font-mono text-text-secondary hidden md:table-cell">
+                        {team.challenges.total_challenges}
+                      </td>
+                      <td class:list={[
+                        'text-right font-mono hidden md:table-cell',
+                        netOt > 0 ? 'delta-positive' : netOt < 0 ? 'delta-negative' : 'text-text-secondary',
+                      ]}>
+                        {netOtStr}
+                      </td>
+                      <td class="text-right font-mono text-text-secondary">
+                        {formatWinPct(team.win_pct)}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </Card>
       </div>
     )}
-  </div>
+  </section>
 </BaseLayout>
+
+<style>
+  .sortable { cursor: pointer; user-select: none; }
+  .sortable:hover { color: rgb(var(--color-text-primary)); }
+  .sort-asc::after { content: ' ↑'; font-size: 0.7em; }
+  .sort-desc::after { content: ' ↓'; font-size: 0.7em; }
+</style>
+
+<script>
+  // League filter
+  const filterBar = document.getElementById('filter-bar');
+  const table = document.getElementById('teams-table');
+  if (filterBar && table) {
+    const rows = Array.from(table.querySelectorAll('tbody tr')) as HTMLTableRowElement[];
+    const buttons = filterBar.querySelectorAll('.filter-btn');
+
+    const activeClass = 'bg-accent text-black';
+    const inactiveClass = 'bg-elevated border border-border text-text-secondary hover:text-text-primary hover:border-accent/50';
+
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const filter = (btn as HTMLElement).dataset.filter || 'all';
+
+        // Update button styles
+        buttons.forEach((b) => {
+          b.className = `filter-btn px-3 py-1.5 rounded-md text-body-sm font-medium transition-colors ${inactiveClass}`;
+        });
+        btn.className = `filter-btn active px-3 py-1.5 rounded-md text-body-sm font-medium transition-colors ${activeClass}`;
+
+        // Filter rows
+        let rank = 1;
+        rows.forEach((row) => {
+          const league = row.dataset.league;
+          const show = filter === 'all' || league === filter;
+          row.style.display = show ? '' : 'none';
+          if (show) {
+            const rankCell = row.querySelector('.rank-cell');
+            if (rankCell) rankCell.textContent = String(rank++);
+          }
+        });
+      });
+    });
+
+    // Column sorting
+    const headers = table.querySelectorAll('th.sortable');
+    let currentSort = 'wpa';
+    let sortDir = 'desc';
+
+    headers.forEach((th) => {
+      th.addEventListener('click', () => {
+        const col = (th as HTMLElement).dataset.col || '';
+        if (currentSort === col) {
+          sortDir = sortDir === 'desc' ? 'asc' : 'desc';
+        } else {
+          currentSort = col;
+          sortDir = 'desc';
+        }
+
+        // Update header indicators
+        headers.forEach((h) => h.classList.remove('sort-asc', 'sort-desc'));
+        th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+
+        // Sort rows
+        const tbody = table.querySelector('tbody')!;
+        const sortedRows = [...rows].sort((a, b) => {
+          let av: string | number, bv: string | number;
+          if (col === 'name') {
+            av = a.dataset.name || '';
+            bv = b.dataset.name || '';
+            return sortDir === 'asc'
+              ? (av as string).localeCompare(bv as string)
+              : (bv as string).localeCompare(av as string);
+          }
+          av = parseFloat(a.dataset[col] || '0') || 0;
+          bv = parseFloat(b.dataset[col] || '0') || 0;
+          return sortDir === 'asc' ? av - bv : bv - av;
+        });
+
+        // Re-render
+        let rank = 1;
+        sortedRows.forEach((row) => {
+          tbody.appendChild(row);
+          if (row.style.display !== 'none') {
+            const rankCell = row.querySelector('.rank-cell');
+            if (rankCell) rankCell.textContent = String(rank++);
+          }
+        });
+      });
+    });
+  }
+</script>

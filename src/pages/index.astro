@@ -1,126 +1,392 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import type { TeamsData, LeagueSummary } from '@/lib/types';
-import { formatRate, formatWpa, formatDate } from '@/lib/stats';
+import Card from '@/components/ui/Card.astro';
+import Stat from '@/components/ui/Stat.astro';
+import Badge from '@/components/ui/Badge.astro';
+import Tooltip from '@/components/ui/Tooltip.astro';
+import Sparkline from '@/components/ui/Sparkline.astro';
+import ScatterPlot from '@/components/charts/ScatterPlot.astro';
+import type { TeamsData, PlayersData, LeagueSummary } from '@/lib/types';
+import { formatRate, formatWpa, formatWinPct, formatDate, formatDateShort, pearsonR } from '@/lib/stats';
 import teamsData from '@/data/teams.json';
+import playersData from '@/data/players.json';
+import leagueData from '@/data/league.json';
 import metadata from '@/data/metadata.json';
 
-// Type-cast the imported JSON
-const teams = (teamsData as unknown as TeamsData).teams;
+const { teams } = teamsData as unknown as TeamsData;
+const { players } = playersData as unknown as PlayersData;
+const league = leagueData as unknown as LeagueSummary;
 const isDataReady = teams.length > 0;
 
-// Top-line league numbers (will be populated by data pipeline)
-// For now, derive from teams data as placeholder
-const totalChallenges = teams.reduce((sum, t) => sum + (t.challenges?.total_challenges ?? 0), 0);
-const avgSuccessRate = teams.length
-  ? teams.reduce((sum, t) => sum + (t.challenges?.success_rate ?? 0), 0) / teams.length
-  : null;
+const totalChallenges = league.total_challenges || 0;
+const overallSuccessRate = league.overall_success_rate;
+const successPct = overallSuccessRate ? Math.round(overallSuccessRate * 100) : null;
+
+// Top 5 teams by Net RV
+const topTeams = [...teams]
+  .sort((a, b) => (b.challenges.challenge_wpa ?? -Infinity) - (a.challenges.challenge_wpa ?? -Infinity))
+  .slice(0, 5);
+
+// Top 5 catchers & batters by volume (min 20 challenges)
+const topCatchers = players
+  .filter((p) => p.challenges.role === 'catcher' && p.challenges.total_challenges >= 20)
+  .sort((a, b) => (b.challenges.success_rate ?? 0) - (a.challenges.success_rate ?? 0))
+  .slice(0, 5);
+
+const topBatters = players
+  .filter((p) => p.challenges.role === 'batter' && p.challenges.total_challenges >= 10)
+  .sort((a, b) => (b.challenges.success_rate ?? 0) - (a.challenges.success_rate ?? 0))
+  .slice(0, 5);
+
+// Scatter data: challenge net run value vs win %
+const scatterPoints = teams
+  .filter((t) => t.challenges.challenge_wpa !== null && t.challenges.total_challenges > 0)
+  .map((t) => ({
+    x: t.challenges.challenge_wpa!,
+    y: t.win_pct,
+    label: t.team_id,
+  }));
+
+// Correlation coefficient
+const corrXs = scatterPoints.map((p) => p.x);
+const corrYs = scatterPoints.map((p) => p.y);
+const r = pearsonR(corrXs, corrYs);
+const rStr = r !== null ? r.toFixed(3) : null;
+const rMeaningful = r !== null && Math.abs(r) > 0.3;
+
+// Games through date
+const gamesThrough = metadata.games_through ? formatDateShort(metadata.games_through) : null;
 ---
 
-<BaseLayout
-  title="Home"
-  description="Track MLB ABS Challenge System performance: success rates, Win Probability Added, and whether beating the robot umpire correlates with winning."
->
-  <!-- Hero -->
-  <section class="bg-brand-navy text-white py-16 px-4">
-    <div class="max-w-4xl mx-auto text-center">
-      <h1 class="font-display text-4xl sm:text-5xl font-bold mb-4">
-        Does Beating the Robot Umpire<br class="hidden sm:block" /> Win You Games?
-      </h1>
-      <p class="text-xl text-white/80 max-w-2xl mx-auto">
-        The 2026 MLB season introduced the ABS Challenge System. We track whether teams that win
-        more ball-strike challenges actually win more games — and by how much.
-      </p>
-      {isDataReady && (
-        <p class="mt-4 text-sm text-white/50">
-          Data through {formatDate(metadata.last_updated)}
+<BaseLayout title="Home">
+  <!-- Hero ---------------------------------------------------------------- -->
+  <section class="relative overflow-hidden border-b border-border">
+    <div class="absolute inset-0 opacity-[0.03]" aria-hidden="true"
+      style="background-image: linear-gradient(#D4FF3D 1px, transparent 1px), linear-gradient(90deg, #D4FF3D 1px, transparent 1px); background-size: 40px 40px;">
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28">
+      <div class="max-w-3xl">
+        <Badge variant="accent" class="mb-6">2026 Season {gamesThrough ? `· Through ${gamesThrough}` : ''}</Badge>
+
+        {isDataReady && successPct ? (
+          <h1 class="text-display-lg sm:text-display-xl font-display font-black text-text-primary leading-none mb-6">
+            <span class="text-accent">{successPct}%</span> of ABS<br />
+            challenges have<br />
+            overturned the ump.
+          </h1>
+        ) : (
+          <h1 class="text-display-lg sm:text-display-xl font-display font-black text-text-primary leading-none mb-6">
+            Does beating the<br />
+            <span class="text-accent">robot umpire</span><br />
+            win you games?
+          </h1>
+        )}
+
+        <p class="text-body-lg text-text-secondary max-w-xl mb-8">
+          The ABS Challenge System lets players dispute ball-strike calls via Hawk-Eye cameras.
+          We track every challenge — who wins them, and whether it matters.
         </p>
-      )}
+        <div class="flex gap-3 flex-wrap">
+          <a href="/teams"
+            class="inline-flex items-center gap-2 px-5 py-2.5 bg-accent text-black font-semibold
+              rounded-md text-body-sm hover:bg-accent/90 transition-colors duration-200 shadow-glow">
+            View teams
+          </a>
+          <a href="/methodology"
+            class="inline-flex items-center gap-2 px-5 py-2.5 bg-elevated border border-border
+              text-text-secondary font-medium rounded-md text-body-sm
+              hover:text-text-primary hover:border-accent/50 transition-colors duration-200">
+            How it works
+          </a>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- Top-line numbers -->
-  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12" aria-labelledby="league-summary-heading">
-    <h2 id="league-summary-heading" class="text-2xl font-display font-bold mb-6">
-      2026 Season at a Glance
-    </h2>
-
-    {!isDataReady ? (
-      <div class="rounded-lg border-2 border-dashed border-slate-300 p-12 text-center text-slate-500">
-        <p class="text-lg font-medium">Data pipeline not yet run</p>
-        <p class="mt-2 text-sm">Run <code class="bg-slate-100 px-1 py-0.5 rounded">python scripts/run.py</code> to populate real data.</p>
-      </div>
-    ) : (
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div class="bg-white rounded-lg shadow-sm p-6 text-center">
-          <p class="text-3xl font-bold text-brand-navy">{totalChallenges.toLocaleString()}</p>
-          <p class="text-sm text-slate-600 mt-1">Total Challenges</p>
-        </div>
-        <div class="bg-white rounded-lg shadow-sm p-6 text-center">
-          <p class="text-3xl font-bold text-brand-navy">{formatRate(avgSuccessRate)}</p>
-          <p class="text-sm text-slate-600 mt-1">Avg Success Rate</p>
-        </div>
-        <div class="bg-white rounded-lg shadow-sm p-6 text-center">
-          <p class="text-3xl font-bold text-brand-navy">—</p>
-          <p class="text-sm text-slate-600 mt-1">Total WPA Generated</p>
-        </div>
-        <div class="bg-white rounded-lg shadow-sm p-6 text-center">
-          <p class="text-3xl font-bold text-brand-navy">—</p>
-          <p class="text-sm text-slate-600 mt-1">K Rate vs. 2025</p>
-        </div>
-      </div>
-    )}
-  </section>
-
-  <!-- Teams leaderboard teaser -->
-  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-16" aria-labelledby="top-teams-heading">
+  <!-- League snapshot ----------------------------------------------------- -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12" aria-labelledby="league-heading">
     <div class="flex items-center justify-between mb-6">
-      <h2 id="top-teams-heading" class="text-2xl font-display font-bold">Top Teams by Challenge WPA</h2>
-      <a href="/teams" class="text-brand-navy font-medium hover:underline text-sm">
-        View all teams →
-      </a>
+      <h2 id="league-heading" class="text-h2 font-display font-bold text-text-primary">
+        Season at a Glance
+      </h2>
+      {!isDataReady && <Badge variant="warning">No data</Badge>}
+      {isDataReady && <span class="text-body-sm text-text-tertiary">Through {formatDate(metadata.last_updated)}</span>}
     </div>
 
-    {!isDataReady ? (
-      <p class="text-slate-500">No data yet.</p>
-    ) : (
-      <div class="overflow-x-auto">
-        <table class="w-full text-sm">
-          <thead>
-            <tr class="border-b border-slate-200">
-              <th class="text-left py-3 px-2 font-semibold text-slate-600">Rank</th>
-              <th class="text-left py-3 px-2 font-semibold text-slate-600">Team</th>
-              <th class="text-right py-3 px-2 font-semibold text-slate-600">Challenge WPA</th>
-              <th class="text-right py-3 px-2 font-semibold text-slate-600">Success Rate</th>
-              <th class="text-right py-3 px-2 font-semibold text-slate-600">Win%</th>
-            </tr>
-          </thead>
-          <tbody>
-            {teams
-              .sort((a, b) => (b.challenges.challenge_wpa ?? -Infinity) - (a.challenges.challenge_wpa ?? -Infinity))
-              .slice(0, 5)
-              .map((team, i) => (
-                <tr class="border-b border-slate-100 hover:bg-slate-50">
-                  <td class="py-3 px-2 text-slate-500">{i + 1}</td>
-                  <td class="py-3 px-2">
-                    <a href={`/teams/${team.team_id.toLowerCase()}`} class="font-medium hover:underline">
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <Card class="text-center">
+        <Stat
+          value={isDataReady ? totalChallenges.toLocaleString() : '—'}
+          label="Total Challenges"
+          size="lg"
+          accent
+        />
+      </Card>
+      <Card class="text-center">
+        <Stat
+          value={isDataReady ? formatRate(overallSuccessRate) : '—'}
+          label="Overturn Rate"
+          size="lg"
+        />
+      </Card>
+      <Card class="text-center">
+        <Stat
+          value={isDataReady ? (league.total_overturns?.toLocaleString() ?? '—') : '—'}
+          label="Total Overturns"
+          size="lg"
+        />
+      </Card>
+      <Card class="text-center">
+        <Stat
+          value={isDataReady && league.k_rate && league.k_rate_prior_season
+            ? formatRate(league.k_rate - league.k_rate_prior_season)
+            : '—'}
+          label="K Rate vs. 2025"
+          size="lg"
+          delta={isDataReady && league.k_rate && league.k_rate_prior_season
+            ? league.k_rate - league.k_rate_prior_season
+            : null}
+        />
+      </Card>
+    </div>
+  </section>
+
+  <!-- Scatter: challenge value vs wins ------------------------------------ -->
+  {isDataReady && scatterPoints.length >= 5 && (
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12" aria-labelledby="scatter-heading">
+      <Card title="The Headline Chart: Net Run Value vs. Win %" noPadding>
+        <div class="px-6 pb-6">
+          <p class="text-body-sm text-text-secondary mb-4">
+            Each dot is a team. The x-axis shows how much run value they've extracted from ABS challenges;
+            the y-axis shows their win percentage. Are the two related?
+          </p>
+          <ScatterPlot
+            points={scatterPoints}
+            xLabel="Net Run Value"
+            yLabel="Win %"
+            height={360}
+          />
+          {rStr && (
+            <p class="text-caption text-text-tertiary mt-4">
+              Pearson r = {rStr}.
+              {rMeaningful
+                ? ' There is a moderate correlation — teams that extract more value from challenges tend to win more. But correlation is not causation: better teams may simply challenge more effectively.'
+                : ' The correlation is weak. So far, challenge performance does not strongly predict winning. This could change as the sample grows.'}
+              <a href="/methodology" class="text-accent hover:underline ml-1">Methodology</a>
+            </p>
+          )}
+        </div>
+      </Card>
+    </section>
+  )}
+
+  <!-- Top teams ----------------------------------------------------------- -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12" aria-labelledby="top-teams-heading">
+    <Card
+      title="Top Teams by Net Run Value"
+      cta={{ label: 'All 30 teams', href: '/teams' }}
+      noPadding
+    >
+      {!isDataReady ? (
+        <div class="px-6 pb-6 text-text-tertiary text-body-sm">
+          Run the data pipeline to see real team data.
+        </div>
+      ) : (
+        <div class="overflow-x-auto">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th class="w-8">#</th>
+                <th>Team</th>
+                <th class="text-right">
+                  <Tooltip text="Net run value above expected from ABS challenges.">
+                    Net RV
+                  </Tooltip>
+                </th>
+                <th class="text-right">Success%</th>
+                <th class="text-right hidden sm:table-cell">Challenges</th>
+                <th class="text-right">Win%</th>
+              </tr>
+            </thead>
+            <tbody>
+              {topTeams.map((team, i) => (
+                <tr>
+                  <td class="text-text-tertiary font-mono">{i + 1}</td>
+                  <td>
+                    <a href={`/teams/${team.team_id.toLowerCase()}`}
+                      class="font-medium text-text-primary hover:text-accent transition-colors">
                       {team.team_name}
                     </a>
+                    <span class="ml-2 text-caption text-text-tertiary">{team.league}</span>
                   </td>
-                  <td class="py-3 px-2 text-right font-mono">
+                  <td class="text-right font-mono font-bold text-accent">
                     {formatWpa(team.challenges.challenge_wpa)}
                   </td>
-                  <td class="py-3 px-2 text-right">
+                  <td class="text-right font-mono">
                     {formatRate(team.challenges.success_rate)}
                   </td>
-                  <td class="py-3 px-2 text-right">
-                    {formatRate(team.win_pct)}
+                  <td class="text-right font-mono hidden sm:table-cell text-text-secondary">
+                    {team.challenges.total_challenges}
+                  </td>
+                  <td class="text-right font-mono">
+                    {formatWinPct(team.win_pct)}
                   </td>
                 </tr>
               ))}
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        </div>
+      )}
+    </Card>
+  </section>
+
+  <!-- Top players --------------------------------------------------------- -->
+  {isDataReady && (topCatchers.length > 0 || topBatters.length > 0) && (
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12" aria-labelledby="top-players-heading">
+      <h2 id="top-players-heading" class="text-h2 font-display font-bold text-text-primary mb-6">
+        Top Players
+      </h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- Top catchers -->
+        {topCatchers.length > 0 && (
+          <Card
+            title="Catchers by Overturn Rate"
+            cta={{ label: 'All catchers', href: '/players' }}
+            noPadding
+          >
+            <p class="px-6 text-caption text-text-tertiary mb-3">Min 20 challenges</p>
+            <div class="overflow-x-auto">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th class="w-8">#</th>
+                    <th>Name</th>
+                    <th class="text-right">Rate</th>
+                    <th class="text-right">Chall</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {topCatchers.map((p, i) => (
+                    <tr>
+                      <td class="text-text-tertiary font-mono">{i + 1}</td>
+                      <td>
+                        <a href={`/players/${p.player_id}`}
+                          class="font-medium text-text-primary hover:text-accent transition-colors">
+                          {p.name}
+                        </a>
+                        <span class="ml-1.5 text-caption text-text-tertiary">{p.team_id}</span>
+                      </td>
+                      <td class="text-right font-mono font-bold text-accent">
+                        {formatRate(p.challenges.success_rate)}
+                      </td>
+                      <td class="text-right font-mono text-text-secondary">
+                        {p.challenges.total_challenges}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        )}
+
+        <!-- Top batters -->
+        {topBatters.length > 0 && (
+          <Card
+            title="Batters by Overturn Rate"
+            cta={{ label: 'All batters', href: '/players/batters' }}
+            noPadding
+          >
+            <p class="px-6 text-caption text-text-tertiary mb-3">Min 10 challenges</p>
+            <div class="overflow-x-auto">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th class="w-8">#</th>
+                    <th>Name</th>
+                    <th class="text-right">Rate</th>
+                    <th class="text-right">Chall</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {topBatters.map((p, i) => (
+                    <tr>
+                      <td class="text-text-tertiary font-mono">{i + 1}</td>
+                      <td>
+                        <a href={`/players/${p.player_id}`}
+                          class="font-medium text-text-primary hover:text-accent transition-colors">
+                          {p.name}
+                        </a>
+                        <span class="ml-1.5 text-caption text-text-tertiary">{p.team_id}</span>
+                      </td>
+                      <td class="text-right font-mono font-bold text-accent">
+                        {formatRate(p.challenges.success_rate)}
+                      </td>
+                      <td class="text-right font-mono text-text-secondary">
+                        {p.challenges.total_challenges}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        )}
       </div>
-    )}
+    </section>
+  )}
+
+  <!-- How to read this site ----------------------------------------------- -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12" aria-labelledby="howto-heading">
+    <Card>
+      <h2 id="howto-heading" class="text-h3 font-display font-bold text-text-primary mb-4">
+        How to Read This Site
+      </h2>
+      <div class="grid sm:grid-cols-3 gap-6 text-body-sm text-text-secondary">
+        <div>
+          <p class="text-accent font-semibold mb-1">Net Run Value (Net RV)</p>
+          <p>
+            The headline metric. It measures how much run value a team gains from ABS challenges
+            compared to what's expected. Positive = extracting value. This comes directly from
+            Baseball Savant's <code class="bg-elevated px-1 py-0.5 rounded text-accent font-mono text-caption">net_net_runs</code> field.
+          </p>
+        </div>
+        <div>
+          <p class="text-accent font-semibold mb-1">Success Rate</p>
+          <p>
+            Overturns divided by total challenges. Watch the sample size — a team with 3/5 is not
+            meaningfully better than 40/80. We flag small samples throughout.
+          </p>
+        </div>
+        <div>
+          <p class="text-accent font-semibold mb-1">Correlation ≠ Causation</p>
+          <p>
+            If challenge performance correlates with winning, that doesn't mean challenges cause wins.
+            Better teams may simply be better at everything, including challenging. We're honest about this.
+          </p>
+        </div>
+      </div>
+      <p class="mt-4 text-body-sm">
+        <a href="/methodology" class="text-accent hover:underline font-medium">
+          Full methodology and metric definitions →
+        </a>
+      </p>
+    </Card>
+  </section>
+
+  <!-- Mini about ---------------------------------------------------------- -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16" aria-labelledby="about-heading">
+    <Card>
+      <h2 id="about-heading" class="text-h3 font-display font-bold text-text-primary mb-3">
+        About StrikeZone
+      </h2>
+      <p class="text-body-sm text-text-secondary">
+        MLB's 2026 ABS Challenge System is the biggest rule change in a generation. No public site was
+        aggregating this data in a clean format and connecting it to standings. So we built one. Fully
+        static, fully open source, refreshed daily from Baseball Savant. No tracking, no ads.
+        <a href="/about" class="text-accent hover:underline ml-1">Learn more →</a>
+      </p>
+    </Card>
   </section>
 </BaseLayout>

@@ -1,0 +1,59 @@
+---
+// ThemeToggle — dark/light mode switcher.
+// Default: dark. Respects prefers-color-scheme. Persists to localStorage.
+---
+
+<button
+  id="theme-toggle"
+  type="button"
+  class="w-8 h-8 rounded-md border border-border flex items-center justify-center
+    text-text-secondary hover:text-text-primary hover:border-accent
+    transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+  aria-label="Toggle color scheme"
+>
+  <!-- Sun (light mode icon) -->
+  <svg id="theme-icon-light" class="hidden w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+      d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>
+  </svg>
+  <!-- Moon (dark mode icon) -->
+  <svg id="theme-icon-dark" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+      d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+  </svg>
+</button>
+
+<script>
+  const html = document.documentElement;
+  const toggle = document.getElementById('theme-toggle');
+  const iconLight = document.getElementById('theme-icon-light');
+  const iconDark = document.getElementById('theme-icon-dark');
+
+  function getTheme(): 'dark' | 'light' {
+    const stored = localStorage.getItem('theme');
+    if (stored === 'dark' || stored === 'light') return stored;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  function applyTheme(theme: 'dark' | 'light') {
+    if (theme === 'light') {
+      html.classList.add('light');
+      html.classList.remove('dark');
+      iconLight?.classList.remove('hidden');
+      iconDark?.classList.add('hidden');
+    } else {
+      html.classList.remove('light');
+      html.classList.add('dark');
+      iconLight?.classList.add('hidden');
+      iconDark?.classList.remove('hidden');
+    }
+  }
+
+  applyTheme(getTheme());
+
+  toggle?.addEventListener('click', () => {
+    const next = html.classList.contains('light') ? 'dark' : 'light';
+    localStorage.setItem('theme', next);
+    applyTheme(next);
+  });
+</script>

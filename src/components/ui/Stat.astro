@@ -1,0 +1,50 @@
+---
+interface Props {
+  value: string | number;
+  label: string;
+  delta?: number | null;
+  deltaLabel?: string;
+  size?: 'xl' | 'lg' | 'md';
+  accent?: boolean;
+  class?: string;
+}
+
+const {
+  value,
+  label,
+  delta = null,
+  deltaLabel,
+  size = 'md',
+  accent = false,
+  class: cls = '',
+} = Astro.props;
+
+const sizeClass = {
+  xl: 'text-stat-xl',
+  lg: 'text-stat-lg',
+  md: 'text-stat',
+}[size];
+
+const deltaSign = delta !== null ? (delta > 0 ? '+' : delta < 0 ? '' : '±') : null;
+const deltaColor = delta === null ? '' : delta > 0 ? 'text-success' : delta < 0 ? 'text-danger' : 'text-text-tertiary';
+---
+
+<div class:list={['flex flex-col gap-1', cls]}>
+  <span
+    class:list={[
+      'font-mono font-bold tabular-nums leading-none',
+      sizeClass,
+      accent ? 'text-accent' : 'text-text-primary',
+    ]}
+    aria-label={`${label}: ${value}`}
+  >
+    {value}
+  </span>
+  <span class="text-caption uppercase tracking-wider text-text-tertiary">{label}</span>
+  {delta !== null && (
+    <span class:list={['text-body-sm font-medium', deltaColor]} aria-label={deltaLabel}>
+      {deltaSign}{typeof delta === 'number' ? (Number.isInteger(delta) ? delta : delta.toFixed(1)) : delta}
+      {deltaLabel && <span class="text-text-tertiary ml-1">{deltaLabel}</span>}
+    </span>
+  )}
+</div>

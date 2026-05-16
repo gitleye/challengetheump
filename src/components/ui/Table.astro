@@ -1,0 +1,44 @@
+---
+interface Column {
+  key: string;
+  label: string;
+  align?: 'left' | 'right' | 'center';
+  mono?: boolean;
+  sortable?: boolean;
+  width?: string;
+}
+
+interface Props {
+  columns: Column[];
+  caption?: string;
+  class?: string;
+  id?: string;
+}
+
+const { columns, caption, class: cls = '', id } = Astro.props;
+const tableId = id || `table-${Math.random().toString(36).slice(2, 7)}`;
+---
+
+<div class:list={['overflow-x-auto rounded-lg border border-border', cls]} role="region" aria-label={caption}>
+  <table class="data-table" id={tableId} aria-label={caption}>
+    {caption && <caption class="sr-only">{caption}</caption>}
+    <thead>
+      <tr>
+        {columns.map((col) => (
+          <th
+            scope="col"
+            class:list={[
+              col.align === 'right' ? 'text-right' : col.align === 'center' ? 'text-center' : 'text-left',
+              col.width,
+            ]}
+          >
+            {col.label}
+          </th>
+        ))}
+      </tr>
+    </thead>
+    <tbody>
+      <slot />
+    </tbody>
+  </table>
+</div>

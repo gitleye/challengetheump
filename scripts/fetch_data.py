@@ -26,7 +26,8 @@ class FetchResult:
     # Savant ABS leaderboard data
     abs_batting_team: Optional[list[dict]] = None   # 30 team batting-side records
     abs_catching_team: Optional[list[dict]] = None  # 30 team fielding-side records
-    abs_players: Optional[list[dict]] = None        # ~353 player records
+    abs_players: Optional[list[dict]] = None        # ~353 player records (all batters)
+    abs_batters: Optional[list[dict]] = None         # batter-specific endpoint
     abs_catchers: Optional[list[dict]] = None       # ~82 catcher records
     # League stats
     league_hitting: Optional[dict] = None
@@ -55,6 +56,7 @@ def fetch_all(season: int) -> FetchResult:
         result.abs_batting_team = all_data.get("batting_team")
         result.abs_catching_team = all_data.get("catching_team")
         result.abs_players = all_data.get("players")
+        result.abs_batters = all_data.get("batters")
         result.abs_catchers = all_data.get("catchers")
 
         for key, val in all_data.items():
@@ -99,6 +101,7 @@ def _persist(result: FetchResult) -> None:
         ("abs_batting_team", "abs_batting_team.json"),
         ("abs_catching_team", "abs_catching_team.json"),
         ("abs_players", "abs_players.json"),
+        ("abs_batters", "abs_batters.json"),
         ("abs_catchers", "abs_catchers.json"),
     ]:
         val = getattr(result, attr)
@@ -126,6 +129,7 @@ def load_cached(season: int) -> FetchResult:
     result.abs_batting_team = _load_json("abs_batting_team.json")
     result.abs_catching_team = _load_json("abs_catching_team.json")
     result.abs_players = _load_json("abs_players.json")
+    result.abs_batters = _load_json("abs_batters.json")
     result.abs_catchers = _load_json("abs_catchers.json")
     result.league_hitting = _load_json("league_hitting.json")
     result.prior_league_hitting = _load_json("prior_league_hitting.json")

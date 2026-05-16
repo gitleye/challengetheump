@@ -851,6 +851,23 @@
       "data_quality": "ok"
     },
     {
+      "player_id": 596142,
+      "name": "Gary Sanchez",
+      "team_id": "MIL",
+      "position": "Batter",
+      "challenges": {
+        "role": "batter",
+        "total_challenges": 16,
+        "successful_challenges": 7,
+        "success_rate": 0.4375,
+        "strikeouts_avoided": 1,
+        "walks_gained": 0,
+        "overturns_generated": null
+      },
+      "sample_warnings": [],
+      "data_quality": "ok"
+    },
+    {
       "player_id": 514888,
       "name": "Jose Altuve",
       "team_id": "HOU",
@@ -1032,6 +1049,23 @@
         "success_rate": 0.36363636363636365,
         "strikeouts_avoided": 2,
         "walks_gained": 1,
+        "overturns_generated": null
+      },
+      "sample_warnings": [],
+      "data_quality": "ok"
+    },
+    {
+      "player_id": 671056,
+      "name": "Ivan Herrera",
+      "team_id": "STL",
+      "position": "Batter",
+      "challenges": {
+        "role": "batter",
+        "total_challenges": 10,
+        "successful_challenges": 6,
+        "success_rate": 0.6,
+        "strikeouts_avoided": 1,
+        "walks_gained": 2,
         "overturns_generated": null
       },
       "sample_warnings": [],
@@ -1483,6 +1517,30 @@
       "data_quality": "ok"
     },
     {
+      "player_id": 696100,
+      "name": "Hunter Goodman",
+      "team_id": "COL",
+      "position": "Batter",
+      "challenges": {
+        "role": "batter",
+        "total_challenges": 8,
+        "successful_challenges": 2,
+        "success_rate": 0.25,
+        "strikeouts_avoided": 1,
+        "walks_gained": 0,
+        "overturns_generated": null
+      },
+      "sample_warnings": [
+        {
+          "field": "success_rate",
+          "n": 8,
+          "threshold": 10,
+          "message": "Small sample: 8 challenges (threshold: 10). Success rate may not be reliable."
+        }
+      ],
+      "data_quality": "ok"
+    },
+    {
       "player_id": 621493,
       "name": "Taylor Ward",
       "team_id": "BAL",
@@ -1843,89 +1901,17 @@
       "data_quality": "ok"
     },
     {
-      "player_id": 656555,
-      "name": "Rhys Hoskins",
-      "team_id": "CLE",
+      "player_id": 694212,
+      "name": "Samuel Basallo",
+      "team_id": "BAL",
       "position": "Batter",
       "challenges": {
         "role": "batter",
         "total_challenges": 6,
         "successful_challenges": 4,
         "success_rate": 0.6666666666666666,
-        "strikeouts_avoided": 2,
-        "walks_gained": 0,
-        "overturns_generated": null
-      },
-      "sample_warnings": [
-        {
-          "field": "success_rate",
-          "n": 6,
-          "threshold": 10,
-          "message": "Small sample: 6 challenges (threshold: 10). Success rate may not be reliable."
-        }
-      ],
-      "data_quality": "ok"
-    },
-    {
-      "player_id": 671218,
-      "name": "Heliot Ramos",
-      "team_id": "SF",
-      "position": "Batter",
-      "challenges": {
-        "role": "batter",
-        "total_challenges": 6,
-        "successful_challenges": 4,
-        "success_rate": 0.6666666666666666,
-        "strikeouts_avoided": 2,
+        "strikeouts_avoided": 0,
         "walks_gained": 1,
-        "overturns_generated": null
-      },
-      "sample_warnings": [
-        {
-          "field": "success_rate",
-          "n": 6,
-          "threshold": 10,
-          "message": "Small sample: 6 challenges (threshold: 10). Success rate may not be reliable."
-        }
-      ],
-      "data_quality": "ok"
-    },
-    {
-      "player_id": 668227,
-      "name": "Randy Arozarena",
-      "team_id": "SEA",
-      "position": "Batter",
-      "challenges": {
-        "role": "batter",
-        "total_challenges": 6,
-        "successful_challenges": 3,
-        "success_rate": 0.5,
-        "strikeouts_avoided": 2,
-        "walks_gained": 1,
-        "overturns_generated": null
-      },
-      "sample_warnings": [
-        {
-          "field": "success_rate",
-          "n": 6,
-          "threshold": 10,
-          "message": "Small sample: 6 challenges (threshold: 10). Success rate may not be reliable."
-        }
-      ],
-      "data_quality": "ok"
-    },
-    {
-      "player_id": 678246,
-      "name": "Miguel Vargas",
-      "team_id": "CWS",
-      "position": "Batter",
-      "challenges": {
-        "role": "batter",
-        "total_challenges": 6,
-        "successful_challenges": 4,
-        "success_rate": 0.6666666666666666,
-        "strikeouts_avoided": 1,
-        "walks_gained": 0,
         "overturns_generated": null
       },
       "sample_warnings": [
@@ -1939,6 +1925,6 @@
       "data_quality": "ok"
     }
   ],
-  "last_updated": "2026-05-16T20:27:20.774773Z",
+  "last_updated": "2026-05-16T20:55:25.044343Z",
   "season": 2026
 }

@@ -32,10 +32,10 @@ export function formatGameTime(minutes: number | null): string {
 
 /** Return a CSS color class name based on a delta (positive = green, negative = red). */
 export function deltaColorClass(delta: number | null): string {
-  if (delta === null) return 'text-slate-500';
-  if (delta > 0) return 'text-green-600';
-  if (delta < 0) return 'text-red-600';
-  return 'text-slate-500';
+  if (delta === null) return 'text-text-tertiary';
+  if (delta > 0) return 'text-success';
+  if (delta < 0) return 'text-danger';
+  return 'text-text-tertiary';
 }
 
 /** Clamp a number between min and max. */
@@ -67,6 +67,33 @@ export function formatDate(isoDate: string): string {
   return new Date(isoDate).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
+    day: 'numeric',
+    timeZone: 'UTC',
+  });
+}
+
+/** Compute Pearson correlation coefficient between two arrays. */
+export function pearsonR(xs: number[], ys: number[]): number | null {
+  const n = Math.min(xs.length, ys.length);
+  if (n < 3) return null;
+  const mx = xs.reduce((a, b) => a + b, 0) / n;
+  const my = ys.reduce((a, b) => a + b, 0) / n;
+  let num = 0, dx2 = 0, dy2 = 0;
+  for (let i = 0; i < n; i++) {
+    const dx = xs[i] - mx;
+    const dy = ys[i] - my;
+    num += dx * dy;
+    dx2 += dx * dx;
+    dy2 += dy * dy;
+  }
+  const denom = Math.sqrt(dx2 * dy2);
+  return denom === 0 ? null : num / denom;
+}
+
+/** Format a short date string (ISO) as "May 16". */
+export function formatDateShort(isoDate: string): string {
+  return new Date(isoDate).toLocaleDateString('en-US', {
+    month: 'short',
     day: 'numeric',
     timeZone: 'UTC',
   });
