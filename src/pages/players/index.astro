@@ -1,0 +1,97 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import type { PlayersData, PlayerRole } from '@/lib/types';
+import { formatRate } from '@/lib/stats';
+import playersData from '@/data/players.json';
+
+const { players } = playersData as unknown as PlayersData;
+const isDataReady = players.length > 0;
+
+// Filter by role tab — default to batters
+const role: PlayerRole = (Astro.url.searchParams.get('role') as PlayerRole) ?? 'batter';
+const filtered = players.filter((p) => p.challenges.role === role);
+---
+
+<BaseLayout
+  title="Players"
+  description="Individual player ABS Challenge leaderboards for batters, catchers, and pitchers."
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <h1 class="text-3xl font-display font-bold mb-2">Player Leaderboards</h1>
+    <p class="text-slate-600 mb-6">Top 50 by challenge volume for each role.</p>
+
+    <!-- Role tabs -->
+    <nav class="flex gap-2 mb-8" aria-label="Player role filter">
+      {(['batter', 'catcher', 'pitcher'] as PlayerRole[]).map((r) => (
+        <a
+          href={`/players?role=${r}`}
+          class:list={[
+            'px-4 py-2 rounded-full text-sm font-medium transition-colors',
+            role === r
+              ? 'bg-brand-navy text-white'
+              : 'bg-slate-100 text-slate-700 hover:bg-slate-200',
+          ]}
+          aria-current={role === r ? 'page' : undefined}
+        >
+          {r.charAt(0).toUpperCase() + r.slice(1)}s
+        </a>
+      ))}
+    </nav>
+
+    {!isDataReady ? (
+      <div class="rounded-lg border-2 border-dashed border-slate-300 p-12 text-center text-slate-500">
+        <p class="text-lg font-medium">Data pipeline not yet run</p>
+        <p class="mt-2 text-sm">Run <code class="bg-slate-100 px-1 py-0.5 rounded">python scripts/run.py</code> to populate.</p>
+      </div>
+    ) : filtered.length === 0 ? (
+      <p class="text-slate-500">No data available for this role.</p>
+    ) : (
+      <div class="overflow-x-auto rounded-lg shadow-sm border border-slate-200">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-50">
+            <tr>
+              <th class="text-left py-3 px-4 font-semibold text-slate-600">#</th>
+              <th class="text-left py-3 px-4 font-semibold text-slate-600">Player</th>
+              <th class="text-left py-3 px-4 font-semibold text-slate-600">Team</th>
+              <th class="text-right py-3 px-4 font-semibold text-slate-600">Challenges</th>
+              <th class="text-right py-3 px-4 font-semibold text-slate-600">Success%</th>
+              {role === 'batter' && (
+                <>
+                  <th class="text-right py-3 px-4 font-semibold text-slate-600">K's Avoided</th>
+                  <th class="text-right py-3 px-4 font-semibold text-slate-600">Walks Gained</th>
+                </>
+              )}
+              {(role === 'catcher' || role === 'pitcher') && (
+                <th class="text-right py-3 px-4 font-semibold text-slate-600">OT Generated</th>
+              )}
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {filtered.slice(0, 50).map((player, i) => (
+              <tr class="hover:bg-slate-50 transition-colors">
+                <td class="py-3 px-4 text-slate-400">{i + 1}</td>
+                <td class="py-3 px-4 font-medium">
+                  <a href={`/players/${player.player_id}`} class="text-brand-navy hover:underline">
+                    {player.name}
+                  </a>
+                </td>
+                <td class="py-3 px-4 text-slate-500">{player.team_id}</td>
+                <td class="py-3 px-4 text-right">{player.challenges.total_challenges}</td>
+                <td class="py-3 px-4 text-right">{formatRate(player.challenges.success_rate)}</td>
+                {role === 'batter' && (
+                  <>
+                    <td class="py-3 px-4 text-right">{player.challenges.strikeouts_avoided ?? '—'}</td>
+                    <td class="py-3 px-4 text-right">{player.challenges.walks_gained ?? '—'}</td>
+                  </>
+                )}
+                {(role === 'catcher' || role === 'pitcher') && (
+                  <td class="py-3 px-4 text-right">{player.challenges.overturns_generated ?? '—'}</td>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )}
+  </div>
+</BaseLayout>

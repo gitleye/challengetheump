@@ -1,0 +1,59 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="About"
+  description="Why the ABS Dashboard was built, who built it, and how to contribute."
+>
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <h1 class="text-3xl font-display font-bold mb-2">About</h1>
+    <p class="text-slate-600 mb-10">Why this exists and how it works.</p>
+
+    <div class="prose prose-slate max-w-none space-y-8">
+      <section>
+        <h2 class="text-xl font-display font-bold">The Question</h2>
+        <p class="text-slate-700 mt-4">
+          MLB's 2026 ABS Challenge System gives teams 2 challenges per game to dispute ball-strike
+          calls using Hawk-Eye camera data. The obvious question became: do teams that win more
+          challenges actually win more games?
+        </p>
+        <p class="text-slate-700 mt-3">
+          This dashboard was built to answer that question with real data, not vibes. It tracks
+          challenge performance, weights outcomes by game leverage (WPA), and compares challenge
+          efficiency to actual win percentage.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-display font-bold">Why Build This</h2>
+        <p class="text-slate-700 mt-4">
+          Box scores track runs, hits, and errors. No public site was aggregating ABS challenge
+          performance in a clean, searchable format and connecting it to standings. This fills that gap.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-display font-bold">Stack & Open Source</h2>
+        <p class="text-slate-700 mt-4">
+          Built with Astro, Tailwind CSS, Chart.js, and a Python data pipeline powered by
+          <code>pybaseball</code>. Data refreshes daily via GitHub Actions and deploys to Cloudflare
+          Pages as a fully static site — no servers, no database, no tracking.
+        </p>
+        <p class="text-slate-700 mt-3">
+          Source code is available on GitHub under the MIT license. Contributions, bug reports,
+          and data corrections are welcome.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-display font-bold">Disclaimer</h2>
+        <p class="text-slate-700 mt-4 text-sm">
+          This site is not affiliated with MLB, any team, or Baseball Savant. All data is sourced
+          from publicly available APIs. Metrics are computed independently and may differ from
+          official statistics.
+        </p>
+      </section>
+    </div>
+  </div>
+</BaseLayout>

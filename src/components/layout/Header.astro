@@ -1,0 +1,77 @@
+---
+const navLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/teams', label: 'Teams' },
+  { href: '/players', label: 'Players' },
+  { href: '/methodology', label: 'Methodology' },
+  { href: '/about', label: 'About' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="bg-brand-navy text-white shadow-md" role="banner">
+  <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Primary navigation">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo / wordmark -->
+      <a href="/" class="flex items-center gap-2 font-display text-xl font-bold hover:text-brand-gold transition-colors" aria-label="ABS Dashboard — Home">
+        <span aria-hidden="true">⚾</span>
+        <span>ABS Dashboard</span>
+      </a>
+
+      <!-- Desktop nav -->
+      <ul class="hidden md:flex items-center gap-1" role="list">
+        {navLinks.map(({ href, label }) => {
+          const isActive = href === '/' ? currentPath === '/' : currentPath.startsWith(href);
+          return (
+            <li>
+              <a
+                href={href}
+                class:list={[
+                  'px-3 py-2 rounded text-sm font-medium transition-colors',
+                  isActive
+                    ? 'bg-white/10 text-white'
+                    : 'text-white/75 hover:text-white hover:bg-white/10',
+                ]}
+                aria-current={isActive ? 'page' : undefined}
+              >
+                {label}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+
+      <!-- Mobile nav toggle — JS-free, using checkbox hack -->
+      <label class="md:hidden cursor-pointer p-2 rounded hover:bg-white/10" for="mobile-nav-toggle" aria-label="Toggle mobile menu">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </label>
+    </div>
+
+    <!-- Mobile nav (CSS-only toggle) -->
+    <input type="checkbox" id="mobile-nav-toggle" class="hidden peer" aria-hidden="true" />
+    <ul class="hidden peer-checked:flex flex-col pb-3 gap-1 md:hidden" role="list">
+      {navLinks.map(({ href, label }) => {
+        const isActive = href === '/' ? currentPath === '/' : currentPath.startsWith(href);
+        return (
+          <li>
+            <a
+              href={href}
+              class:list={[
+                'block px-3 py-2 rounded text-sm font-medium',
+                isActive
+                  ? 'bg-white/10 text-white'
+                  : 'text-white/75 hover:text-white hover:bg-white/10',
+              ]}
+              aria-current={isActive ? 'page' : undefined}
+            >
+              {label}
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  </nav>
+</header>

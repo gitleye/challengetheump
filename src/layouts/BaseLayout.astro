@@ -1,0 +1,70 @@
+---
+import '@/styles/global.css';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
+import metadata from '@/data/metadata.json';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  canonicalUrl?: string;
+  noIndex?: boolean;
+}
+
+const {
+  title,
+  description = 'Track MLB ABS Challenge System performance: success rates, Win Probability Added, and whether beating the robot umpire correlates with winning.',
+  ogImage = '/og-image.png',
+  canonicalUrl,
+  noIndex = false,
+} = Astro.props;
+
+const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://abs-dashboard.pages.dev';
+const canonical = canonicalUrl ?? new URL(Astro.url.pathname, siteUrl).href;
+const fullOgImage = new URL(ogImage, siteUrl).href;
+const fullTitle = title === 'Home' ? 'ABS Dashboard — MLB Challenge System Analytics' : `${title} | ABS Dashboard`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    {noIndex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="canonical" href={canonical} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={fullOgImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="ABS Dashboard" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={fullOgImage} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Sitemap -->
+    <link rel="sitemap" href="/sitemap.xml" />
+  </head>
+  <body class="min-h-screen bg-brand-cream text-slate-900 flex flex-col">
+    <Header />
+    <main id="main-content" class="flex-1">
+      <slot />
+    </main>
+    <Footer lastUpdated={metadata.last_updated} season={metadata.season} />
+  </body>
+</html>

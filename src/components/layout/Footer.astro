@@ -1,0 +1,48 @@
+---
+import { formatDate } from '@/lib/stats';
+
+interface Props {
+  lastUpdated: string;
+  season: number;
+}
+
+const { lastUpdated, season } = Astro.props;
+const isPlaceholder = lastUpdated === '1970-01-01T00:00:00Z';
+---
+
+<footer class="bg-brand-navy text-white/70 py-8 mt-auto" role="contentinfo">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
+      <div>
+        <p>
+          <strong class="text-white">ABS Dashboard</strong> — {season} MLB Season
+        </p>
+        <p class="mt-1">
+          {isPlaceholder
+            ? 'Data not yet loaded. Run the pipeline to populate.'
+            : `Data through ${formatDate(lastUpdated)}`}
+        </p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="flex gap-4" role="list">
+          <li><a href="/methodology" class="hover:text-white transition-colors">Methodology</a></li>
+          <li><a href="/about" class="hover:text-white transition-colors">About</a></li>
+          <li>
+            <a
+              href="https://baseballsavant.mlb.com/abs"
+              class="hover:text-white transition-colors"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Baseball Savant
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    <p class="mt-4 text-xs text-white/40 text-center">
+      Data sourced from Baseball Savant / MLB Statcast. Not affiliated with MLB or any team.
+      Open source — <a href="https://github.com/leyeoyelami/abs-dashboard" class="hover:text-white/70 underline">GitHub</a>.
+    </p>
+  </div>
+</footer>

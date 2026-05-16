@@ -1,0 +1,35 @@
+name: Data Pipeline PR Check
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/**'
+      - '.github/workflows/daily-data-refresh.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: 'scripts/requirements.txt'
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Run pipeline (dry run — no commit)
+        run: python scripts/run.py --dry-run
+        env:
+          PIPELINE_LOG_LEVEL: DEBUG
+
+      - name: Run tests
+        run: pytest scripts/tests/ -v
