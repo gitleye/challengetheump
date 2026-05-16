@@ -1,0 +1,126 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import type { TeamsData, LeagueSummary } from '@/lib/types';
+import { formatRate, formatWpa, formatDate } from '@/lib/stats';
+import teamsData from '@/data/teams.json';
+import metadata from '@/data/metadata.json';
+
+// Type-cast the imported JSON
+const teams = (teamsData as unknown as TeamsData).teams;
+const isDataReady = teams.length > 0;
+
+// Top-line league numbers (will be populated by data pipeline)
+// For now, derive from teams data as placeholder
+const totalChallenges = teams.reduce((sum, t) => sum + (t.challenges?.total_challenges ?? 0), 0);
+const avgSuccessRate = teams.length
+  ? teams.reduce((sum, t) => sum + (t.challenges?.success_rate ?? 0), 0) / teams.length
+  : null;
+---
+
+<BaseLayout
+  title="Home"
+  description="Track MLB ABS Challenge System performance: success rates, Win Probability Added, and whether beating the robot umpire correlates with winning."
+>
+  <!-- Hero -->
+  <section class="bg-brand-navy text-white py-16 px-4">
+    <div class="max-w-4xl mx-auto text-center">
+      <h1 class="font-display text-4xl sm:text-5xl font-bold mb-4">
+        Does Beating the Robot Umpire<br class="hidden sm:block" /> Win You Games?
+      </h1>
+      <p class="text-xl text-white/80 max-w-2xl mx-auto">
+        The 2026 MLB season introduced the ABS Challenge System. We track whether teams that win
+        more ball-strike challenges actually win more games — and by how much.
+      </p>
+      {isDataReady && (
+        <p class="mt-4 text-sm text-white/50">
+          Data through {formatDate(metadata.last_updated)}
+        </p>
+      )}
+    </div>
+  </section>
+
+  <!-- Top-line numbers -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12" aria-labelledby="league-summary-heading">
+    <h2 id="league-summary-heading" class="text-2xl font-display font-bold mb-6">
+      2026 Season at a Glance
+    </h2>
+
+    {!isDataReady ? (
+      <div class="rounded-lg border-2 border-dashed border-slate-300 p-12 text-center text-slate-500">
+        <p class="text-lg font-medium">Data pipeline not yet run</p>
+        <p class="mt-2 text-sm">Run <code class="bg-slate-100 px-1 py-0.5 rounded">python scripts/run.py</code> to populate real data.</p>
+      </div>
+    ) : (
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="bg-white rounded-lg shadow-sm p-6 text-center">
+          <p class="text-3xl font-bold text-brand-navy">{totalChallenges.toLocaleString()}</p>
+          <p class="text-sm text-slate-600 mt-1">Total Challenges</p>
+        </div>
+        <div class="bg-white rounded-lg shadow-sm p-6 text-center">
+          <p class="text-3xl font-bold text-brand-navy">{formatRate(avgSuccessRate)}</p>
+          <p class="text-sm text-slate-600 mt-1">Avg Success Rate</p>
+        </div>
+        <div class="bg-white rounded-lg shadow-sm p-6 text-center">
+          <p class="text-3xl font-bold text-brand-navy">—</p>
+          <p class="text-sm text-slate-600 mt-1">Total WPA Generated</p>
+        </div>
+        <div class="bg-white rounded-lg shadow-sm p-6 text-center">
+          <p class="text-3xl font-bold text-brand-navy">—</p>
+          <p class="text-sm text-slate-600 mt-1">K Rate vs. 2025</p>
+        </div>
+      </div>
+    )}
+  </section>
+
+  <!-- Teams leaderboard teaser -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-16" aria-labelledby="top-teams-heading">
+    <div class="flex items-center justify-between mb-6">
+      <h2 id="top-teams-heading" class="text-2xl font-display font-bold">Top Teams by Challenge WPA</h2>
+      <a href="/teams" class="text-brand-navy font-medium hover:underline text-sm">
+        View all teams →
+      </a>
+    </div>
+
+    {!isDataReady ? (
+      <p class="text-slate-500">No data yet.</p>
+    ) : (
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-slate-200">
+              <th class="text-left py-3 px-2 font-semibold text-slate-600">Rank</th>
+              <th class="text-left py-3 px-2 font-semibold text-slate-600">Team</th>
+              <th class="text-right py-3 px-2 font-semibold text-slate-600">Challenge WPA</th>
+              <th class="text-right py-3 px-2 font-semibold text-slate-600">Success Rate</th>
+              <th class="text-right py-3 px-2 font-semibold text-slate-600">Win%</th>
+            </tr>
+          </thead>
+          <tbody>
+            {teams
+              .sort((a, b) => (b.challenges.challenge_wpa ?? -Infinity) - (a.challenges.challenge_wpa ?? -Infinity))
+              .slice(0, 5)
+              .map((team, i) => (
+                <tr class="border-b border-slate-100 hover:bg-slate-50">
+                  <td class="py-3 px-2 text-slate-500">{i + 1}</td>
+                  <td class="py-3 px-2">
+                    <a href={`/teams/${team.team_id.toLowerCase()}`} class="font-medium hover:underline">
+                      {team.team_name}
+                    </a>
+                  </td>
+                  <td class="py-3 px-2 text-right font-mono">
+                    {formatWpa(team.challenges.challenge_wpa)}
+                  </td>
+                  <td class="py-3 px-2 text-right">
+                    {formatRate(team.challenges.success_rate)}
+                  </td>
+                  <td class="py-3 px-2 text-right">
+                    {formatRate(team.win_pct)}
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </div>
+    )}
+  </section>
+</BaseLayout>

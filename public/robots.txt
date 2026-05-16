@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://abs-dashboard.pages.dev/sitemap.xml

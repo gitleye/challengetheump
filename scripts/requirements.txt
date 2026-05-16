@@ -1,0 +1,19 @@
+# Core data pipeline dependencies
+# Pinned to ensure reproducible builds across environments.
+# Bump versions intentionally, not automatically.
+
+pybaseball==2.2.7
+pandas==2.2.3
+requests==2.32.3
+pydantic==2.10.4
+structlog==24.4.0
+
+# Type safety and schema export
+datamodel-code-generator==0.26.4
+
+# Development / testing
+pytest==8.3.4
+pytest-cov==6.0.0
+
+# HTTP utilities
+urllib3==2.2.3

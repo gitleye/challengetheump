@@ -1,0 +1,77 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import type { TeamsData } from '@/lib/types';
+import { formatRate, formatWpa, formatWinPct } from '@/lib/stats';
+import teamsData from '@/data/teams.json';
+
+const { teams } = teamsData as unknown as TeamsData;
+const isDataReady = teams.length > 0;
+
+// Sort by challenge WPA descending by default
+const sorted = [...teams].sort(
+  (a, b) => (b.challenges.challenge_wpa ?? -Infinity) - (a.challenges.challenge_wpa ?? -Infinity)
+);
+---
+
+<BaseLayout
+  title="Teams"
+  description="MLB team leaderboard ranked by ABS Challenge Win Probability Added. See which teams are getting the most value from the ABS Challenge System."
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <h1 class="text-3xl font-display font-bold mb-2">Team Leaderboard</h1>
+    <p class="text-slate-600 mb-8">
+      Ranked by Challenge WPA — the total Win Probability Added from successful ABS challenges.
+    </p>
+
+    {!isDataReady ? (
+      <div class="rounded-lg border-2 border-dashed border-slate-300 p-12 text-center text-slate-500">
+        <p class="text-lg font-medium">Data pipeline not yet run</p>
+        <p class="mt-2 text-sm">Run <code class="bg-slate-100 px-1 py-0.5 rounded">python scripts/run.py</code> to populate.</p>
+      </div>
+    ) : (
+      <div class="overflow-x-auto rounded-lg shadow-sm border border-slate-200">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-50">
+            <tr>
+              <th class="text-left py-3 px-4 font-semibold text-slate-600">#</th>
+              <th class="text-left py-3 px-4 font-semibold text-slate-600">Team</th>
+              <th class="text-right py-3 px-4 font-semibold text-slate-600">WPA</th>
+              <th class="text-right py-3 px-4 font-semibold text-slate-600">Challenges</th>
+              <th class="text-right py-3 px-4 font-semibold text-slate-600">Success%</th>
+              <th class="text-right py-3 px-4 font-semibold text-slate-600">Net OT</th>
+              <th class="text-right py-3 px-4 font-semibold text-slate-600">W%</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {sorted.map((team, i) => (
+              <tr class="hover:bg-slate-50 transition-colors">
+                <td class="py-3 px-4 text-slate-400">{i + 1}</td>
+                <td class="py-3 px-4">
+                  <a href={`/teams/${team.team_id.toLowerCase()}`} class="font-medium text-brand-navy hover:underline">
+                    {team.team_name}
+                  </a>
+                  <span class="ml-2 text-xs text-slate-400">{team.division}</span>
+                </td>
+                <td class="py-3 px-4 text-right font-mono font-medium">
+                  {formatWpa(team.challenges.challenge_wpa)}
+                </td>
+                <td class="py-3 px-4 text-right">
+                  {team.challenges.total_challenges}
+                </td>
+                <td class="py-3 px-4 text-right">
+                  {formatRate(team.challenges.success_rate)}
+                </td>
+                <td class="py-3 px-4 text-right font-mono">
+                  {team.challenges.net_overturns > 0 ? `+${team.challenges.net_overturns}` : team.challenges.net_overturns}
+                </td>
+                <td class="py-3 px-4 text-right">
+                  {formatWinPct(team.win_pct)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )}
+  </div>
+</BaseLayout>

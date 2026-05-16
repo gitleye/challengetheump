@@ -1,0 +1,9 @@
+{
+  "last_updated": "1970-01-01T00:00:00Z",
+  "season": 2026,
+  "data_quality": "missing",
+  "stale_sources": [],
+  "pipeline_version": "0.0.0",
+  "games_through": null,
+  "_note": "Placeholder — run scripts/run.py to populate real data"
+}

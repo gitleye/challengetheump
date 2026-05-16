@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Skip-to-content link for keyboard/screen-reader users */
+.skip-link {
+  @apply sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50
+    focus:px-4 focus:py-2 focus:bg-white focus:text-brand-navy focus:rounded focus:shadow-lg;
+}
+
+/* Smooth scrolling — respect prefers-reduced-motion */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Prose overrides (used in methodology / about pages) */
+.prose h2 {
+  @apply text-xl font-display font-bold mt-8 mb-3;
+}
+.prose h3 {
+  @apply text-base font-semibold mt-6 mb-2;
+}
+.prose p {
+  @apply text-slate-700 leading-relaxed;
+}
+.prose code {
+  @apply bg-slate-100 text-slate-800 px-1.5 py-0.5 rounded text-sm font-mono;
+}

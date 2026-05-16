@@ -1,0 +1,102 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Methodology"
+  description="How the ABS Dashboard computes challenge success rates, Win Probability Added, and other metrics. Data sources, caveats, and known limitations."
+>
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <h1 class="text-3xl font-display font-bold mb-2">Methodology</h1>
+    <p class="text-slate-600 mb-10">
+      How the data is fetched, what the metrics mean, and where to be skeptical.
+    </p>
+
+    <div class="prose prose-slate max-w-none space-y-8">
+      <section aria-labelledby="data-sources-heading">
+        <h2 id="data-sources-heading" class="text-xl font-display font-bold">Data Sources</h2>
+        <ul class="mt-4 space-y-3 text-slate-700">
+          <li>
+            <strong>Baseball Savant / ABS endpoint</strong> — Primary source for challenge counts,
+            overturn decisions, and which party initiated each challenge. Updated daily.
+          </li>
+          <li>
+            <strong>pybaseball / Statcast</strong> — Pitch-by-pitch data used to cross-reference
+            challenge outcomes and compute pitch-level context.
+          </li>
+          <li>
+            <strong>MLB Stats API</strong> — Team standings, game results, and win percentage.
+          </li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="metrics-heading">
+        <h2 id="metrics-heading" class="text-xl font-display font-bold">Key Metrics</h2>
+
+        <div class="mt-4 space-y-6">
+          <div>
+            <h3 class="font-semibold">Challenge WPA (Win Probability Added)</h3>
+            <p class="text-slate-700 mt-1">
+              For each successful challenge, we record the change in Win Probability from before to
+              after the overturned call. WPA is summed across all successful challenges for a team
+              or player. This is the headline metric — it captures not just whether a team wins
+              challenges, but whether they win <em>important</em> challenges.
+            </p>
+            <p class="text-slate-600 mt-2 text-sm italic">
+              Caveat: WPA is highly context-dependent and can swing dramatically on a single at-bat.
+              We surface confidence intervals and sample size warnings throughout the site.
+            </p>
+          </div>
+
+          <div>
+            <h3 class="font-semibold">Success Rate</h3>
+            <p class="text-slate-700 mt-1">
+              Overturned challenges ÷ total challenges. Simple, but misleading without context — a
+              team with 2/3 challenges is not better than a team with 40/70 challenges.
+            </p>
+          </div>
+
+          <div>
+            <h3 class="font-semibold">Net Overturns</h3>
+            <p class="text-slate-700 mt-1">
+              Overturns in a team's favor minus overturns against them. A team could have a high
+              success rate but negative net overturns if they challenge rarely while their opponents
+              challenge frequently.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="caveats-heading">
+        <h2 id="caveats-heading" class="text-xl font-display font-bold">Caveats & Known Issues</h2>
+        <ul class="mt-4 space-y-3 text-slate-700">
+          <li>
+            The 2026 season is the first with ABS at scale. Sample sizes are small through mid-season.
+            We will add rolling confidence intervals as the season progresses.
+          </li>
+          <li>
+            Not all challenge outcomes are available in real time. Data may lag by 24–48 hours after
+            late-night games.
+          </li>
+          <li>
+            Win Probability models differ across sources. We use a standard Statcast WPA model, which
+            is not the same as ESPN or Baseball Reference.
+          </li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="pipeline-heading">
+        <h2 id="pipeline-heading" class="text-xl font-display font-bold">Pipeline</h2>
+        <p class="text-slate-700 mt-4">
+          Data is fetched daily via a GitHub Actions workflow, validated against strict Pydantic
+          schemas, and committed as static JSON files. The site is rebuilt and redeployed on every
+          commit via Cloudflare Pages. There is no runtime server — all data is baked in at build time.
+        </p>
+        <p class="text-slate-700 mt-3">
+          The full pipeline source is available on GitHub. See <code>scripts/README.md</code> for
+          instructions to run it locally.
+        </p>
+      </section>
+    </div>
+  </div>
+</BaseLayout>
