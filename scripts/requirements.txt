@@ -9,7 +9,7 @@ pydantic>=2.6,<3.0
 structlog>=24.0,<26.0
 
 # Baseball data
-pybaseball>=2.2
+pybaseball>=2.2.7
 
 # HTTP
 urllib3>=2.0,<3.0
