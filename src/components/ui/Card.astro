@@ -5,13 +5,15 @@ interface Props {
   cta?: { label: string; href: string };
   class?: string;
   noPadding?: boolean;
+  textured?: boolean;
 }
-const { title, icon, cta, class: cls = '', noPadding = false } = Astro.props;
+const { title, icon, cta, class: cls = '', noPadding = false, textured = false } = Astro.props;
 ---
 
 <div class:list={[
-  'bg-elevated rounded-lg border border-border transition-all duration-200',
+  'card-elevated bg-elevated rounded-lg border border-border transition-all duration-200',
   'hover:border-border/80',
+  textured && 'card-textured',
   !noPadding && 'p-6',
   cls,
 ]}>

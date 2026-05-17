@@ -6,6 +6,7 @@ interface Props {
   deltaLabel?: string;
   size?: 'xl' | 'lg' | 'md';
   accent?: boolean;
+  animate?: boolean;
   class?: string;
 }
 
@@ -16,6 +17,7 @@ const {
   deltaLabel,
   size = 'md',
   accent = false,
+  animate = false,
   class: cls = '',
 } = Astro.props;
 
@@ -27,6 +29,12 @@ const sizeClass = {
 
 const deltaSign = delta !== null ? (delta > 0 ? '+' : delta < 0 ? '' : '±') : null;
 const deltaColor = delta === null ? '' : delta > 0 ? 'text-success' : delta < 0 ? 'text-danger' : 'text-text-tertiary';
+
+// Parse numeric target for animation
+const numericValue = typeof value === 'number' ? value : parseFloat(String(value).replace(/[^0-9.\-]/g, ''));
+const isNumeric = !isNaN(numericValue) && animate;
+const prefix = isNumeric ? String(value).match(/^([^0-9.\-]*)/)?.[1] || '' : '';
+const suffix = isNumeric ? String(value).match(/([^0-9.\-]*)$/)?.[1] || '' : '';
 ---
 
 <div class:list={['flex flex-col gap-1', cls]}>
@@ -37,8 +45,12 @@ const deltaColor = delta === null ? '' : delta > 0 ? 'text-success' : delta < 0 
       accent ? 'text-accent' : 'text-text-primary',
     ]}
     aria-label={`${label}: ${value}`}
+    data-count-up={isNumeric ? 'true' : undefined}
+    data-count-target={isNumeric ? numericValue : undefined}
+    data-count-prefix={isNumeric ? prefix : undefined}
+    data-count-suffix={isNumeric ? suffix : undefined}
   >
-    {value}
+    {isNumeric ? `${prefix}0${suffix}` : value}
   </span>
   <span class="text-caption uppercase tracking-wider text-text-tertiary">{label}</span>
   {delta !== null && (
