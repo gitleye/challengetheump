@@ -6,6 +6,7 @@ import Badge from '@/components/ui/Badge.astro';
 import Tooltip from '@/components/ui/Tooltip.astro';
 import Sparkline from '@/components/ui/Sparkline.astro';
 import ScatterPlot from '@/components/charts/ScatterPlot.astro';
+import StrikeZone from '@/components/hero/StrikeZone.astro';
 import TeamLogo from '@/components/ui/TeamLogo.astro';
 import PlayerAvatar from '@/components/ui/PlayerAvatar.astro';
 import type { TeamsData, PlayersData, LeagueSummary } from '@/lib/types';
@@ -63,46 +64,95 @@ const gamesThrough = metadata.games_through ? formatDateShort(metadata.games_thr
 <BaseLayout title="Home">
   <!-- Hero ---------------------------------------------------------------- -->
   <section class="relative overflow-hidden border-b border-border">
+    <!-- Grid background -->
     <div class="absolute inset-0 opacity-[0.03]" aria-hidden="true"
       style="background-image: linear-gradient(#D4FF3D 1px, transparent 1px), linear-gradient(90deg, #D4FF3D 1px, transparent 1px); background-size: 40px 40px;">
     </div>
 
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28">
-      <div class="max-w-3xl">
-        <Badge variant="accent" class="mb-6">2026 Season {gamesThrough ? `· Through ${gamesThrough}` : ''}</Badge>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+      <div class="grid lg:grid-cols-2 gap-8 items-center">
+        <!-- Text column -->
+        <div class="relative z-10">
+          <Badge variant="accent" class="mb-6">2026 Season {gamesThrough ? `· Through ${gamesThrough}` : ''}</Badge>
 
-        {isDataReady && successPct ? (
-          <h1 class="text-display-lg sm:text-display-xl font-display font-black text-text-primary leading-none mb-6">
-            <span class="text-accent">{successPct}%</span> of ABS<br />
-            challenges have<br />
-            overturned the ump.
-          </h1>
-        ) : (
-          <h1 class="text-display-lg sm:text-display-xl font-display font-black text-text-primary leading-none mb-6">
-            Does beating the<br />
-            <span class="text-accent">robot umpire</span><br />
-            win you games?
-          </h1>
-        )}
+          {isDataReady && successPct ? (
+            <h1 class="text-display-lg sm:text-display-xl font-display font-black text-text-primary leading-none mb-6">
+              <span class="text-accent">{successPct}%</span> of ABS<br />
+              challenges have<br />
+              overturned the ump.
+            </h1>
+          ) : (
+            <h1 class="text-display-lg sm:text-display-xl font-display font-black text-text-primary leading-none mb-6">
+              Does beating the<br />
+              <span class="text-accent">robot umpire</span><br />
+              win you games?
+            </h1>
+          )}
 
-        <p class="text-body-lg text-text-secondary max-w-xl mb-8">
-          The ABS Challenge System lets players dispute ball-strike calls via Hawk-Eye cameras.
-          We track every challenge — who wins them, and whether it matters.
-        </p>
-        <div class="flex gap-3 flex-wrap">
-          <a href="/teams"
-            class="inline-flex items-center gap-2 px-5 py-2.5 bg-accent text-black font-semibold
-              rounded-md text-body-sm hover:bg-accent/90 transition-colors duration-200 shadow-glow">
-            View teams
-          </a>
-          <a href="/methodology"
-            class="inline-flex items-center gap-2 px-5 py-2.5 bg-elevated border border-border
-              text-text-secondary font-medium rounded-md text-body-sm
-              hover:text-text-primary hover:border-accent/50 transition-colors duration-200">
-            How it works
-          </a>
+          <p class="text-body-lg text-text-secondary max-w-xl mb-8">
+            The ABS Challenge System lets players dispute ball-strike calls via Hawk-Eye cameras.
+            We track every challenge — who wins them, and whether it matters.
+          </p>
+          <div class="flex gap-3 flex-wrap mb-10 lg:mb-0">
+            <a href="/teams"
+              class="cta-btn inline-flex items-center gap-2 px-5 py-2.5 bg-accent text-black font-semibold
+                rounded-md text-body-sm hover:bg-accent/90 transition-colors duration-200 shadow-glow">
+              View teams
+            </a>
+            <a href="/methodology"
+              class="cta-btn inline-flex items-center gap-2 px-5 py-2.5 bg-elevated border border-border
+                text-text-secondary font-medium rounded-md text-body-sm
+                hover:text-text-primary hover:border-accent/50 transition-colors duration-200">
+              How it works
+            </a>
+          </div>
+        </div>
+
+        <!-- Strike zone visualization -->
+        <div class="relative flex items-center justify-center lg:justify-end">
+          <div class="w-full max-w-sm lg:max-w-md">
+            <StrikeZone successRate={overallSuccessRate ?? 0.53} />
+          </div>
+
+          <!-- Legend -->
+          <div class="absolute bottom-0 right-0 flex gap-4 text-caption text-text-tertiary" aria-hidden="true">
+            <span class="flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-success inline-block"></span> Strike
+            </span>
+            <span class="flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-danger inline-block"></span> Bad call
+            </span>
+            <span class="flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-warning inline-block"></span> Overturned
+            </span>
+          </div>
         </div>
       </div>
+
+      <!-- Hero counter stats -->
+      {isDataReady && (
+        <div class="grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-border/50">
+          <Stat
+            value={totalChallenges.toLocaleString()}
+            label="Challenges Filed"
+            size="lg"
+            accent
+            animate
+          />
+          <Stat
+            value={league.total_overturns?.toLocaleString() ?? '—'}
+            label="Calls Overturned"
+            size="lg"
+            animate
+          />
+          <Stat
+            value={formatRate(overallSuccessRate)}
+            label="Overturn Rate"
+            size="lg"
+            animate
+          />
+        </div>
+      )}
     </div>
   </section>
 

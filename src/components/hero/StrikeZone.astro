@@ -1,0 +1,267 @@
+---
+/**
+ * SVG strike zone visualization — the hero showpiece.
+ * Renders a perspective wireframe zone with color-coded pitch dots.
+ * CSS 3D transforms for the Hawk-Eye broadcast look. No JS framework needed.
+ */
+
+interface Props {
+  successRate?: number;
+  class?: string;
+}
+
+const { successRate = 0.53, class: cls = '' } = Astro.props;
+
+// Generate plausible pitch coordinates at build time
+// Zone is roughly 17 inches wide, from knees (~1.5ft) to letters (~3.5ft)
+// We'll use a normalized coordinate system: x: -1 to 1, y: -1 to 1
+// where (0,0) is center of zone
+function seededRandom(seed: number) {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}
+
+interface Pitch {
+  x: number;
+  y: number;
+  type: 'correct-strike' | 'bad-call' | 'overturn';
+  delay: number;
+}
+
+const pitches: Pitch[] = [];
+let seed = 42;
+
+// 10 correct strikes (green) — inside the zone
+for (let i = 0; i < 10; i++) {
+  seed++;
+  pitches.push({
+    x: (seededRandom(seed) - 0.5) * 1.4,
+    y: (seededRandom(seed * 2) - 0.5) * 1.4,
+    type: 'correct-strike',
+    delay: seededRandom(seed * 3) * 2,
+  });
+}
+
+// 8 bad calls (red) — near the edges, slightly outside
+for (let i = 0; i < 8; i++) {
+  seed++;
+  const edge = seededRandom(seed) > 0.5 ? 1 : -1;
+  const axis = seededRandom(seed * 4) > 0.5 ? 'x' : 'y';
+  pitches.push({
+    x: axis === 'x' ? edge * (0.6 + seededRandom(seed * 5) * 0.5) : (seededRandom(seed * 6) - 0.5) * 1.6,
+    y: axis === 'y' ? edge * (0.6 + seededRandom(seed * 7) * 0.5) : (seededRandom(seed * 8) - 0.5) * 1.6,
+    type: 'bad-call',
+    delay: seededRandom(seed * 9) * 2,
+  });
+}
+
+// 5 overturns (yellow, pulsing) — at the edges of the zone
+for (let i = 0; i < 5; i++) {
+  seed++;
+  pitches.push({
+    x: (seededRandom(seed * 10) - 0.5) * 1.8,
+    y: (seededRandom(seed * 11) - 0.5) * 1.8,
+    type: 'overturn',
+    delay: 2 + seededRandom(seed * 12) * 0.8,
+  });
+}
+
+// Convert normalized coords to SVG coords
+// Zone box: centered at (200, 200), 160x200 (w x h)
+const zoneX = 200;
+const zoneY = 200;
+const zoneW = 160;
+const zoneH = 200;
+
+function pitchToSvg(p: Pitch) {
+  return {
+    cx: zoneX + p.x * (zoneW / 2),
+    cy: zoneY + p.y * (zoneH / 2),
+    type: p.type,
+    delay: p.delay,
+  };
+}
+
+const svgPitches = pitches.map(pitchToSvg);
+---
+
+<div class:list={['strike-zone-container', cls]} data-strike-zone>
+  <svg
+    viewBox="0 0 400 400"
+    class="strike-zone-svg w-full h-full"
+    aria-hidden="true"
+    fill="none"
+  >
+    <defs>
+      <!-- Glow filters -->
+      <filter id="glow-green" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="2" result="blur" />
+        <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+      </filter>
+      <filter id="glow-red" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="2" result="blur" />
+        <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+      </filter>
+      <filter id="glow-yellow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="4" result="blur" />
+        <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+      </filter>
+    </defs>
+
+    <!-- Strike zone box -->
+    <rect
+      x={zoneX - zoneW / 2}
+      y={zoneY - zoneH / 2}
+      width={zoneW}
+      height={zoneH}
+      stroke="rgba(212,255,61,0.4)"
+      stroke-width="1.5"
+      fill="rgba(212,255,61,0.03)"
+      rx="2"
+      class="zone-box"
+    />
+
+    <!-- Zone horizontal thirds -->
+    <line x1={zoneX - zoneW / 2} y1={zoneY - zoneH / 6} x2={zoneX + zoneW / 2} y2={zoneY - zoneH / 6}
+      stroke="rgba(212,255,61,0.15)" stroke-width="0.75" stroke-dasharray="4 4" />
+    <line x1={zoneX - zoneW / 2} y1={zoneY + zoneH / 6} x2={zoneX + zoneW / 2} y2={zoneY + zoneH / 6}
+      stroke="rgba(212,255,61,0.15)" stroke-width="0.75" stroke-dasharray="4 4" />
+
+    <!-- Zone vertical thirds -->
+    <line x1={zoneX - zoneW / 6} y1={zoneY - zoneH / 2} x2={zoneX - zoneW / 6} y2={zoneY + zoneH / 2}
+      stroke="rgba(212,255,61,0.15)" stroke-width="0.75" stroke-dasharray="4 4" />
+    <line x1={zoneX + zoneW / 6} y1={zoneY - zoneH / 2} x2={zoneX + zoneW / 6} y2={zoneY + zoneH / 2}
+      stroke="rgba(212,255,61,0.15)" stroke-width="0.75" stroke-dasharray="4 4" />
+
+    <!-- Home plate shape at bottom -->
+    <polygon
+      points={`${zoneX - 30},${zoneY + zoneH / 2 + 30} ${zoneX - 15},${zoneY + zoneH / 2 + 45} ${zoneX},${zoneY + zoneH / 2 + 52} ${zoneX + 15},${zoneY + zoneH / 2 + 45} ${zoneX + 30},${zoneY + zoneH / 2 + 30}`}
+      stroke="rgba(212,255,61,0.2)"
+      stroke-width="1"
+      fill="rgba(212,255,61,0.02)"
+    />
+
+    <!-- Pitch dots -->
+    {svgPitches.map((pitch, i) => {
+      const color = pitch.type === 'correct-strike' ? '#22C55E'
+        : pitch.type === 'bad-call' ? '#EF4444'
+        : '#FACC15';
+      const filter = pitch.type === 'correct-strike' ? 'url(#glow-green)'
+        : pitch.type === 'bad-call' ? 'url(#glow-red)'
+        : 'url(#glow-yellow)';
+      const isOverturn = pitch.type === 'overturn';
+
+      return (
+        <circle
+          cx={pitch.cx}
+          cy={pitch.cy}
+          r={isOverturn ? 5 : 4}
+          fill={color}
+          opacity="0"
+          filter={filter}
+          class:list={['pitch-dot', isOverturn && 'pitch-overturn']}
+          style={`animation-delay: ${pitch.delay}s;`}
+        />
+      );
+    })}
+  </svg>
+</div>
+
+<style>
+  .strike-zone-container {
+    perspective: 800px;
+    transform-style: preserve-3d;
+  }
+
+  .strike-zone-svg {
+    transform: rotateX(8deg) rotateY(-3deg);
+    transition: transform 0.3s ease-out;
+    transform-style: preserve-3d;
+  }
+
+  /* Pitch dot entrance animation */
+  .pitch-dot {
+    animation: pitch-appear 0.4s ease-out forwards;
+  }
+
+  .pitch-overturn {
+    animation: pitch-appear 0.4s ease-out forwards, pitch-pulse 2s ease-in-out 3s infinite;
+  }
+
+  @keyframes pitch-appear {
+    0% {
+      opacity: 0;
+      r: 0;
+    }
+    60% {
+      opacity: 0.9;
+      r: 6;
+    }
+    100% {
+      opacity: 0.8;
+      r: 4;
+    }
+  }
+
+  @keyframes pitch-pulse {
+    0%, 100% {
+      opacity: 0.8;
+      r: 5;
+    }
+    50% {
+      opacity: 1;
+      r: 7;
+    }
+  }
+
+  /* Zone box subtle glow */
+  .zone-box {
+    animation: zone-glow 4s ease-in-out infinite alternate;
+  }
+
+  @keyframes zone-glow {
+    0% { stroke: rgba(212,255,61,0.3); }
+    100% { stroke: rgba(212,255,61,0.5); }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .pitch-dot,
+    .pitch-overturn {
+      animation: none !important;
+      opacity: 0.8 !important;
+    }
+    .zone-box {
+      animation: none !important;
+    }
+    .strike-zone-svg {
+      transition: none !important;
+    }
+  }
+</style>
+
+<script is:inline>
+  // Parallax tilt on mouse move — disabled on touch and reduced motion
+  (function() {
+    var container = document.querySelector('[data-strike-zone]');
+    if (!container) return;
+    var svg = container.querySelector('.strike-zone-svg');
+    if (!svg) return;
+
+    var isTouch = 'ontouchstart' in window;
+    var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (isTouch || reducedMotion) return;
+
+    document.addEventListener('mousemove', function(e) {
+      var rect = container.getBoundingClientRect();
+      var cx = rect.left + rect.width / 2;
+      var cy = rect.top + rect.height / 2;
+      var dx = (e.clientX - cx) / (rect.width / 2);
+      var dy = (e.clientY - cy) / (rect.height / 2);
+      // Max 5 degrees tilt
+      var rotY = dx * -5;
+      var rotX = dy * 5 + 8; // 8deg base tilt
+      svg.style.transform = 'rotateX(' + rotX + 'deg) rotateY(' + rotY + 'deg)';
+    });
+  })();
+</script>
