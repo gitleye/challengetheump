@@ -71,12 +71,19 @@ const chartData = JSON.stringify({ points, xLabel, yLabel });
   import Chart from 'chart.js/auto';
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
+  const chartInstances: Record<string, any> = {};
+
   function renderScatter(chartId: string, chartData: string) {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const init = () => {
       const canvas = document.getElementById(chartId);
       if (!canvas || !(canvas instanceof HTMLCanvasElement)) return;
+
+      // Destroy existing chart instance before re-creating
+      if (chartInstances[chartId]) {
+        chartInstances[chartId].destroy();
+      }
 
       const p = JSON.parse(chartData);
       const isLight = document.documentElement.classList.contains('light');
@@ -132,7 +139,7 @@ const chartData = JSON.stringify({ points, xLabel, yLabel });
         },
       };
 
-      new Chart(canvas, {
+      chartInstances[chartId] = new Chart(canvas, {
         type: 'scatter',
         data: {
           datasets: [{
@@ -201,4 +208,17 @@ const chartData = JSON.stringify({ points, xLabel, yLabel });
   // Process any queued scatter charts
   const queue = (window as any).__scatterQueue || [];
   queue.forEach((item: any) => renderScatter(item.chartId, item.chartData));
+
+  // Re-render all charts when theme changes (call init directly, skip observer)
+  window.addEventListener('theme-changed', () => {
+    queue.forEach((item: any) => {
+      const canvas = document.getElementById(item.chartId);
+      if (!canvas || !(canvas instanceof HTMLCanvasElement)) return;
+      if (chartInstances[item.chartId]) {
+        chartInstances[item.chartId].destroy();
+      }
+      // Re-run full render which re-reads isLight
+      renderScatter(item.chartId, item.chartData);
+    });
+  });
 </script>
