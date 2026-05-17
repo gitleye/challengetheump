@@ -108,5 +108,43 @@ const fullTitle = title === 'Home'
       <slot />
     </main>
     <Footer lastUpdated={metadata.last_updated} season={metadata.season} />
+
+    <!-- Count-up animation for stat numbers -->
+    <script is:inline>
+    (function() {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.querySelectorAll('[data-count-up]').forEach(function(el) {
+          var t = parseFloat(el.dataset.countTarget);
+          var p = el.dataset.countPrefix || '';
+          var s = el.dataset.countSuffix || '';
+          el.textContent = p + (t % 1 === 0 ? t.toLocaleString() : t.toFixed(1)) + s;
+        });
+        return;
+      }
+      var observed = new Set();
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (!entry.isIntersecting || observed.has(entry.target)) return;
+          observed.add(entry.target);
+          var el = entry.target;
+          var target = parseFloat(el.dataset.countTarget);
+          var prefix = el.dataset.countPrefix || '';
+          var suffix = el.dataset.countSuffix || '';
+          var isInt = target % 1 === 0;
+          var duration = 1200;
+          var start = performance.now();
+          function ease(t) { return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2; }
+          function tick(now) {
+            var p = Math.min((now - start) / duration, 1);
+            var v = ease(p) * target;
+            el.textContent = prefix + (isInt ? Math.round(v).toLocaleString() : v.toFixed(1)) + suffix;
+            if (p < 1) requestAnimationFrame(tick);
+          }
+          requestAnimationFrame(tick);
+        });
+      }, { threshold: 0.3 });
+      document.querySelectorAll('[data-count-up]').forEach(function(el) { observer.observe(el); });
+    })();
+    </script>
   </body>
 </html>

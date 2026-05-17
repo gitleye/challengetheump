@@ -116,35 +116,39 @@ const gamesThrough = metadata.games_through ? formatDateShort(metadata.games_thr
     </div>
 
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-      <Card class="text-center">
+      <Card class="text-center" textured>
         <Stat
           value={isDataReady ? totalChallenges.toLocaleString() : '—'}
           label="Total Challenges"
           size="lg"
           accent
+          animate={isDataReady}
         />
       </Card>
-      <Card class="text-center">
+      <Card class="text-center" textured>
         <Stat
           value={isDataReady ? formatRate(overallSuccessRate) : '—'}
           label="Overturn Rate"
           size="lg"
+          animate={isDataReady}
         />
       </Card>
-      <Card class="text-center">
+      <Card class="text-center" textured>
         <Stat
           value={isDataReady ? (league.total_overturns?.toLocaleString() ?? '—') : '—'}
           label="Total Overturns"
           size="lg"
+          animate={isDataReady}
         />
       </Card>
-      <Card class="text-center">
+      <Card class="text-center" textured>
         <Stat
           value={isDataReady && league.k_rate && league.k_rate_prior_season
             ? formatRate(league.k_rate - league.k_rate_prior_season)
             : '—'}
           label="K Rate vs. 2025"
           size="lg"
+          animate={isDataReady}
         />
       </Card>
     </div>
