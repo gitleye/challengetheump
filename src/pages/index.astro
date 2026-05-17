@@ -268,15 +268,13 @@ const gamesThrough = metadata.games_through ? formatDateShort(metadata.games_thr
                 <tr>
                   <td class="text-text-tertiary font-mono">{i + 1}</td>
                   <td>
-                    <div class="flex items-center gap-2">
-                      <TeamLogo teamId={team.team_id} size={24} />
-                      <div>
-                        <a href={`/teams/${team.team_id.toLowerCase()}`}
-                          class="font-medium text-text-primary hover:text-accent transition-colors">
-                          {team.team_name}
-                        </a>
-                        <span class="ml-2 text-caption text-text-tertiary">{team.league}</span>
-                      </div>
+                    <div class="flex items-center gap-2 whitespace-nowrap">
+                      <TeamLogo teamId={team.team_id} size={20} />
+                      <a href={`/teams/${team.team_id.toLowerCase()}`}
+                        class="font-medium text-text-primary hover:text-accent transition-colors">
+                        {team.team_name}
+                      </a>
+                      <span class="text-caption text-text-tertiary">{team.league}</span>
                     </div>
                   </td>
                   <td class="text-right font-mono font-bold text-accent">

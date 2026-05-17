@@ -130,10 +130,6 @@ html.light svg line[stroke="#D4FF3D"] { stroke: var(--color-accent); }
   .data-table td {
     @apply py-3 px-4 border-b border-border/50 text-text-secondary;
   }
-  .data-table tr:hover td {
-    @apply bg-elevated/50;
-  }
-
   /* Stat number */
   .stat-number {
     @apply font-mono font-bold tabular-nums text-text-primary;
@@ -194,6 +190,65 @@ html.light svg line[stroke="#D4FF3D"] { stroke: var(--color-accent); }
     box-shadow: 0 0 0 1px rgb(212 255 61 / 0.4), 0 0 20px rgb(212 255 61 / 0.15);
   }
 }
+
+  /* Stitch underline for inline links */
+  .prose-dark a,
+  .stitch-link {
+    text-decoration: none;
+    background-image: linear-gradient(90deg, currentColor 33%, transparent 33%);
+    background-size: 6px 1px;
+    background-repeat: repeat-x;
+    background-position: bottom;
+    padding-bottom: 2px;
+    transition: background-size 0.3s ease;
+  }
+  .prose-dark a:hover,
+  .stitch-link:hover {
+    background-size: 3px 1px;
+  }
+
+  /* Table row hover */
+  .data-table tbody tr td {
+    transition: background-color 0.2s ease;
+  }
+  .data-table tbody tr:hover td,
+  .data-table tbody tr:focus-within td {
+    background-color: rgb(212 255 61 / 0.04);
+  }
+  html.light .data-table tbody tr:hover td,
+  html.light .data-table tbody tr:focus-within td {
+    background-color: rgb(74 122 0 / 0.04);
+  }
+
+  /* CTA button sweep effect */
+  .cta-btn {
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+    pointer-events: none;
+  }
+  .cta-btn:hover::before {
+    transform: translateX(100%);
+  }
+
+  /* Sort arrow bounce */
+  .sort-asc::after,
+  .sort-desc::after {
+    display: inline-block;
+    animation: sort-bounce 0.3s ease;
+  }
+  @keyframes sort-bounce {
+    0% { transform: translateY(4px); opacity: 0; }
+    60% { transform: translateY(-2px); }
+    100% { transform: translateY(0); opacity: 1; }
+  }
 
 /* ---- Utilities --------------------------------------------------------- */
 @layer utilities {
