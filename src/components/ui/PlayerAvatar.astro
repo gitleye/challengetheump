@@ -1,0 +1,39 @@
+---
+import { playerHeadshotUrl, teamColor } from '@/lib/team-meta';
+
+interface Props {
+  playerId: number;
+  name: string;
+  teamId: string;
+  size?: number;
+  class?: string;
+}
+
+const { playerId, name, teamId, size = 32, class: cls = '' } = Astro.props;
+const headshotUrl = playerHeadshotUrl(playerId);
+const initials = name.split(' ').map(n => n[0]).join('').slice(0, 2);
+const bgColor = teamColor(teamId);
+---
+
+<span
+  class:list={['player-avatar inline-flex items-center justify-center flex-shrink-0 rounded-full overflow-hidden bg-elevated border border-border', cls]}
+  style={`width:${size}px;height:${size}px;`}
+>
+  <img
+    src={headshotUrl}
+    alt={`${name} headshot`}
+    width={size}
+    height={size}
+    loading="lazy"
+    decoding="async"
+    class="player-avatar-img object-cover w-full h-full"
+    onerror={`this.style.display='none';this.nextElementSibling.style.display='flex';`}
+  />
+  <span
+    class="player-avatar-fallback items-center justify-center text-white font-mono font-bold rounded-full"
+    style={`display:none;width:${size}px;height:${size}px;font-size:${Math.max(9, size * 0.35)}px;background-color:${bgColor};`}
+    aria-hidden="true"
+  >
+    {initials}
+  </span>
+</span>

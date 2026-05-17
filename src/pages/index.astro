@@ -6,6 +6,8 @@ import Badge from '@/components/ui/Badge.astro';
 import Tooltip from '@/components/ui/Tooltip.astro';
 import Sparkline from '@/components/ui/Sparkline.astro';
 import ScatterPlot from '@/components/charts/ScatterPlot.astro';
+import TeamLogo from '@/components/ui/TeamLogo.astro';
+import PlayerAvatar from '@/components/ui/PlayerAvatar.astro';
 import type { TeamsData, PlayersData, LeagueSummary } from '@/lib/types';
 import { formatRate, formatWpa, formatWinPct, formatDate, formatDateShort, pearsonR } from '@/lib/stats';
 import teamsData from '@/data/teams.json';
@@ -216,11 +218,16 @@ const gamesThrough = metadata.games_through ? formatDateShort(metadata.games_thr
                 <tr>
                   <td class="text-text-tertiary font-mono">{i + 1}</td>
                   <td>
-                    <a href={`/teams/${team.team_id.toLowerCase()}`}
-                      class="font-medium text-text-primary hover:text-accent transition-colors">
-                      {team.team_name}
-                    </a>
-                    <span class="ml-2 text-caption text-text-tertiary">{team.league}</span>
+                    <div class="flex items-center gap-2">
+                      <TeamLogo teamId={team.team_id} size={24} />
+                      <div>
+                        <a href={`/teams/${team.team_id.toLowerCase()}`}
+                          class="font-medium text-text-primary hover:text-accent transition-colors">
+                          {team.team_name}
+                        </a>
+                        <span class="ml-2 text-caption text-text-tertiary">{team.league}</span>
+                      </div>
+                    </div>
                   </td>
                   <td class="text-right font-mono font-bold text-accent">
                     {formatWpa(team.challenges.challenge_wpa)}
@@ -274,11 +281,16 @@ const gamesThrough = metadata.games_through ? formatDateShort(metadata.games_thr
                     <tr>
                       <td class="text-text-tertiary font-mono">{i + 1}</td>
                       <td>
-                        <a href={`/players/${p.player_id}`}
-                          class="font-medium text-text-primary hover:text-accent transition-colors">
-                          {p.name}
-                        </a>
-                        <span class="ml-1.5 text-caption text-text-tertiary">{p.team_id}</span>
+                        <div class="flex items-center gap-2">
+                          <PlayerAvatar playerId={p.player_id} name={p.name} teamId={p.team_id} size={28} />
+                          <div>
+                            <a href={`/players/${p.player_id}`}
+                              class="font-medium text-text-primary hover:text-accent transition-colors">
+                              {p.name}
+                            </a>
+                            <span class="ml-1.5 text-caption text-text-tertiary">{p.team_id}</span>
+                          </div>
+                        </div>
                       </td>
                       <td class="text-right font-mono font-bold text-accent">
                         {formatRate(p.challenges.success_rate)}
@@ -317,11 +329,16 @@ const gamesThrough = metadata.games_through ? formatDateShort(metadata.games_thr
                     <tr>
                       <td class="text-text-tertiary font-mono">{i + 1}</td>
                       <td>
-                        <a href={`/players/${p.player_id}`}
-                          class="font-medium text-text-primary hover:text-accent transition-colors">
-                          {p.name}
-                        </a>
-                        <span class="ml-1.5 text-caption text-text-tertiary">{p.team_id}</span>
+                        <div class="flex items-center gap-2">
+                          <PlayerAvatar playerId={p.player_id} name={p.name} teamId={p.team_id} size={28} />
+                          <div>
+                            <a href={`/players/${p.player_id}`}
+                              class="font-medium text-text-primary hover:text-accent transition-colors">
+                              {p.name}
+                            </a>
+                            <span class="ml-1.5 text-caption text-text-tertiary">{p.team_id}</span>
+                          </div>
+                        </div>
                       </td>
                       <td class="text-right font-mono font-bold text-accent">
                         {formatRate(p.challenges.success_rate)}

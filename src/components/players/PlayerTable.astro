@@ -1,6 +1,7 @@
 ---
 import Card from '@/components/ui/Card.astro';
 import Tooltip from '@/components/ui/Tooltip.astro';
+import PlayerAvatar from '@/components/ui/PlayerAvatar.astro';
 import type { PlayerRecord, PlayerRole } from '@/lib/types';
 import { formatRate } from '@/lib/stats';
 
@@ -83,12 +84,15 @@ const roleHrefs: Record<string, string> = {
             <tr>
               <td class="text-text-tertiary font-mono">{i + 1}</td>
               <td>
-                <a
-                  href={`/players/${player.player_id}`}
-                  class="font-medium text-text-primary hover:text-accent transition-colors"
-                >
-                  {player.name}
-                </a>
+                <div class="flex items-center gap-2">
+                  <PlayerAvatar playerId={player.player_id} name={player.name} teamId={player.team_id} size={28} />
+                  <a
+                    href={`/players/${player.player_id}`}
+                    class="font-medium text-text-primary hover:text-accent transition-colors"
+                  >
+                    {player.name}
+                  </a>
+                </div>
               </td>
               <td class="font-mono text-text-secondary">{player.team_id}</td>
               <td class="text-right font-mono">{player.challenges.total_challenges}</td>
