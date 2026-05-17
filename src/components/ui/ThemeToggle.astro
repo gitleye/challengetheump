@@ -55,5 +55,6 @@
     const next = html.classList.contains('light') ? 'dark' : 'light';
     localStorage.setItem('theme', next);
     applyTheme(next);
+    window.dispatchEvent(new CustomEvent('theme-changed', { detail: next }));
   });
 </script>

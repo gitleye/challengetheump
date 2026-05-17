@@ -81,12 +81,18 @@ const chartData = JSON.stringify({ labels, datasets });
   import Chart from 'chart.js/auto';
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
+  const lineChartInstances: Record<string, any> = {};
+
   function renderLine(chartId: string, chartData: string, yLabel: string | undefined) {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const init = () => {
       const canvas = document.getElementById(chartId);
       if (!canvas || !(canvas instanceof HTMLCanvasElement)) return;
+
+      if (lineChartInstances[chartId]) {
+        lineChartInstances[chartId].destroy();
+      }
 
       const parsed = JSON.parse(chartData);
       const isLight = document.documentElement.classList.contains('light');
@@ -100,7 +106,7 @@ const chartData = JSON.stringify({ labels, datasets });
       const tooltipTitle = isLight ? '#0F0F14' : '#F5F5F7';
       const tooltipBody = isLight ? '#3C3C4B' : '#A1A1AA';
 
-      new Chart(canvas, {
+      lineChartInstances[chartId] = new Chart(canvas, {
         type: 'line',
         data: {
           labels: parsed.labels,
@@ -157,4 +163,8 @@ const chartData = JSON.stringify({ labels, datasets });
 
   const queue = (window as any).__lineQueue || [];
   queue.forEach((item: any) => renderLine(item.chartId, item.chartData, item.yLabel));
+
+  window.addEventListener('theme-changed', () => {
+    queue.forEach((item: any) => renderLine(item.chartId, item.chartData, item.yLabel));
+  });
 </script>
