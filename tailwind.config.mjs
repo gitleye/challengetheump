@@ -38,8 +38,8 @@ export default {
       },
 
       fontSize: {
-        'display-xl': ['72px', { lineHeight: '1.05', letterSpacing: '-0.04em', fontWeight: '900' }],
-        'display-lg': ['56px', { lineHeight: '1.07', letterSpacing: '-0.03em', fontWeight: '800' }],
+        'display-xl': ['clamp(3.5rem, 5vw + 1rem, 7.5rem)', { lineHeight: '1.02', letterSpacing: '-0.04em', fontWeight: '900' }],
+        'display-lg': ['clamp(2.75rem, 4vw + 0.5rem, 5rem)', { lineHeight: '1.05', letterSpacing: '-0.03em', fontWeight: '800' }],
         'display-md': ['40px', { lineHeight: '1.1', letterSpacing: '-0.02em', fontWeight: '800' }],
         h1: ['32px', { lineHeight: '1.2', letterSpacing: '-0.02em', fontWeight: '700' }],
         h2: ['24px', { lineHeight: '1.25', letterSpacing: '-0.01em', fontWeight: '700' }],
@@ -47,10 +47,10 @@ export default {
         'body-lg': ['18px', { lineHeight: '1.6' }],
         body: ['16px', { lineHeight: '1.6' }],
         'body-sm': ['14px', { lineHeight: '1.5' }],
-        caption: ['12px', { lineHeight: '1.4', letterSpacing: '0.06em', fontWeight: '500' }],
-        'stat-xl': ['64px', { lineHeight: '1', fontWeight: '700', fontVariantNumeric: 'tabular-nums' }],
-        'stat-lg': ['40px', { lineHeight: '1.05', fontWeight: '700', fontVariantNumeric: 'tabular-nums' }],
-        stat: ['24px', { lineHeight: '1.1', fontWeight: '600', fontVariantNumeric: 'tabular-nums' }],
+        caption: ['12px', { lineHeight: '1.4', letterSpacing: '0.08em', fontWeight: '500' }],
+        'stat-xl': ['64px', { lineHeight: '1', fontWeight: '700', letterSpacing: '-0.02em' }],
+        'stat-lg': ['40px', { lineHeight: '1.05', fontWeight: '700', letterSpacing: '-0.02em' }],
+        stat: ['24px', { lineHeight: '1.1', fontWeight: '600', letterSpacing: '-0.01em' }],
       },
 
       // ---- Border radius -----------------------------------------------

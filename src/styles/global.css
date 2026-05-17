@@ -86,7 +86,7 @@ html.light svg line[stroke="#D4FF3D"] { stroke: var(--color-accent); }
   }
 
   /* Tabular nums for mono/stat elements */
-  .font-mono, [class*="stat-"] {
+  .font-mono, [class*="stat-"], .tabular-nums {
     font-variant-numeric: tabular-nums;
     font-feature-settings: "tnum";
   }
@@ -137,6 +137,26 @@ html.light svg line[stroke="#D4FF3D"] { stroke: var(--color-accent); }
   /* Stat number */
   .stat-number {
     @apply font-mono font-bold tabular-nums text-text-primary;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Editorial section label */
+  .section-label {
+    @apply text-caption uppercase tracking-widest text-text-tertiary font-medium;
+    position: relative;
+    padding-top: 1rem;
+  }
+  .section-label::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 2rem;
+    height: 2px;
+    background-color: #D4FF3D;
+  }
+  html.light .section-label::before {
+    background-color: var(--color-accent);
   }
 
   /* Glow on accent elements */
