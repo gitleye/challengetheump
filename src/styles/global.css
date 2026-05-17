@@ -34,13 +34,13 @@
 
 /* Light mode — activated via .light class on <html> */
 html.light {
-  --color-base: 250 250 252;
-  --color-surface: 255 255 255;
-  --color-elevated: 245 245 248;
-  --color-border: 220 220 228;
-  --color-text-primary: 15 15 20;
-  --color-text-secondary: 60 60 75;
-  --color-text-tertiary: 100 100 120;
+  --color-base: 250 250 247;
+  --color-surface: 255 255 253;
+  --color-elevated: 246 246 242;
+  --color-border: 218 218 212;
+  --color-text-primary: 20 20 18;
+  --color-text-secondary: 55 55 50;
+  --color-text-tertiary: 100 100 95;
   --color-accent: #4A7A00;
 
   --chart-grid: rgba(0, 0, 0, 0.06);
@@ -163,6 +163,9 @@ html.light svg line[stroke="#D4FF3D"] { stroke: var(--color-accent); }
     transform: translateY(-2px);
     box-shadow: 0 4px 20px rgb(0 0 0 / 0.3);
   }
+  html.light .card-elevated {
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.06), 0 1px 2px rgb(0 0 0 / 0.04);
+  }
   html.light .card-elevated:hover {
     box-shadow: 0 4px 20px rgb(0 0 0 / 0.08);
   }
@@ -264,6 +267,17 @@ html.light svg line[stroke="#D4FF3D"] { stroke: var(--color-accent); }
   .delta-positive { @apply text-success; }
   .delta-negative { @apply text-danger; }
   .delta-neutral  { @apply text-text-tertiary; }
+
+  /* Mobile touch targets — ensure 44x44px minimum */
+  @media (max-width: 640px) {
+    .data-table td a,
+    .filter-btn,
+    nav a {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+    }
+  }
 
   /* Reduced motion overrides */
   @media (prefers-reduced-motion: reduce) {

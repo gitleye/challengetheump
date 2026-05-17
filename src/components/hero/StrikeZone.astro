@@ -177,6 +177,14 @@ const svgPitches = pitches.map(pitchToSvg);
     transform: rotateX(8deg) rotateY(-3deg);
     transition: transform 0.3s ease-out;
     transform-style: preserve-3d;
+    max-height: 320px;
+  }
+
+  @media (max-width: 640px) {
+    .strike-zone-svg {
+      max-height: 240px;
+      transform: rotateX(5deg) rotateY(0deg);
+    }
   }
 
   /* Pitch dot entrance animation */
@@ -222,6 +230,20 @@ const svgPitches = pitches.map(pitchToSvg);
   @keyframes zone-glow {
     0% { stroke: rgba(212,255,61,0.3); }
     100% { stroke: rgba(212,255,61,0.5); }
+  }
+
+  /* Light mode — darken zone lines for visibility */
+  :global(html.light) .zone-box {
+    stroke: rgba(74, 122, 0, 0.5);
+    fill: rgba(74, 122, 0, 0.04);
+    animation: none;
+  }
+  :global(html.light) .strike-zone-svg line {
+    stroke: rgba(74, 122, 0, 0.2);
+  }
+  :global(html.light) .strike-zone-svg polygon {
+    stroke: rgba(74, 122, 0, 0.3);
+    fill: rgba(74, 122, 0, 0.03);
   }
 
   /* Reduced motion */
