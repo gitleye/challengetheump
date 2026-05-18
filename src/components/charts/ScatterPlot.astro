@@ -255,6 +255,7 @@ const chartData = JSON.stringify({ points, xLabel, yLabel });
         },
         options: {
           responsive: true,
+          maintainAspectRatio: false,
           animation: { duration: reducedMotion ? 0 : 600 },
           plugins: {
             legend: { display: false },

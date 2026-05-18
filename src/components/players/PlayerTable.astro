@@ -53,27 +53,27 @@ const roleHrefs: Record<string, string> = {
       <table class="data-table w-full">
         <thead>
           <tr>
-            <th class="w-12">#</th>
-            <th class="w-auto">Player</th>
+            <th class="w-10">#</th>
+            <th>Player</th>
             <th class="w-16">Team</th>
-            <th class="text-right whitespace-nowrap">
+            <th class="text-right w-28 whitespace-nowrap">
               <Tooltip text="Total challenges made this season.">Challenges</Tooltip>
             </th>
-            <th class="text-right whitespace-nowrap">
+            <th class="text-right w-28 whitespace-nowrap">
               <Tooltip text="Percentage of challenges resulting in an overturn.">Success%</Tooltip>
             </th>
             {role === 'batter' && (
               <>
-                <th class="text-right whitespace-nowrap hidden sm:table-cell">
+                <th class="text-right w-28 whitespace-nowrap hidden sm:table-cell">
                   <Tooltip text="Strikeouts converted to balls via successful challenge.">Ks Avoided</Tooltip>
                 </th>
-                <th class="text-right whitespace-nowrap hidden sm:table-cell">
+                <th class="text-right w-28 whitespace-nowrap hidden sm:table-cell">
                   <Tooltip text="Balls converted to walks via successful challenge.">BB Gained</Tooltip>
                 </th>
               </>
             )}
             {role === 'catcher' && (
-              <th class="text-right whitespace-nowrap hidden sm:table-cell">
+              <th class="text-right w-28 whitespace-nowrap hidden sm:table-cell">
                 <Tooltip text="Overturns where the catcher initiated the challenge.">OT Generated</Tooltip>
               </th>
             )}

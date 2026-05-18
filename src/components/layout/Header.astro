@@ -34,9 +34,18 @@ const isFresh = hoursAgo < 24;
       aria-label="Challenge The Ump — Home"
     >
       <svg viewBox="0 0 280 40" fill="none" role="img" aria-label="Challenge The Ump" class="h-7 w-auto">
-        <rect x="2" y="8" width="20" height="24" rx="2" stroke="#D4FF3D" stroke-width="2" fill="none"/>
-        <line x1="2" y1="21" x2="22" y2="21" stroke="#D4FF3D" stroke-width="0.75" stroke-dasharray="2 2"/>
-        <text x="32" y="27" font-family="Space Grotesk, system-ui, sans-serif" font-size="18" font-weight="700" letter-spacing="-0.03em" fill="currentColor">
+        <!-- ABS-style strike zone -->
+        <rect x="2" y="6" width="22" height="28" rx="1.5" stroke="#D4FF3D" stroke-width="1.8" fill="none" class="logo-zone"/>
+        <!-- 9-section grid lines -->
+        <line x1="2" y1="15.3" x2="24" y2="15.3" stroke="#D4FF3D" stroke-width="0.5" opacity="0.35"/>
+        <line x1="2" y1="24.7" x2="24" y2="24.7" stroke="#D4FF3D" stroke-width="0.5" opacity="0.35"/>
+        <line x1="9.3" y1="6" x2="9.3" y2="34" stroke="#D4FF3D" stroke-width="0.5" opacity="0.35"/>
+        <line x1="16.7" y1="6" x2="16.7" y2="34" stroke="#D4FF3D" stroke-width="0.5" opacity="0.35"/>
+        <!-- Pitch dots -->
+        <circle cx="13" cy="20" r="2.5" fill="#22C55E" opacity="0.9"/>
+        <circle cx="19" cy="12" r="2" fill="#FACC15" opacity="0.8"/>
+        <!-- Wordmark -->
+        <text x="34" y="27" font-family="Space Grotesk, system-ui, sans-serif" font-size="18" font-weight="700" letter-spacing="-0.03em" fill="currentColor">
           Challenge <tspan fill="#D4FF3D" class="logo-accent">The Ump</tspan>
         </text>
       </svg>
