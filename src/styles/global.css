@@ -34,13 +34,13 @@
 
 /* Light mode — activated via .light class on <html> */
 html.light {
-  --color-base: 250 250 252;
-  --color-surface: 255 255 255;
-  --color-elevated: 245 245 248;
-  --color-border: 220 220 228;
-  --color-text-primary: 15 15 20;
-  --color-text-secondary: 60 60 75;
-  --color-text-tertiary: 100 100 120;
+  --color-base: 228 230 235;
+  --color-surface: 238 240 244;
+  --color-elevated: 218 220 226;
+  --color-border: 218 218 212;
+  --color-text-primary: 20 20 18;
+  --color-text-secondary: 55 55 50;
+  --color-text-tertiary: 100 100 95;
   --color-accent: #4A7A00;
 
   --chart-grid: rgba(0, 0, 0, 0.06);
@@ -73,6 +73,15 @@ html.light svg line[stroke="#D4FF3D"] { stroke: var(--color-accent); }
     text-rendering: optimizeLegibility;
   }
 
+  /* Smooth theme transition — applied temporarily via .theme-transition class */
+  html.theme-transition,
+  html.theme-transition *,
+  html.theme-transition *::before,
+  html.theme-transition *::after {
+    transition: background-color 0.4s ease, color 0.3s ease, border-color 0.4s ease,
+      box-shadow 0.4s ease, fill 0.3s ease, stroke 0.3s ease !important;
+  }
+
   /* Smooth scrolling — respects prefers-reduced-motion */
   @media (prefers-reduced-motion: no-preference) {
     html { scroll-behavior: smooth; }
@@ -86,7 +95,7 @@ html.light svg line[stroke="#D4FF3D"] { stroke: var(--color-accent); }
   }
 
   /* Tabular nums for mono/stat elements */
-  .font-mono, [class*="stat-"] {
+  .font-mono, [class*="stat-"], .tabular-nums {
     font-variant-numeric: tabular-nums;
     font-feature-settings: "tnum";
   }
@@ -130,13 +139,67 @@ html.light svg line[stroke="#D4FF3D"] { stroke: var(--color-accent); }
   .data-table td {
     @apply py-3 px-4 border-b border-border/50 text-text-secondary;
   }
-  .data-table tr:hover td {
-    @apply bg-elevated/50;
+  /* Right-aligned headers: push tooltip trigger to the right */
+  .data-table th.text-right .tooltip-trigger {
+    justify-content: flex-end;
+    width: 100%;
   }
-
   /* Stat number */
   .stat-number {
     @apply font-mono font-bold tabular-nums text-text-primary;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Editorial section label */
+  .section-label {
+    @apply text-caption uppercase tracking-widest text-text-tertiary font-medium;
+    position: relative;
+    padding-top: 1rem;
+  }
+  .section-label::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 2rem;
+    height: 2px;
+    background-color: #D4FF3D;
+  }
+  html.light .section-label::before {
+    background-color: var(--color-accent);
+  }
+
+  /* Card elevation + hover */
+  .card-elevated {
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .card-elevated:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgb(0 0 0 / 0.3);
+  }
+  html.light .card-elevated {
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.06), 0 1px 2px rgb(0 0 0 / 0.04);
+  }
+  html.light .card-elevated:hover {
+    box-shadow: 0 4px 20px rgb(0 0 0 / 0.08);
+  }
+
+  /* Textured card — subtle baseball stitching */
+  .card-textured {
+    position: relative;
+    overflow: hidden;
+  }
+  .card-textured::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5c0 8-5 12-5 20s5 12 5 20' stroke='%23D4FF3D' fill='none' stroke-width='1.5' stroke-dasharray='3 3'/%3E%3Cpath d='M30 5c0 8 5 12 5 20s-5 12-5 20' stroke='%23D4FF3D' fill='none' stroke-width='1.5' stroke-dasharray='3 3'/%3E%3C/svg%3E");
+    background-size: 60px 60px;
+  }
+  .card-textured:hover::after {
+    opacity: 0.05;
   }
 
   /* Glow on accent elements */
@@ -144,6 +207,65 @@ html.light svg line[stroke="#D4FF3D"] { stroke: var(--color-accent); }
     box-shadow: 0 0 0 1px rgb(212 255 61 / 0.4), 0 0 20px rgb(212 255 61 / 0.15);
   }
 }
+
+  /* Stitch underline for inline links */
+  .prose-dark a,
+  .stitch-link {
+    text-decoration: none;
+    background-image: linear-gradient(90deg, currentColor 33%, transparent 33%);
+    background-size: 6px 1px;
+    background-repeat: repeat-x;
+    background-position: bottom;
+    padding-bottom: 2px;
+    transition: background-size 0.3s ease;
+  }
+  .prose-dark a:hover,
+  .stitch-link:hover {
+    background-size: 3px 1px;
+  }
+
+  /* Table row hover */
+  .data-table tbody tr td {
+    transition: background-color 0.2s ease;
+  }
+  .data-table tbody tr:hover td,
+  .data-table tbody tr:focus-within td {
+    background-color: rgb(212 255 61 / 0.04);
+  }
+  html.light .data-table tbody tr:hover td,
+  html.light .data-table tbody tr:focus-within td {
+    background-color: rgb(74 122 0 / 0.04);
+  }
+
+  /* CTA button sweep effect */
+  .cta-btn {
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+    pointer-events: none;
+  }
+  .cta-btn:hover::before {
+    transform: translateX(100%);
+  }
+
+  /* Sort arrow bounce */
+  .sort-asc::after,
+  .sort-desc::after {
+    display: inline-block;
+    animation: sort-bounce 0.3s ease;
+  }
+  @keyframes sort-bounce {
+    0% { transform: translateY(4px); opacity: 0; }
+    60% { transform: translateY(-2px); }
+    100% { transform: translateY(0); opacity: 1; }
+  }
 
 /* ---- Utilities --------------------------------------------------------- */
 @layer utilities {
@@ -159,6 +281,17 @@ html.light svg line[stroke="#D4FF3D"] { stroke: var(--color-accent); }
   .delta-positive { @apply text-success; }
   .delta-negative { @apply text-danger; }
   .delta-neutral  { @apply text-text-tertiary; }
+
+  /* Mobile touch targets — ensure 44x44px minimum */
+  @media (max-width: 640px) {
+    .data-table td a,
+    .filter-btn,
+    nav a {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+    }
+  }
 
   /* Reduced motion overrides */
   @media (prefers-reduced-motion: reduce) {

@@ -6,6 +6,9 @@ import Badge from '@/components/ui/Badge.astro';
 import Tooltip from '@/components/ui/Tooltip.astro';
 import Sparkline from '@/components/ui/Sparkline.astro';
 import ScatterPlot from '@/components/charts/ScatterPlot.astro';
+import StrikeZone from '@/components/hero/StrikeZone.astro';
+import TeamLogo from '@/components/ui/TeamLogo.astro';
+import PlayerAvatar from '@/components/ui/PlayerAvatar.astro';
 import type { TeamsData, PlayersData, LeagueSummary } from '@/lib/types';
 import { formatRate, formatWpa, formatWinPct, formatDate, formatDateShort, pearsonR } from '@/lib/stats';
 import teamsData from '@/data/teams.json';
@@ -61,53 +64,106 @@ const gamesThrough = metadata.games_through ? formatDateShort(metadata.games_thr
 <BaseLayout title="Home">
   <!-- Hero ---------------------------------------------------------------- -->
   <section class="relative overflow-hidden border-b border-border">
+    <!-- Grid background -->
     <div class="absolute inset-0 opacity-[0.03]" aria-hidden="true"
       style="background-image: linear-gradient(#D4FF3D 1px, transparent 1px), linear-gradient(90deg, #D4FF3D 1px, transparent 1px); background-size: 40px 40px;">
     </div>
 
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28">
-      <div class="max-w-3xl">
-        <Badge variant="accent" class="mb-6">2026 Season {gamesThrough ? `· Through ${gamesThrough}` : ''}</Badge>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+      <div class="grid lg:grid-cols-2 gap-8 items-center">
+        <!-- Text column -->
+        <div class="relative z-10">
+          <Badge variant="accent" class="mb-6">2026 Season {gamesThrough ? `· Through ${gamesThrough}` : ''}</Badge>
 
-        {isDataReady && successPct ? (
-          <h1 class="text-display-lg sm:text-display-xl font-display font-black text-text-primary leading-none mb-6">
-            <span class="text-accent">{successPct}%</span> of ABS<br />
-            challenges have<br />
-            overturned the ump.
-          </h1>
-        ) : (
-          <h1 class="text-display-lg sm:text-display-xl font-display font-black text-text-primary leading-none mb-6">
-            Does beating the<br />
-            <span class="text-accent">robot umpire</span><br />
-            win you games?
-          </h1>
-        )}
+          {isDataReady && successPct ? (
+            <h1 class="text-display-lg sm:text-display-xl font-display font-black text-text-primary leading-none mb-6">
+              <span class="text-accent">{successPct}%</span> of ABS<br />
+              challenges have<br />
+              overturned the ump.
+            </h1>
+          ) : (
+            <h1 class="text-display-lg sm:text-display-xl font-display font-black text-text-primary leading-none mb-6">
+              Does beating the<br />
+              <span class="text-accent">robot umpire</span><br />
+              win you games?
+            </h1>
+          )}
 
-        <p class="text-body-lg text-text-secondary max-w-xl mb-8">
-          The ABS Challenge System lets players dispute ball-strike calls via Hawk-Eye cameras.
-          We track every challenge — who wins them, and whether it matters.
-        </p>
-        <div class="flex gap-3 flex-wrap">
-          <a href="/teams"
-            class="inline-flex items-center gap-2 px-5 py-2.5 bg-accent text-black font-semibold
-              rounded-md text-body-sm hover:bg-accent/90 transition-colors duration-200 shadow-glow">
-            View teams
-          </a>
-          <a href="/methodology"
-            class="inline-flex items-center gap-2 px-5 py-2.5 bg-elevated border border-border
-              text-text-secondary font-medium rounded-md text-body-sm
-              hover:text-text-primary hover:border-accent/50 transition-colors duration-200">
-            How it works
-          </a>
+          <p class="text-body-lg text-text-secondary max-w-xl mb-8">
+            The ABS Challenge System lets players dispute ball-strike calls via Hawk-Eye cameras.
+            We track every challenge — who wins them, and whether it matters.
+          </p>
+          <div class="flex gap-3 flex-wrap mb-10 lg:mb-0">
+            <a href="/teams"
+              class="cta-btn inline-flex items-center gap-2 px-5 py-2.5 bg-accent text-black font-semibold
+                rounded-md text-body-sm hover:bg-accent/90 transition-colors duration-200 shadow-glow">
+              View teams
+            </a>
+            <a href="/methodology"
+              class="cta-btn inline-flex items-center gap-2 px-5 py-2.5 bg-elevated border border-border
+                text-text-secondary font-medium rounded-md text-body-sm
+                hover:text-text-primary hover:border-accent/50 transition-colors duration-200">
+              How it works
+            </a>
+          </div>
+        </div>
+
+        <!-- Strike zone visualization -->
+        <div class="relative flex items-center justify-center lg:justify-end">
+          <div class="w-full max-w-sm lg:max-w-md">
+            <StrikeZone successRate={overallSuccessRate ?? 0.53} />
+          </div>
+
+          <!-- Legend -->
+          <div class="absolute bottom-0 left-0 flex gap-3 sm:gap-4 text-caption text-text-tertiary flex-wrap" aria-hidden="true">
+            <span class="flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-success inline-block"></span> Strike
+            </span>
+            <span class="flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-warning inline-block"></span> Ball
+            </span>
+            <span class="flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-danger inline-block"></span> Missed call
+            </span>
+            <span class="flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-accent inline-block"></span> Overturned
+            </span>
+          </div>
         </div>
       </div>
+
+      <!-- Hero counter stats -->
+      {isDataReady && (
+        <div class="grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-border/50">
+          <Stat
+            value={totalChallenges.toLocaleString()}
+            label="Challenges Filed"
+            size="lg"
+            accent
+            animate
+          />
+          <Stat
+            value={league.total_overturns?.toLocaleString() ?? '—'}
+            label="Calls Overturned"
+            size="lg"
+            animate
+          />
+          <Stat
+            value={formatRate(overallSuccessRate)}
+            label="Overturn Rate"
+            size="lg"
+            animate
+          />
+        </div>
+      )}
     </div>
   </section>
 
   <!-- League snapshot ----------------------------------------------------- -->
   <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12" aria-labelledby="league-heading">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-6">
-      <h2 id="league-heading" class="text-h2 font-display font-bold text-text-primary">
+      <span class="section-label">League Overview</span>
+      <h2 id="league-heading" class="text-h2 font-display font-bold text-text-primary mt-2">
         Season at a Glance
       </h2>
       {!isDataReady && <Badge variant="warning">No data</Badge>}
@@ -115,35 +171,39 @@ const gamesThrough = metadata.games_through ? formatDateShort(metadata.games_thr
     </div>
 
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-      <Card class="text-center">
+      <Card class="text-center" textured>
         <Stat
           value={isDataReady ? totalChallenges.toLocaleString() : '—'}
           label="Total Challenges"
           size="lg"
           accent
+          animate={isDataReady}
         />
       </Card>
-      <Card class="text-center">
+      <Card class="text-center" textured>
         <Stat
           value={isDataReady ? formatRate(overallSuccessRate) : '—'}
           label="Overturn Rate"
           size="lg"
+          animate={isDataReady}
         />
       </Card>
-      <Card class="text-center">
+      <Card class="text-center" textured>
         <Stat
           value={isDataReady ? (league.total_overturns?.toLocaleString() ?? '—') : '—'}
           label="Total Overturns"
           size="lg"
+          animate={isDataReady}
         />
       </Card>
-      <Card class="text-center">
+      <Card class="text-center" textured>
         <Stat
           value={isDataReady && league.k_rate && league.k_rate_prior_season
             ? formatRate(league.k_rate - league.k_rate_prior_season)
             : '—'}
           label="K Rate vs. 2025"
           size="lg"
+          animate={isDataReady}
         />
       </Card>
     </div>
@@ -152,26 +212,61 @@ const gamesThrough = metadata.games_through ? formatDateShort(metadata.games_thr
   <!-- Scatter: challenge value vs wins ------------------------------------ -->
   {isDataReady && scatterPoints.length >= 5 && (
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12" aria-labelledby="scatter-heading">
-      <Card title="The Headline Chart: Net Run Value vs. Win %" noPadding>
-        <div class="px-6 pb-6">
-          <p class="text-body-sm text-text-secondary mb-4">
-            Each dot is a team. The x-axis shows how much run value they've extracted from ABS challenges;
-            the y-axis shows their win percentage. Are the two related?
-          </p>
-          <ScatterPlot
-            points={scatterPoints}
-            xLabel="Net Run Value"
-            yLabel="Win %"
-            height={360}
-          />
-          {rStr && (
-            <p class="text-caption text-text-tertiary mt-4">
-              Pearson r = {rStr}.
-              {rMeaningful
-                ? ' There is a moderate correlation — teams that extract more value from challenges tend to win more. But correlation is not causation: better teams may simply challenge more effectively.'
-                : ' The correlation is weak. So far, challenge performance does not strongly predict winning. This could change as the sample grows.'}
-              <a href="/methodology" class="text-accent hover:underline ml-1">Methodology</a>
+      <Card noPadding>
+        <div class="px-6 pt-6 pb-4 flex items-start justify-between gap-4">
+          <div>
+            <h3 class="text-h3 font-display font-semibold text-text-primary">
+              Net Run Value vs. Win %
+            </h3>
+            <p class="text-caption text-text-tertiary mt-1">
+              {rStr ? `Pearson r = ${rStr}` : 'Correlation pending'}
+              {rMeaningful ? ' · Moderate correlation' : ' · Weak correlation'}
             </p>
+          </div>
+          <button
+            id="scatter-expand-btn"
+            type="button"
+            class="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-caption font-medium
+              bg-elevated border border-border text-text-secondary hover:text-text-primary
+              hover:border-accent/50 transition-all cursor-pointer whitespace-nowrap"
+            aria-expanded="true"
+          >
+            <svg class="w-3.5 h-3.5 transition-transform rotate-45" id="scatter-expand-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" />
+            </svg>
+            <span id="scatter-expand-label">Collapse</span>
+          </button>
+        </div>
+
+        <div class="px-6 pb-6">
+          <!-- Description (hidden in compact) -->
+          <div id="scatter-desc">
+            <p class="text-body-sm text-text-secondary mb-4">
+              Each badge is a team. The x-axis shows how much run value they've extracted from ABS challenges;
+              the y-axis shows their win percentage. Click a team to highlight it.
+            </p>
+          </div>
+
+          <div id="scatter-chart-wrap" style="height: 440px; overflow: hidden; transition: height 0.3s ease;">
+            <ScatterPlot
+              points={scatterPoints}
+              xLabel="Net Run Value"
+              yLabel="Win %"
+              height={440}
+            />
+          </div>
+
+          <!-- Correlation note (hidden in compact) -->
+          {rStr && (
+            <div id="scatter-note">
+              <p class="text-caption text-text-tertiary mt-4">
+                Pearson r = {rStr}.
+                {rMeaningful
+                  ? ' There is a moderate correlation — teams that extract more value from challenges tend to win more. But correlation is not causation: better teams may simply challenge more effectively.'
+                  : ' The correlation is weak. So far, challenge performance does not strongly predict winning. This could change as the sample grows.'}
+                <a href="/methodology" class="text-accent hover:underline ml-1">Methodology</a>
+              </p>
+            </div>
           )}
         </div>
       </Card>
@@ -211,11 +306,14 @@ const gamesThrough = metadata.games_through ? formatDateShort(metadata.games_thr
                 <tr>
                   <td class="text-text-tertiary font-mono">{i + 1}</td>
                   <td>
-                    <a href={`/teams/${team.team_id.toLowerCase()}`}
-                      class="font-medium text-text-primary hover:text-accent transition-colors">
-                      {team.team_name}
-                    </a>
-                    <span class="ml-2 text-caption text-text-tertiary">{team.league}</span>
+                    <div class="flex items-center gap-2 whitespace-nowrap">
+                      <TeamLogo teamId={team.team_id} size={20} />
+                      <a href={`/teams/${team.team_id.toLowerCase()}`}
+                        class="font-medium text-text-primary hover:text-accent transition-colors">
+                        {team.team_name}
+                      </a>
+                      <span class="text-caption text-text-tertiary">{team.league}</span>
+                    </div>
                   </td>
                   <td class="text-right font-mono font-bold text-accent">
                     {formatWpa(team.challenges.challenge_wpa)}
@@ -241,7 +339,8 @@ const gamesThrough = metadata.games_through ? formatDateShort(metadata.games_thr
   <!-- Top players --------------------------------------------------------- -->
   {isDataReady && (topCatchers.length > 0 || topBatters.length > 0) && (
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12" aria-labelledby="top-players-heading">
-      <h2 id="top-players-heading" class="text-h2 font-display font-bold text-text-primary mb-6">
+      <span class="section-label">Leaderboards</span>
+      <h2 id="top-players-heading" class="text-h2 font-display font-bold text-text-primary mt-2 mb-6">
         Top Players
       </h2>
       <div class="grid md:grid-cols-2 gap-6">
@@ -268,11 +367,16 @@ const gamesThrough = metadata.games_through ? formatDateShort(metadata.games_thr
                     <tr>
                       <td class="text-text-tertiary font-mono">{i + 1}</td>
                       <td>
-                        <a href={`/players/${p.player_id}`}
-                          class="font-medium text-text-primary hover:text-accent transition-colors">
-                          {p.name}
-                        </a>
-                        <span class="ml-1.5 text-caption text-text-tertiary">{p.team_id}</span>
+                        <div class="flex items-center gap-2">
+                          <PlayerAvatar playerId={p.player_id} name={p.name} teamId={p.team_id} size={28} />
+                          <div>
+                            <a href={`/players/${p.player_id}`}
+                              class="font-medium text-text-primary hover:text-accent transition-colors">
+                              {p.name}
+                            </a>
+                            <span class="ml-1.5 text-caption text-text-tertiary">{p.team_id}</span>
+                          </div>
+                        </div>
                       </td>
                       <td class="text-right font-mono font-bold text-accent">
                         {formatRate(p.challenges.success_rate)}
@@ -311,11 +415,16 @@ const gamesThrough = metadata.games_through ? formatDateShort(metadata.games_thr
                     <tr>
                       <td class="text-text-tertiary font-mono">{i + 1}</td>
                       <td>
-                        <a href={`/players/${p.player_id}`}
-                          class="font-medium text-text-primary hover:text-accent transition-colors">
-                          {p.name}
-                        </a>
-                        <span class="ml-1.5 text-caption text-text-tertiary">{p.team_id}</span>
+                        <div class="flex items-center gap-2">
+                          <PlayerAvatar playerId={p.player_id} name={p.name} teamId={p.team_id} size={28} />
+                          <div>
+                            <a href={`/players/${p.player_id}`}
+                              class="font-medium text-text-primary hover:text-accent transition-colors">
+                              {p.name}
+                            </a>
+                            <span class="ml-1.5 text-caption text-text-tertiary">{p.team_id}</span>
+                          </div>
+                        </div>
                       </td>
                       <td class="text-right font-mono font-bold text-accent">
                         {formatRate(p.challenges.success_rate)}
@@ -386,4 +495,41 @@ const gamesThrough = metadata.games_through ? formatDateShort(metadata.games_thr
       </p>
     </Card>
   </section>
+
+  <!-- Scatter expand/collapse toggle -->
+  <script is:inline>
+  (function() {
+    var btn = document.getElementById('scatter-expand-btn');
+    var wrap = document.getElementById('scatter-chart-wrap');
+    var desc = document.getElementById('scatter-desc');
+    var note = document.getElementById('scatter-note');
+    var label = document.getElementById('scatter-expand-label');
+    var icon = document.getElementById('scatter-expand-icon');
+    if (!btn || !wrap) return;
+
+    var expanded = true;
+    btn.addEventListener('click', function() {
+      expanded = !expanded;
+      if (expanded) {
+        wrap.style.height = '440px';
+        btn.setAttribute('aria-expanded', 'true');
+        if (label) label.textContent = 'Collapse';
+        if (icon) icon.style.transform = 'rotate(45deg)';
+        if (desc) desc.classList.remove('hidden');
+        if (note) note.classList.remove('hidden');
+      } else {
+        wrap.style.height = '240px';
+        btn.setAttribute('aria-expanded', 'false');
+        if (label) label.textContent = 'Expand';
+        if (icon) icon.style.transform = '';
+        if (desc) desc.classList.add('hidden');
+        if (note) note.classList.add('hidden');
+      }
+      // Trigger Chart.js resize after height transition
+      setTimeout(function() {
+        window.dispatchEvent(new Event('resize'));
+      }, 320);
+    });
+  })();
+  </script>
 </BaseLayout>

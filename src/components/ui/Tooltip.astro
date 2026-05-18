@@ -6,7 +6,7 @@ interface Props {
 const { text, class: cls = '' } = Astro.props;
 ---
 
-<span class:list={['relative inline-flex items-center group', cls]}>
+<span class:list={['tooltip-trigger relative inline-flex items-center', cls]} data-tooltip={text}>
   <slot />
   <button
     type="button"
@@ -19,16 +19,83 @@ const { text, class: cls = '' } = Astro.props;
   >
     ?
   </button>
-  <span
-    role="tooltip"
-    class="absolute top-full left-1/2 -translate-x-1/2 mt-2 z-50 w-56 p-3
-      bg-elevated border border-border rounded-md shadow-elevated
-      text-body-sm text-text-secondary leading-relaxed
-      opacity-0 group-hover:opacity-100 group-focus-within:opacity-100
-      transition-opacity pointer-events-none"
-  >
-    {text}
-    <span class="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0
-      border-x-4 border-x-transparent border-b-4 border-b-border" aria-hidden="true" />
-  </span>
 </span>
+
+<style is:global>
+  .tooltip-popup {
+    position: fixed;
+    z-index: 9999;
+    width: max-content;
+    max-width: 220px;
+    padding: 0.5rem 0.625rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    background: rgb(var(--color-elevated));
+    border: 1px solid rgb(var(--color-border));
+    color: rgb(var(--color-text-secondary));
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  }
+  .tooltip-popup.visible {
+    opacity: 1;
+  }
+</style>
+
+<script is:inline>
+(function() {
+  if (document.getElementById('tooltip-popup-el')) return;
+
+  var popup = document.createElement('div');
+  popup.id = 'tooltip-popup-el';
+  popup.className = 'tooltip-popup';
+  popup.setAttribute('role', 'tooltip');
+  document.body.appendChild(popup);
+
+  var hideTimer;
+
+  function show(trigger) {
+    var text = trigger.getAttribute('data-tooltip');
+    if (!text) return;
+    popup.textContent = text;
+    popup.classList.add('visible');
+
+    var rect = trigger.getBoundingClientRect();
+    popup.style.top = (rect.bottom + 8) + 'px';
+
+    // Measure popup width, then position centered under trigger, clamped to viewport
+    var pw = popup.offsetWidth;
+    var cx = rect.left + rect.width / 2;
+    var left = cx - pw / 2;
+    if (left < 8) left = 8;
+    if (left + pw > window.innerWidth - 8) left = window.innerWidth - 8 - pw;
+    popup.style.left = left + 'px';
+  }
+
+  function hide() {
+    popup.classList.remove('visible');
+  }
+
+  document.addEventListener('mouseenter', function(e) {
+    var t = e.target.closest('.tooltip-trigger');
+    if (t) { clearTimeout(hideTimer); show(t); }
+  }, true);
+
+  document.addEventListener('mouseleave', function(e) {
+    var t = e.target.closest('.tooltip-trigger');
+    if (t) { hideTimer = setTimeout(hide, 100); }
+  }, true);
+
+  document.addEventListener('focusin', function(e) {
+    var t = e.target.closest('.tooltip-trigger');
+    if (t) { clearTimeout(hideTimer); show(t); }
+  }, true);
+
+  document.addEventListener('focusout', function(e) {
+    var t = e.target.closest('.tooltip-trigger');
+    if (t) { hideTimer = setTimeout(hide, 100); }
+  }, true);
+})();
+</script>

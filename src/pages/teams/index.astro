@@ -3,6 +3,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Card from '@/components/ui/Card.astro';
 import Badge from '@/components/ui/Badge.astro';
 import Tooltip from '@/components/ui/Tooltip.astro';
+import TeamLogo from '@/components/ui/TeamLogo.astro';
 import type { TeamsData } from '@/lib/types';
 import { formatRate, formatWpa, formatWinPct } from '@/lib/stats';
 import teamsData from '@/data/teams.json';
@@ -106,13 +107,16 @@ const sorted = [...teams].sort(
                     >
                       <td class="text-text-tertiary font-mono rank-cell">{i + 1}</td>
                       <td>
-                        <a
-                          href={`/teams/${team.team_id.toLowerCase()}`}
-                          class="font-medium text-text-primary hover:text-accent transition-colors"
-                        >
-                          {team.team_name}
-                        </a>
-                        <span class="ml-2 text-caption text-text-tertiary">{team.league}</span>
+                        <div class="flex items-center gap-2 whitespace-nowrap">
+                          <TeamLogo teamId={team.team_id} size={20} />
+                          <a
+                            href={`/teams/${team.team_id.toLowerCase()}`}
+                            class="font-medium text-text-primary hover:text-accent transition-colors"
+                          >
+                            {team.team_name}
+                          </a>
+                          <span class="text-caption text-text-tertiary">{team.league}</span>
+                        </div>
                       </td>
                       <td class="text-right font-mono font-bold text-accent">
                         {formatWpa(team.challenges.challenge_wpa)}

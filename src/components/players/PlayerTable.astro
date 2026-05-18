@@ -1,6 +1,7 @@
 ---
 import Card from '@/components/ui/Card.astro';
 import Tooltip from '@/components/ui/Tooltip.astro';
+import PlayerAvatar from '@/components/ui/PlayerAvatar.astro';
 import type { PlayerRecord, PlayerRole } from '@/lib/types';
 import { formatRate } from '@/lib/stats';
 
@@ -52,27 +53,27 @@ const roleHrefs: Record<string, string> = {
       <table class="data-table w-full">
         <thead>
           <tr>
-            <th class="w-12">#</th>
-            <th class="w-auto">Player</th>
+            <th class="w-10">#</th>
+            <th>Player</th>
             <th class="w-16">Team</th>
-            <th class="text-right w-32 whitespace-nowrap">
+            <th class="text-right w-28 whitespace-nowrap">
               <Tooltip text="Total challenges made this season.">Challenges</Tooltip>
             </th>
-            <th class="text-right w-32 whitespace-nowrap">
+            <th class="text-right w-28 whitespace-nowrap">
               <Tooltip text="Percentage of challenges resulting in an overturn.">Success%</Tooltip>
             </th>
             {role === 'batter' && (
               <>
-                <th class="text-right w-36 whitespace-nowrap hidden sm:table-cell">
+                <th class="text-right w-28 whitespace-nowrap hidden sm:table-cell">
                   <Tooltip text="Strikeouts converted to balls via successful challenge.">Ks Avoided</Tooltip>
                 </th>
-                <th class="text-right w-36 whitespace-nowrap hidden sm:table-cell">
+                <th class="text-right w-28 whitespace-nowrap hidden sm:table-cell">
                   <Tooltip text="Balls converted to walks via successful challenge.">BB Gained</Tooltip>
                 </th>
               </>
             )}
             {role === 'catcher' && (
-              <th class="text-right w-36 whitespace-nowrap hidden sm:table-cell">
+              <th class="text-right w-28 whitespace-nowrap hidden sm:table-cell">
                 <Tooltip text="Overturns where the catcher initiated the challenge.">OT Generated</Tooltip>
               </th>
             )}
@@ -83,12 +84,15 @@ const roleHrefs: Record<string, string> = {
             <tr>
               <td class="text-text-tertiary font-mono">{i + 1}</td>
               <td>
-                <a
-                  href={`/players/${player.player_id}`}
-                  class="font-medium text-text-primary hover:text-accent transition-colors"
-                >
-                  {player.name}
-                </a>
+                <div class="flex items-center gap-2">
+                  <PlayerAvatar playerId={player.player_id} name={player.name} teamId={player.team_id} size={28} />
+                  <a
+                    href={`/players/${player.player_id}`}
+                    class="font-medium text-text-primary hover:text-accent transition-colors"
+                  >
+                    {player.name}
+                  </a>
+                </div>
               </td>
               <td class="font-mono text-text-secondary">{player.team_id}</td>
               <td class="text-right font-mono">{player.challenges.total_challenges}</td>
