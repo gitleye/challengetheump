@@ -34,9 +34,9 @@
 
 /* Light mode — activated via .light class on <html> */
 html.light {
-  --color-base: 250 250 247;
-  --color-surface: 255 255 253;
-  --color-elevated: 246 246 242;
+  --color-base: 228 230 235;
+  --color-surface: 238 240 244;
+  --color-elevated: 218 220 226;
   --color-border: 218 218 212;
   --color-text-primary: 20 20 18;
   --color-text-secondary: 55 55 50;
@@ -71,6 +71,15 @@ html.light svg line[stroke="#D4FF3D"] { stroke: var(--color-accent); }
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+  }
+
+  /* Smooth theme transition — applied temporarily via .theme-transition class */
+  html.theme-transition,
+  html.theme-transition *,
+  html.theme-transition *::before,
+  html.theme-transition *::after {
+    transition: background-color 0.4s ease, color 0.3s ease, border-color 0.4s ease,
+      box-shadow 0.4s ease, fill 0.3s ease, stroke 0.3s ease !important;
   }
 
   /* Smooth scrolling — respects prefers-reduced-motion */
@@ -129,6 +138,11 @@ html.light svg line[stroke="#D4FF3D"] { stroke: var(--color-accent); }
   }
   .data-table td {
     @apply py-3 px-4 border-b border-border/50 text-text-secondary;
+  }
+  /* Right-aligned headers: push tooltip trigger to the right */
+  .data-table th.text-right .tooltip-trigger {
+    justify-content: flex-end;
+    width: 100%;
   }
   /* Stat number */
   .stat-number {

@@ -1,8 +1,8 @@
 ---
 /**
- * SVG strike zone visualization — the hero showpiece.
- * Renders a perspective wireframe zone with color-coded pitch dots.
- * CSS 3D transforms for the Hawk-Eye broadcast look. No JS framework needed.
+ * ABS Challenge System hero visualization.
+ * Modeled after the MLB broadcast overlay — 3D strike zone with
+ * an ABS result card that cycles through ball/strike/overturn calls.
  */
 
 interface Props {
@@ -12,278 +12,534 @@ interface Props {
 
 const { successRate = 0.53, class: cls = '' } = Astro.props;
 
-// Generate plausible pitch coordinates at build time
-// Zone is roughly 17 inches wide, from knees (~1.5ft) to letters (~3.5ft)
-// We'll use a normalized coordinate system: x: -1 to 1, y: -1 to 1
-// where (0,0) is center of zone
+// Pre-generate pitch sequence at build time.
+// Position determines truth (in zone = strike, out = ball).
+// The ump's call can differ from truth on borderline pitches.
+// Some bad calls get challenged & overturned, some are never challenged.
 function seededRandom(seed: number) {
   const x = Math.sin(seed) * 10000;
   return x - Math.floor(x);
 }
 
 interface Pitch {
-  x: number;
+  x: number;        // normalized: zone spans -1..1 on each axis
   y: number;
-  type: 'correct-strike' | 'bad-call' | 'overturn';
-  delay: number;
+  truth: 'STRIKE' | 'BALL';   // what ABS says the pitch actually is
+  umpCall: 'STRIKE' | 'BALL'; // what the ump called
+  challenged: boolean;
+  overturned: boolean;
+  missedCall: boolean;         // bad call that was never challenged
 }
 
-const pitches: Pitch[] = [];
-let seed = 42;
+// Each pitch: position + what the ump calls + whether it gets challenged
+// truth is derived from position: |x|<=1 && |y|<=1 → STRIKE, else BALL
+const pitchDefs: Array<{
+  x: number; y: number;
+  umpCall: 'STRIKE' | 'BALL';
+  challenged: boolean;
+}> = [
+  // 1. Clear strike, correct call — center of zone
+  { x:  0.2,  y: -0.3,  umpCall: 'STRIKE', challenged: false },
+  // 2. Clear ball, correct call — way outside
+  { x:  1.5,  y:  0.2,  umpCall: 'BALL',   challenged: false },
+  // 3. Edge pitch IN zone — ump wrongly calls BALL, batter never challenges (missed opportunity)
+  { x:  0.85, y: -0.9,  umpCall: 'BALL',   challenged: false },
+  // 4. Clear strike, correct call — inside low
+  { x: -0.4,  y:  0.5,  umpCall: 'STRIKE', challenged: false },
+  // 5. Just outside zone — ump wrongly calls STRIKE, batter challenges → overturned to BALL
+  { x:  1.1,  y: -0.15, umpCall: 'STRIKE', challenged: true },
+  // 6. Clear strike, correct call — dead center
+  { x: -0.1,  y:  0.0,  umpCall: 'STRIKE', challenged: false },
+  // 7. Edge pitch IN zone — ump wrongly calls BALL, catcher challenges → overturned to STRIKE
+  { x: -0.3,  y: -0.95, umpCall: 'BALL',   challenged: true },
+  // 8. Clear ball, correct call — low and away
+  { x:  0.7,  y:  1.4,  umpCall: 'BALL',   challenged: false },
+  // 9. Corner pitch IN zone — ump calls STRIKE, batter challenges but confirmed (ump was right)
+  { x:  0.9,  y:  0.85, umpCall: 'STRIKE', challenged: true },
+  // 10. Just outside zone — ump wrongly calls STRIKE, nobody challenges (missed opportunity)
+  { x: -1.1,  y:  0.6,  umpCall: 'STRIKE', challenged: false },
+];
 
-// 10 correct strikes (green) — inside the zone
-for (let i = 0; i < 10; i++) {
-  seed++;
-  pitches.push({
-    x: (seededRandom(seed) - 0.5) * 1.4,
-    y: (seededRandom(seed * 2) - 0.5) * 1.4,
-    type: 'correct-strike',
-    delay: seededRandom(seed * 3) * 2,
-  });
-}
+const sequence: Pitch[] = pitchDefs.map((def) => {
+  const inZone = Math.abs(def.x) <= 1.0 && Math.abs(def.y) <= 1.0;
+  const truth: 'STRIKE' | 'BALL' = inZone ? 'STRIKE' : 'BALL';
+  const isBadCall = def.umpCall !== truth;
+  const overturned = def.challenged && isBadCall; // ABS corrects the call
+  const missedCall = isBadCall && !def.challenged; // bad call nobody challenged
 
-// 8 bad calls (red) — near the edges, slightly outside
-for (let i = 0; i < 8; i++) {
-  seed++;
-  const edge = seededRandom(seed) > 0.5 ? 1 : -1;
-  const axis = seededRandom(seed * 4) > 0.5 ? 'x' : 'y';
-  pitches.push({
-    x: axis === 'x' ? edge * (0.6 + seededRandom(seed * 5) * 0.5) : (seededRandom(seed * 6) - 0.5) * 1.6,
-    y: axis === 'y' ? edge * (0.6 + seededRandom(seed * 7) * 0.5) : (seededRandom(seed * 8) - 0.5) * 1.6,
-    type: 'bad-call',
-    delay: seededRandom(seed * 9) * 2,
-  });
-}
-
-// 5 overturns (yellow, pulsing) — at the edges of the zone
-for (let i = 0; i < 5; i++) {
-  seed++;
-  pitches.push({
-    x: (seededRandom(seed * 10) - 0.5) * 1.8,
-    y: (seededRandom(seed * 11) - 0.5) * 1.8,
-    type: 'overturn',
-    delay: 2 + seededRandom(seed * 12) * 0.8,
-  });
-}
-
-// Convert normalized coords to SVG coords
-// Zone box: centered at (200, 200), 160x200 (w x h)
-const zoneX = 200;
-const zoneY = 200;
-const zoneW = 160;
-const zoneH = 200;
-
-function pitchToSvg(p: Pitch) {
   return {
-    cx: zoneX + p.x * (zoneW / 2),
-    cy: zoneY + p.y * (zoneH / 2),
-    type: p.type,
-    delay: p.delay,
+    x: def.x,
+    y: def.y,
+    truth,
+    umpCall: def.umpCall,
+    challenged: def.challenged,
+    overturned,
+    missedCall,
   };
-}
+});
 
-const svgPitches = pitches.map(pitchToSvg);
+// SVG coordinate system
+const zoneX = 200;
+const zoneY = 185;
+const zoneW = 150;
+const zoneH = 190;
+
+const svgSequence = sequence.map((p) => ({
+  cx: zoneX + p.x * (zoneW / 2),
+  cy: zoneY + p.y * (zoneH / 2),
+  ...p,
+}));
+
+const sequenceJson = JSON.stringify(svgSequence);
 ---
 
-<div class:list={['strike-zone-container', cls]} data-strike-zone>
-  <svg
-    viewBox="0 0 400 400"
-    class="strike-zone-svg w-full h-full"
-    aria-hidden="true"
-    fill="none"
-  >
-    <defs>
-      <!-- Glow filters -->
-      <filter id="glow-green" x="-50%" y="-50%" width="200%" height="200%">
-        <feGaussianBlur stdDeviation="2" result="blur" />
-        <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-      </filter>
-      <filter id="glow-red" x="-50%" y="-50%" width="200%" height="200%">
-        <feGaussianBlur stdDeviation="2" result="blur" />
-        <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-      </filter>
-      <filter id="glow-yellow" x="-50%" y="-50%" width="200%" height="200%">
-        <feGaussianBlur stdDeviation="4" result="blur" />
-        <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-      </filter>
-    </defs>
+<div class:list={['abs-hero', cls]} data-strike-zone>
+  <!-- 3D zone SVG -->
+  <div class="abs-zone-wrap">
+    <svg
+      viewBox="0 0 400 420"
+      class="abs-zone-svg"
+      aria-hidden="true"
+      fill="none"
+    >
+      <defs>
+        <filter id="abs-glow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="3" result="blur" />
+          <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
+        <linearGradient id="zone-fade" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="rgba(255,255,255,0.12)" />
+          <stop offset="100%" stop-color="rgba(255,255,255,0.02)" />
+        </linearGradient>
+      </defs>
 
-    <!-- Strike zone box -->
-    <rect
-      x={zoneX - zoneW / 2}
-      y={zoneY - zoneH / 2}
-      width={zoneW}
-      height={zoneH}
-      stroke="rgba(212,255,61,0.4)"
-      stroke-width="1.5"
-      fill="rgba(212,255,61,0.03)"
-      rx="2"
-      class="zone-box"
-    />
+      <!-- Strike zone box — white wireframe like broadcast -->
+      <rect
+        x={zoneX - zoneW / 2}
+        y={zoneY - zoneH / 2}
+        width={zoneW}
+        height={zoneH}
+        stroke="rgba(255,255,255,0.5)"
+        stroke-width="1.5"
+        fill="url(#zone-fade)"
+        rx="1"
+        class="abs-zone-box"
+      />
 
-    <!-- Zone horizontal thirds -->
-    <line x1={zoneX - zoneW / 2} y1={zoneY - zoneH / 6} x2={zoneX + zoneW / 2} y2={zoneY - zoneH / 6}
-      stroke="rgba(212,255,61,0.15)" stroke-width="0.75" stroke-dasharray="4 4" />
-    <line x1={zoneX - zoneW / 2} y1={zoneY + zoneH / 6} x2={zoneX + zoneW / 2} y2={zoneY + zoneH / 6}
-      stroke="rgba(212,255,61,0.15)" stroke-width="0.75" stroke-dasharray="4 4" />
+      <!-- 9-section grid -->
+      <line x1={zoneX - zoneW / 2} y1={zoneY - zoneH / 6} x2={zoneX + zoneW / 2} y2={zoneY - zoneH / 6}
+        stroke="rgba(255,255,255,0.15)" stroke-width="0.75" />
+      <line x1={zoneX - zoneW / 2} y1={zoneY + zoneH / 6} x2={zoneX + zoneW / 2} y2={zoneY + zoneH / 6}
+        stroke="rgba(255,255,255,0.15)" stroke-width="0.75" />
+      <line x1={zoneX - zoneW / 6} y1={zoneY - zoneH / 2} x2={zoneX - zoneW / 6} y2={zoneY + zoneH / 2}
+        stroke="rgba(255,255,255,0.15)" stroke-width="0.75" />
+      <line x1={zoneX + zoneW / 6} y1={zoneY - zoneH / 2} x2={zoneX + zoneW / 6} y2={zoneY + zoneH / 2}
+        stroke="rgba(255,255,255,0.15)" stroke-width="0.75" />
 
-    <!-- Zone vertical thirds -->
-    <line x1={zoneX - zoneW / 6} y1={zoneY - zoneH / 2} x2={zoneX - zoneW / 6} y2={zoneY + zoneH / 2}
-      stroke="rgba(212,255,61,0.15)" stroke-width="0.75" stroke-dasharray="4 4" />
-    <line x1={zoneX + zoneW / 6} y1={zoneY - zoneH / 2} x2={zoneX + zoneW / 6} y2={zoneY + zoneH / 2}
-      stroke="rgba(212,255,61,0.15)" stroke-width="0.75" stroke-dasharray="4 4" />
+      <!-- Home plate -->
+      <polygon
+        points={`${zoneX - 28},${zoneY + zoneH / 2 + 25} ${zoneX - 14},${zoneY + zoneH / 2 + 40} ${zoneX},${zoneY + zoneH / 2 + 46} ${zoneX + 14},${zoneY + zoneH / 2 + 40} ${zoneX + 28},${zoneY + zoneH / 2 + 25}`}
+        stroke="rgba(255,255,255,0.25)"
+        stroke-width="1"
+        fill="rgba(255,255,255,0.04)"
+      />
 
-    <!-- Home plate shape at bottom -->
-    <polygon
-      points={`${zoneX - 30},${zoneY + zoneH / 2 + 30} ${zoneX - 15},${zoneY + zoneH / 2 + 45} ${zoneX},${zoneY + zoneH / 2 + 52} ${zoneX + 15},${zoneY + zoneH / 2 + 45} ${zoneX + 30},${zoneY + zoneH / 2 + 30}`}
-      stroke="rgba(212,255,61,0.2)"
-      stroke-width="1"
-      fill="rgba(212,255,61,0.02)"
-    />
+      <!-- Impact burst ring -->
+      <circle
+        id="abs-impact-ring"
+        cx={zoneX}
+        cy={zoneY}
+        r="7"
+        class="abs-impact-ring"
+      />
 
-    <!-- Pitch dots -->
-    {svgPitches.map((pitch, i) => {
-      const color = pitch.type === 'correct-strike' ? '#22C55E'
-        : pitch.type === 'bad-call' ? '#EF4444'
-        : '#FACC15';
-      const filter = pitch.type === 'correct-strike' ? 'url(#glow-green)'
-        : pitch.type === 'bad-call' ? 'url(#glow-red)'
-        : 'url(#glow-yellow)';
-      const isOverturn = pitch.type === 'overturn';
+      <!-- Active pitch dot — positioned by JS -->
+      <circle
+        id="abs-pitch-dot"
+        cx={zoneX}
+        cy={zoneY}
+        r="0"
+        fill="#ffffff"
+        filter="url(#abs-glow)"
+        class="abs-pitch-dot"
+      />
 
-      return (
-        <circle
-          cx={pitch.cx}
-          cy={pitch.cy}
-          r={isOverturn ? 5 : 4}
-          fill={color}
-          opacity="0"
-          filter={filter}
-          class:list={['pitch-dot', isOverturn && 'pitch-overturn']}
-          style={`animation-delay: ${pitch.delay}s;`}
-        />
-      );
-    })}
-  </svg>
+      <!-- Trail dots (previous pitches, dimmed) -->
+      <g id="abs-trail-dots"></g>
+    </svg>
+  </div>
+
+  <!-- ABS overlay card — modeled after broadcast -->
+  <div class="abs-card" id="abs-card">
+    <div class="abs-card-header">
+      <svg class="abs-mlb-logo" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+        <circle cx="13" cy="13" r="12" stroke="currentColor" stroke-width="1.2" fill="none"/>
+        <path d="M8 18V8h2l3 6 3-6h2v10h-2v-6l-2.5 5h-1L10 12v6H8z" fill="currentColor"/>
+      </svg>
+      <div class="abs-title">ABS</div>
+    </div>
+    <div class="abs-card-divider"></div>
+    <div class="abs-card-result">
+      <span class="abs-call-dot" id="abs-call-dot"></span>
+      <span class="abs-call-text" id="abs-call-text">STRIKE</span>
+    </div>
+    <div class="abs-challenge-line hidden" id="abs-challenge-line">
+      <span class="abs-challenge-text" id="abs-challenge-text">CHALLENGED</span>
+    </div>
+  </div>
 </div>
 
 <style>
-  .strike-zone-container {
-    perspective: 800px;
+  .abs-hero {
+    position: relative;
+    perspective: 900px;
     transform-style: preserve-3d;
   }
 
-  .strike-zone-svg {
-    transform: rotateX(8deg) rotateY(-3deg);
+  .abs-zone-wrap {
+    transform-style: preserve-3d;
+  }
+
+  .abs-zone-svg {
+    width: 100%;
+    max-height: 340px;
+    transform: rotateX(12deg) rotateY(-2deg);
     transition: transform 0.3s ease-out;
     transform-style: preserve-3d;
-    max-height: 320px;
   }
 
   @media (max-width: 640px) {
-    .strike-zone-svg {
-      max-height: 240px;
-      transform: rotateX(5deg) rotateY(0deg);
+    .abs-zone-svg {
+      max-height: 260px;
+      transform: rotateX(8deg) rotateY(0deg);
     }
   }
 
-  /* Pitch dot entrance animation */
-  .pitch-dot {
-    animation: pitch-appear 0.4s ease-out forwards;
+  /* Zone box subtle animation */
+  .abs-zone-box {
+    animation: abs-zone-glow 4s ease-in-out infinite alternate;
   }
 
-  .pitch-overturn {
-    animation: pitch-appear 0.4s ease-out forwards, pitch-pulse 2s ease-in-out 3s infinite;
+  @keyframes abs-zone-glow {
+    0% { stroke: rgba(255,255,255,0.35); }
+    100% { stroke: rgba(255,255,255,0.6); }
   }
 
-  @keyframes pitch-appear {
-    0% {
-      opacity: 0;
-      r: 0;
+  /* Pitch dot animations */
+  .abs-pitch-dot {
+    transition: cx 0.15s ease-out, cy 0.15s ease-out;
+  }
+
+  /* Impact burst ring */
+  .abs-impact-ring {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 1.5;
+    opacity: 0;
+  }
+  .abs-impact-ring.pop {
+    animation: abs-ring-pop 0.5s ease-out forwards;
+  }
+  @keyframes abs-ring-pop {
+    0%   { r: 7;  opacity: 0.8; stroke-width: 2; }
+    100% { r: 22; opacity: 0;   stroke-width: 0.5; }
+  }
+
+  /* Dot zoom punch on arrival */
+  .abs-pitch-dot.impact {
+    animation: abs-dot-impact 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+  @keyframes abs-dot-impact {
+    0%   { r: 2;  opacity: 0.6; }
+    40%  { r: 12; opacity: 1; }
+    70%  { r: 8;  opacity: 1; }
+    100% { r: 9;  opacity: 1; }
+  }
+
+  /* ABS overlay card */
+  .abs-card {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 110px;
+    background: linear-gradient(135deg, #C8247B, #A01D64);
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: #fff;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    box-shadow: 0 4px 20px rgba(200, 36, 123, 0.35);
+    z-index: 10;
+    transform: translateZ(20px);
+  }
+
+  @media (max-width: 640px) {
+    .abs-card {
+      width: 90px;
+      padding: 8px 10px;
+      top: -4px;
+      right: -4px;
     }
-    60% {
-      opacity: 0.9;
-      r: 6;
-    }
-    100% {
-      opacity: 0.8;
-      r: 4;
-    }
   }
 
-  @keyframes pitch-pulse {
-    0%, 100% {
-      opacity: 0.8;
-      r: 5;
-    }
-    50% {
-      opacity: 1;
-      r: 7;
-    }
+  .abs-card-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
   }
 
-  /* Zone box subtle glow */
-  .zone-box {
-    animation: zone-glow 4s ease-in-out infinite alternate;
+  .abs-mlb-logo {
+    width: 18px;
+    height: 18px;
+    opacity: 0.9;
   }
 
-  @keyframes zone-glow {
-    0% { stroke: rgba(212,255,61,0.3); }
-    100% { stroke: rgba(212,255,61,0.5); }
+  .abs-title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    line-height: 1;
   }
 
-  /* Light mode — darken zone lines for visibility */
-  :global(html.light) .zone-box {
-    stroke: rgba(74, 122, 0, 0.5);
-    fill: rgba(74, 122, 0, 0.04);
+  .abs-card-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.25);
+    margin: 6px 0;
+  }
+
+  .abs-card-result {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .abs-call-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #22C55E;
+    flex-shrink: 0;
+    transition: background 0.2s ease;
+  }
+
+  .abs-call-dot.strike { background: #22C55E; }
+  .abs-call-dot.ball { background: #FACC15; }
+  .abs-call-dot.overturned { background: #D4FF3D; animation: abs-dot-pulse 0.6s ease 2; }
+
+  @keyframes abs-dot-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.4); }
+  }
+
+  .abs-call-text {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    line-height: 1;
+  }
+
+  .abs-challenge-line {
+    margin-top: 5px;
+    padding-top: 5px;
+    border-top: 1px solid rgba(255,255,255,0.15);
+  }
+
+  .abs-challenge-text {
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.9;
+  }
+
+  .abs-challenge-line.hidden {
+    display: none;
+  }
+
+  /* Card entrance */
+  .abs-card {
+    animation: abs-card-in 0.5s ease-out 0.3s both;
+  }
+
+  @keyframes abs-card-in {
+    0% { opacity: 0; transform: translateZ(20px) translateY(-10px) scale(0.95); }
+    100% { opacity: 1; transform: translateZ(20px) translateY(0) scale(1); }
+  }
+
+  /* Light mode */
+  :global(html.light) .abs-zone-box {
+    stroke: rgba(0,0,0,0.35);
+    fill: rgba(0,0,0,0.03);
     animation: none;
   }
-  :global(html.light) .strike-zone-svg line {
-    stroke: rgba(74, 122, 0, 0.2);
+  :global(html.light) .abs-zone-svg line {
+    stroke: rgba(0,0,0,0.12);
   }
-  :global(html.light) .strike-zone-svg polygon {
-    stroke: rgba(74, 122, 0, 0.3);
-    fill: rgba(74, 122, 0, 0.03);
+  :global(html.light) .abs-zone-svg polygon {
+    stroke: rgba(0,0,0,0.2);
+    fill: rgba(0,0,0,0.03);
+  }
+  :global(html.light) .abs-pitch-dot {
+    fill: #333;
+  }
+  :global(html.light) .abs-card {
+    box-shadow: 0 4px 20px rgba(200, 36, 123, 0.25);
   }
 
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    .pitch-dot,
-    .pitch-overturn {
-      animation: none !important;
-      opacity: 0.8 !important;
-    }
-    .zone-box {
-      animation: none !important;
-    }
-    .strike-zone-svg {
-      transition: none !important;
-    }
+    .abs-zone-box { animation: none !important; }
+    .abs-card { animation: none !important; opacity: 1 !important; }
+    .abs-zone-svg { transition: none !important; }
+    .abs-pitch-dot { transition: none !important; animation: none !important; }
+    .abs-impact-ring { animation: none !important; opacity: 0 !important; }
+    .abs-call-dot { animation: none !important; }
   }
 </style>
 
-<script is:inline>
-  // Parallax tilt on mouse move — disabled on touch and reduced motion
-  (function() {
-    var container = document.querySelector('[data-strike-zone]');
-    if (!container) return;
-    var svg = container.querySelector('.strike-zone-svg');
-    if (!svg) return;
+<script is:inline define:vars={{ sequenceJson }}>
+(function() {
+  var container = document.querySelector('[data-strike-zone]');
+  if (!container) return;
+  var svg = container.querySelector('.abs-zone-svg');
+  var dot = document.getElementById('abs-pitch-dot');
+  var ring = document.getElementById('abs-impact-ring');
+  var trailGroup = document.getElementById('abs-trail-dots');
+  var callDot = document.getElementById('abs-call-dot');
+  var callText = document.getElementById('abs-call-text');
+  var challengeLine = document.getElementById('abs-challenge-line');
+  var challengeText = document.getElementById('abs-challenge-text');
+  if (!svg || !dot || !callDot || !callText) return;
 
-    var isTouch = 'ontouchstart' in window;
-    var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (isTouch || reducedMotion) return;
+  var sequence = JSON.parse(sequenceJson);
+  var idx = 0;
+  var trails = [];
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  function showPitch() {
+    var p = sequence[idx % sequence.length];
+
+    // Reset dot
+    dot.classList.remove('impact');
+    dot.setAttribute('r', '0');
+    dot.setAttribute('cx', String(200));
+    dot.setAttribute('cy', String(380));
+    dot.style.opacity = '1';
+
+    // Fly in then impact
+    setTimeout(function() {
+      dot.setAttribute('cx', String(p.cx));
+      dot.setAttribute('cy', String(p.cy));
+
+      // Trigger impact zoom + burst ring after arriving
+      setTimeout(function() {
+        dot.classList.add('impact');
+
+        if (ring) {
+          ring.setAttribute('cx', String(p.cx));
+          ring.setAttribute('cy', String(p.cy));
+          ring.classList.remove('pop');
+          void ring.offsetWidth; // force reflow to restart animation
+          ring.classList.add('pop');
+        }
+      }, reducedMotion ? 0 : 120);
+    }, reducedMotion ? 0 : 50);
+
+    // Show ump's call after ball arrives
+    setTimeout(function() {
+      callDot.className = 'abs-call-dot ' + (p.umpCall === 'STRIKE' ? 'strike' : 'ball');
+      callText.textContent = p.umpCall;
+
+      if (p.challenged && challengeLine && challengeText) {
+        // Challenge sequence
+        setTimeout(function() {
+          challengeLine.classList.remove('hidden');
+          challengeText.textContent = 'CHALLENGED';
+
+          setTimeout(function() {
+            if (p.overturned) {
+              // ABS corrects the call
+              callDot.className = 'abs-call-dot overturned';
+              callText.textContent = p.truth;
+              challengeText.textContent = 'OVERTURNED';
+            } else {
+              challengeText.textContent = 'CONFIRMED';
+            }
+          }, reducedMotion ? 0 : 800);
+        }, reducedMotion ? 0 : 600);
+      } else if (p.missedCall && challengeLine && challengeText) {
+        // Bad call nobody challenged — briefly flash that it was wrong
+        setTimeout(function() {
+          challengeLine.classList.remove('hidden');
+          challengeText.textContent = 'NOT CHALLENGED';
+        }, reducedMotion ? 0 : 600);
+      } else if (challengeLine) {
+        challengeLine.classList.add('hidden');
+      }
+    }, reducedMotion ? 0 : 400);
+
+    // Shrink to trail dot after delay
+    setTimeout(function() {
+      dot.classList.remove('impact');
+      dot.setAttribute('r', '4');
+      dot.style.opacity = '0.5';
+
+      // Trail dot color based on outcome:
+      //   Green  = correct call (ump got it right)
+      //   Yellow = ball (correct)
+      //   Red    = missed call (bad call, never challenged)
+      //   Accent = overturned via challenge
+      var trail = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      trail.setAttribute('cx', String(p.cx));
+      trail.setAttribute('cy', String(p.cy));
+      trail.setAttribute('r', '3');
+
+      var trailColor;
+      var trailOpacity = '0.4';
+      if (p.challenged && p.overturned) {
+        trailColor = '#D4FF3D';  // overturned — accent green
+        trailOpacity = '0.6';
+      } else if (p.missedCall) {
+        trailColor = '#EF4444';  // bad call, never challenged — red
+        trailOpacity = '0.5';
+      } else if (p.umpCall === 'STRIKE') {
+        trailColor = '#22C55E';  // correct strike — green
+      } else {
+        trailColor = '#FACC15';  // correct ball — yellow
+      }
+
+      trail.setAttribute('fill', trailColor);
+      trail.setAttribute('opacity', trailOpacity);
+      if (trailGroup) trailGroup.appendChild(trail);
+      trails.push(trail);
+
+      if (trails.length > 8) {
+        var old = trails.shift();
+        if (old && old.parentNode) old.parentNode.removeChild(old);
+      }
+    }, reducedMotion ? 100 : 2800);
+
+    idx++;
+  }
+
+  // Start the pitch sequence
+  showPitch();
+  var interval = reducedMotion ? 3000 : 4000;
+  setInterval(showPitch, interval);
+
+  // Parallax — disabled on touch and reduced motion
+  var isTouch = 'ontouchstart' in window;
+  if (!isTouch && !reducedMotion) {
     document.addEventListener('mousemove', function(e) {
       var rect = container.getBoundingClientRect();
       var cx = rect.left + rect.width / 2;
       var cy = rect.top + rect.height / 2;
       var dx = (e.clientX - cx) / (rect.width / 2);
       var dy = (e.clientY - cy) / (rect.height / 2);
-      // Max 5 degrees tilt
-      var rotY = dx * -5;
-      var rotX = dy * 5 + 8; // 8deg base tilt
+      var rotY = dx * -4;
+      var rotX = dy * 4 + 12;
       svg.style.transform = 'rotateX(' + rotX + 'deg) rotateY(' + rotY + 'deg)';
     });
-  })();
+  }
+})();
 </script>

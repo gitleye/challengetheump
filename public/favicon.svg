@@ -1,5 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
   <rect width="32" height="32" rx="6" fill="#0A0A0B"/>
-  <rect x="6" y="7" width="20" height="18" rx="2" stroke="#D4FF3D" stroke-width="2" fill="none"/>
-  <line x1="6" y1="16" x2="26" y2="16" stroke="#D4FF3D" stroke-width="1" stroke-dasharray="2 2"/>
+  <!-- ABS-style strike zone -->
+  <rect x="5" y="5" width="22" height="22" rx="1.5" stroke="#D4FF3D" stroke-width="1.8" fill="none"/>
+  <!-- 9-section grid lines -->
+  <line x1="5" y1="12.3" x2="27" y2="12.3" stroke="#D4FF3D" stroke-width="0.5" opacity="0.3"/>
+  <line x1="5" y1="19.7" x2="27" y2="19.7" stroke="#D4FF3D" stroke-width="0.5" opacity="0.3"/>
+  <line x1="12.3" y1="5" x2="12.3" y2="27" stroke="#D4FF3D" stroke-width="0.5" opacity="0.3"/>
+  <line x1="19.7" y1="5" x2="19.7" y2="27" stroke="#D4FF3D" stroke-width="0.5" opacity="0.3"/>
+  <!-- Pitch dots -->
+  <circle cx="16" cy="16" r="3" fill="#22C55E" opacity="0.9"/>
+  <circle cx="22" cy="9" r="2.2" fill="#FACC15" opacity="0.8"/>
 </svg>
