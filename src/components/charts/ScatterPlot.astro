@@ -158,12 +158,6 @@ const chartData = JSON.stringify({ points, xLabel, yLabel });
       let selectedIndex: number | null = null;
       const clearBtn = document.getElementById(`${chartId}-clear`);
 
-      const pointBgColors = p.points.map((pt: any) => {
-        const c = teamColors[pt.label] || '#888888';
-        return c + (isLight ? 'CC' : 'AA');
-      });
-      const pointBorderColors = p.points.map((pt: any) => teamColors[pt.label] || '#888888');
-
       // Plugin: draw team abbreviation inside each dot
       const teamBadgePlugin = {
         id: 'teamBadge-' + chartId,
