@@ -12,7 +12,7 @@ structlog>=25.5.0,<26.0
 pybaseball>=2.2.7
 
 # HTTP
-urllib3>=2.0,<3.0
+urllib3>=2.7.0,<3.0
 
 # Development / testing
 pytest>=8.0
