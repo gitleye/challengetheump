@@ -15,5 +15,5 @@ pybaseball>=2.2.7
 urllib3>=2.0,<3.0
 
 # Development / testing
-pytest>=8.0
+pytest>=9.0.3
 pytest-cov>=7.1.0
