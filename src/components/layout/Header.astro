@@ -1,5 +1,6 @@
 ---
 import ThemeToggle from '@/components/ui/ThemeToggle.astro';
+import metadata from '@/data/metadata.json';
 
 const navLinks = [
   { href: '/teams', label: 'Teams' },
@@ -9,6 +10,13 @@ const navLinks = [
 ];
 
 const currentPath = Astro.url.pathname;
+
+// Freshness badge
+const lastUpdated = new Date(metadata.last_updated);
+const now = new Date();
+const hoursAgo = Math.floor((now.getTime() - lastUpdated.getTime()) / (1000 * 60 * 60));
+const freshnessLabel = hoursAgo < 1 ? 'Just updated' : hoursAgo < 24 ? `${hoursAgo}h ago` : `${Math.floor(hoursAgo / 24)}d ago`;
+const isFresh = hoursAgo < 24;
 ---
 
 <header
@@ -26,12 +34,25 @@ const currentPath = Astro.url.pathname;
       aria-label="Challenge The Ump — Home"
     >
       <svg viewBox="0 0 280 40" fill="none" role="img" aria-label="Challenge The Ump" class="h-7 w-auto">
-        <rect x="2" y="8" width="20" height="24" rx="2" stroke="#D4FF3D" stroke-width="2" fill="none"/>
-        <line x1="2" y1="21" x2="22" y2="21" stroke="#D4FF3D" stroke-width="0.75" stroke-dasharray="2 2"/>
-        <text x="32" y="27" font-family="Space Grotesk, system-ui, sans-serif" font-size="18" font-weight="700" letter-spacing="-0.03em" fill="currentColor">
+        <!-- ABS-style strike zone -->
+        <rect x="2" y="6" width="22" height="28" rx="1.5" stroke="#D4FF3D" stroke-width="1.8" fill="none" class="logo-zone"/>
+        <!-- 9-section grid lines -->
+        <line x1="2" y1="15.3" x2="24" y2="15.3" stroke="#D4FF3D" stroke-width="0.5" opacity="0.35"/>
+        <line x1="2" y1="24.7" x2="24" y2="24.7" stroke="#D4FF3D" stroke-width="0.5" opacity="0.35"/>
+        <line x1="9.3" y1="6" x2="9.3" y2="34" stroke="#D4FF3D" stroke-width="0.5" opacity="0.35"/>
+        <line x1="16.7" y1="6" x2="16.7" y2="34" stroke="#D4FF3D" stroke-width="0.5" opacity="0.35"/>
+        <!-- Pitch dots -->
+        <circle cx="13" cy="20" r="2.5" fill="#22C55E" opacity="0.9"/>
+        <circle cx="19" cy="12" r="2" fill="#FACC15" opacity="0.8"/>
+        <!-- Wordmark -->
+        <text x="34" y="27" font-family="Space Grotesk, system-ui, sans-serif" font-size="18" font-weight="700" letter-spacing="-0.03em" fill="currentColor">
           Challenge <tspan fill="#D4FF3D" class="logo-accent">The Ump</tspan>
         </text>
       </svg>
+      <span class="hidden sm:inline-flex items-center gap-1.5 ml-3 px-2 py-0.5 rounded-sm text-[10px] font-medium tracking-wider uppercase text-text-tertiary bg-elevated border border-border">
+        <span class:list={['w-1.5 h-1.5 rounded-full', isFresh ? 'bg-success' : 'bg-text-tertiary']}></span>
+        {freshnessLabel}
+      </span>
     </a>
 
     <!-- Desktop nav + theme toggle -->

@@ -6,6 +6,7 @@ import Badge from '@/components/ui/Badge.astro';
 import SampleSizeWarning from '@/components/ui/SampleSizeWarning.astro';
 import Tooltip from '@/components/ui/Tooltip.astro';
 import ShareButton from '@/components/ui/ShareButton.astro';
+import TeamLogo from '@/components/ui/TeamLogo.astro';
 import type { TeamsData, TeamRecord, PlayersData } from '@/lib/types';
 import { formatRate, formatWpa, formatWinPct } from '@/lib/stats';
 import teamsData from '@/data/teams.json';
@@ -63,7 +64,9 @@ const shareText = `The ${team.team_name} have a ${formatRate(team.challenges.suc
       </nav>
 
       <div class="flex items-start justify-between gap-4">
-        <div>
+        <div class="flex items-start gap-4">
+          <TeamLogo teamId={team.team_id} size={48} class="mt-1" />
+          <div>
           <div class="flex items-center gap-3 flex-wrap mb-1">
             <h1 class="text-h1 font-display font-bold text-text-primary">{team.team_name}</h1>
             <Badge variant={team.league === 'AL' ? 'default' : 'accent'}>{team.league}</Badge>
@@ -76,6 +79,7 @@ const shareText = `The ${team.team_name} have a ${formatRate(team.challenges.suc
           <p class="text-body text-text-secondary">
             {team.division} &middot; {team.wins}–{team.losses} &middot; {formatWinPct(team.win_pct)}
           </p>
+          </div>
         </div>
       </div>
     </div>
