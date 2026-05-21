@@ -30,7 +30,7 @@ jobs:
         run: pnpm install --no-frozen-lockfile
 
       - name: Audit npm dependencies
-        run: pnpm audit --prod
+        run: pnpm audit --prod --audit-level=high
 
   pip-audit:
     runs-on: ubuntu-latest
