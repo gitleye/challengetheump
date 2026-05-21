@@ -1,6 +1,6 @@
 ---
 import '@/styles/global.css';
-import { ViewTransitions } from 'astro:transitions';
+import { ClientRouter } from 'astro:transitions';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
 import metadata from '@/data/metadata.json';
@@ -74,7 +74,7 @@ const fullTitle = title === 'Home'
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="alternate" type="application/rss+xml" title="Challenge The Ump RSS" href="/feed.xml" />
-    <ViewTransitions fallback="swap" />
+    <ClientRouter fallback="swap" />
 
     <!-- Inline theme script — must run before first paint to prevent flash -->
     <script is:inline>
