@@ -45,8 +45,8 @@ class TeamChallengeStats(BaseModel):
     usage_rate: Optional[float] = None
     net_overturns: int = 0
     challenge_wpa: Optional[float] = None
-    strikeouts_gained: int = 0
-    walks_erased: int = 0
+    strikeouts_overturned: int = 0
+    walks_gained: int = 0
 
 
 class TeamRecord(BaseModel):

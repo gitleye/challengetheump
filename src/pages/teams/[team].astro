@@ -192,12 +192,12 @@ const shareText = `The ${team.team_name} have a ${formatRate(team.challenges.suc
             <p class:list={['font-mono font-bold', netOt >= 0 ? 'delta-positive' : 'delta-negative']}>{netOtStr}</p>
           </div>
           <div>
-            <p class="text-text-tertiary">Ks Gained</p>
-            <p class="font-mono text-text-primary">{team.challenges.strikeouts_gained}</p>
+            <p class="text-text-tertiary">Ks Overturned</p>
+            <p class="font-mono text-text-primary">{team.challenges.strikeouts_overturned}</p>
           </div>
           <div>
-            <p class="text-text-tertiary">BBs Erased</p>
-            <p class="font-mono text-text-primary">{team.challenges.walks_erased}</p>
+            <p class="text-text-tertiary">BBs Gained</p>
+            <p class="font-mono text-text-primary">{team.challenges.walks_gained}</p>
           </div>
         </div>
       </Card>

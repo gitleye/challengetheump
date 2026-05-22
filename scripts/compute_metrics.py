@@ -197,8 +197,8 @@ def _team_challenge_stats_from_savant(
         success_rate=success_rate,
         net_overturns=net_overturns,
         challenge_wpa=challenge_wpa,
-        strikeouts_gained=offense_k + safe_int(defense_k := cat.get("n_strikeouts", 0)),
-        walks_erased=offense_bb + safe_int(cat.get("n_walks", 0)),
+        strikeouts_overturned=offense_k + safe_int(defense_k := cat.get("n_strikeouts", 0)),
+        walks_gained=offense_bb + safe_int(cat.get("n_walks", 0)),
     )
 
     quality = DataQuality.OK if total_challenges > 0 else DataQuality.MISSING
@@ -326,8 +326,12 @@ def _compute_daily(fetch, teams_data: TeamsData, now: str) -> DailyData:  # type
 # ---- League summary ------------------------------------------------------
 
 def _compute_league(fetch, teams_data: TeamsData, now: str) -> LeagueSummary:  # type: ignore[no-untyped-def]
-    total_challenges = sum(t.challenges.total_challenges for t in teams_data.teams) // 2  # deduplicate bat+catch
-    total_overturns = sum(t.challenges.successful_challenges for t in teams_data.teams) // 2
+    challenge_sum = sum(t.challenges.total_challenges for t in teams_data.teams)
+    overturn_sum = sum(t.challenges.successful_challenges for t in teams_data.teams)
+    if challenge_sum % 2 != 0 or overturn_sum % 2 != 0:
+        logger.warning("Odd total (%d challenges, %d overturns) — possible data anomaly", challenge_sum, overturn_sum)
+    total_challenges = challenge_sum // 2  # deduplicate bat+catch
+    total_overturns = overturn_sum // 2
     overall_rate, _ = compute_success_rate(total_overturns, total_challenges)
 
     def _rate(stats: Optional[dict], k_field: str, bb_field: str, pa_field: str):

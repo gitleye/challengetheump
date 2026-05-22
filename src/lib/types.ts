@@ -39,8 +39,8 @@ export interface TeamChallengeStats {
   usage_rate: number | null; // challenges per opportunity; null if unknown
   net_overturns: number; // overturns_for - overturns_against
   challenge_wpa: number | null; // Win Probability Added from successful challenges
-  strikeouts_gained: number;
-  walks_erased: number;
+  strikeouts_overturned: number;
+  walks_gained: number;
 }
 
 export interface TeamRecord {
