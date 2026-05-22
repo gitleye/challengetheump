@@ -42,6 +42,20 @@ def _get(path: str, params: Optional[dict] = None, ttl: int = 3600) -> Any:
 
 LEAGUE_IDS = {"AL": 103, "NL": 104}
 
+_DIVISION_NAMES: dict[int, str] = {
+    200: "AL West",
+    201: "AL East",
+    202: "AL Central",
+    203: "NL West",
+    204: "NL East",
+    205: "NL Central",
+}
+
+_LEAGUE_BY_DIVISION: dict[int, str] = {
+    200: "AL", 201: "AL", 202: "AL",
+    203: "NL", 204: "NL", 205: "NL",
+}
+
 
 def fetch_standings(season: int) -> list[dict]:
     """
@@ -57,27 +71,26 @@ def fetch_standings(season: int) -> list[dict]:
             "leagueId": "103,104",
             "season": season,
             "standingsTypes": "regularSeason",
-            "hydrate": "team(division,league)",
+            "hydrate": "team",
         },
         ttl=1800,  # refresh standings every 30 min
     )
 
     records: list[dict] = []
     for division_record in data.get("records", []):
-        division_name = (
-            division_record.get("division", {}).get("nameShort")
-            or division_record.get("division", {}).get("name", "Unknown")
-        )
-        league_raw = division_record.get("league", {}).get("abbreviation", "")
-        # Normalize to AL/NL — the API sometimes returns full names or league IDs
-        if "american" in league_raw.lower() or league_raw == "AL" or "103" in str(division_record.get("league", {}).get("id", "")):
-            league_name = "AL"
-        elif "national" in league_raw.lower() or league_raw == "NL" or "104" in str(division_record.get("league", {}).get("id", "")):
-            league_name = "NL"
-        else:
-            # Infer from division name as last resort
-            div = division_name.upper()
-            league_name = "AL" if "AMERICAN" in div else ("NL" if "NATIONAL" in div else "AL")
+        div_id = division_record.get("division", {}).get("id")
+        division_name = _DIVISION_NAMES.get(div_id, "Unknown")
+        league_name = _LEAGUE_BY_DIVISION.get(div_id, "")
+
+        if not league_name:
+            league_raw = division_record.get("league", {}).get("abbreviation", "")
+            league_id = division_record.get("league", {}).get("id")
+            if league_id == 103 or league_raw == "AL":
+                league_name = "AL"
+            elif league_id == 104 or league_raw == "NL":
+                league_name = "NL"
+            else:
+                league_name = "AL"
 
         for team_record in division_record.get("teamRecords", []):
             team = team_record.get("team", {})
