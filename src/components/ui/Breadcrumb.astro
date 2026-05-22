@@ -1,0 +1,40 @@
+---
+/**
+ * Breadcrumb trail. The last item is rendered as the current page;
+ * any item with an `href` is rendered as a link.
+ */
+interface Crumb {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  items: Crumb[];
+  class?: string;
+}
+
+const { items, class: cls = '' } = Astro.props;
+---
+
+<nav class:list={['text-body-sm text-text-tertiary mb-6', cls]} aria-label="Breadcrumb">
+  <ol class="flex items-center gap-2">
+    {items.map((item, i) => {
+      const isLast = i === items.length - 1;
+      return (
+        <>
+          {i > 0 && <li aria-hidden="true" class="text-text-tertiary">›</li>}
+          <li
+            class={isLast ? 'text-text-primary font-medium' : ''}
+            aria-current={isLast ? 'page' : undefined}
+          >
+            {item.href ? (
+              <a href={item.href} class="hover:text-accent transition-colors">{item.label}</a>
+            ) : (
+              item.label
+            )}
+          </li>
+        </>
+      );
+    })}
+  </ol>
+</nav>

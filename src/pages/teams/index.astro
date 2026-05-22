@@ -3,9 +3,10 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Card from '@/components/ui/Card.astro';
 import Badge from '@/components/ui/Badge.astro';
 import Tooltip from '@/components/ui/Tooltip.astro';
-import TeamLogo from '@/components/ui/TeamLogo.astro';
+import TeamNameCell from '@/components/ui/TeamNameCell.astro';
+import EmptyState from '@/components/ui/EmptyState.astro';
 import type { TeamsData } from '@/lib/types';
-import { formatRate, formatWpa, formatWinPct } from '@/lib/stats';
+import { formatRate, formatWpa, formatWinPct, formatSigned } from '@/lib/stats';
 import teamsData from '@/data/teams.json';
 
 const { teams } = teamsData as unknown as TeamsData;
@@ -41,12 +42,7 @@ const sorted = [...teams].sort(
   <!-- Filters + table ----------------------------------------------------- -->
   <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
     {!isDataReady ? (
-      <div class="rounded-lg border-2 border-dashed border-border p-16 text-center">
-        <p class="text-body-lg font-medium text-text-secondary">Data pipeline not yet run</p>
-        <p class="mt-2 text-body-sm text-text-tertiary">
-          Run <code class="bg-elevated px-1.5 py-0.5 rounded text-accent font-mono">python scripts/run.py</code> to populate.
-        </p>
-      </div>
+      <EmptyState />
     ) : (
       <div>
         <!-- Filter bar -->
@@ -94,7 +90,7 @@ const sorted = [...teams].sort(
               <tbody>
                 {sorted.map((team, i) => {
                   const netOt = team.challenges.net_overturns;
-                  const netOtStr = netOt > 0 ? `+${netOt}` : String(netOt);
+                  const netOtStr = formatSigned(netOt);
                   return (
                     <tr
                       data-league={team.league}
@@ -107,16 +103,11 @@ const sorted = [...teams].sort(
                     >
                       <td class="text-text-tertiary font-mono rank-cell">{i + 1}</td>
                       <td>
-                        <div class="flex items-center gap-2 whitespace-nowrap">
-                          <TeamLogo teamId={team.team_id} size={20} />
-                          <a
-                            href={`/teams/${team.team_id.toLowerCase()}`}
-                            class="font-medium text-text-primary hover:text-accent transition-colors"
-                          >
-                            {team.team_name}
-                          </a>
-                          <span class="text-caption text-text-tertiary">{team.league}</span>
-                        </div>
+                        <TeamNameCell
+                          teamId={team.team_id}
+                          teamName={team.team_name}
+                          league={team.league}
+                        />
                       </td>
                       <td class="text-right font-mono font-bold text-accent">
                         {formatWpa(team.challenges.challenge_wpa)}

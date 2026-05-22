@@ -5,6 +5,7 @@ import Stat from '@/components/ui/Stat.astro';
 import Badge from '@/components/ui/Badge.astro';
 import SampleSizeWarning from '@/components/ui/SampleSizeWarning.astro';
 import ShareButton from '@/components/ui/ShareButton.astro';
+import Breadcrumb from '@/components/ui/Breadcrumb.astro';
 import type { PlayersData, PlayerRecord } from '@/lib/types';
 import { formatRate } from '@/lib/stats';
 import playersData from '@/data/players.json';
@@ -56,17 +57,15 @@ const shareText = `${player.name} has a ${successRateFormatted} ABS challenge su
   <!-- Breadcrumb + header ------------------------------------------------- -->
   <section class="border-b border-border">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-10">
-      <nav class="text-body-sm text-text-tertiary mb-6" aria-label="Breadcrumb">
-        <ol class="flex items-center gap-2">
-          <li>
-            <a href={player.challenges.role === 'catcher' ? '/players' : `/players/${player.challenges.role}s`} class="hover:text-accent transition-colors">
-              Players
-            </a>
-          </li>
-          <li aria-hidden="true" class="text-text-tertiary">›</li>
-          <li class="text-text-primary font-medium" aria-current="page">{player.name}</li>
-        </ol>
-      </nav>
+      <Breadcrumb
+        items={[
+          {
+            label: 'Players',
+            href: player.challenges.role === 'catcher' ? '/players' : `/players/${player.challenges.role}s`,
+          },
+          { label: player.name },
+        ]}
+      />
 
       <div class="flex items-start gap-5">
         <img

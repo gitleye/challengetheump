@@ -1,0 +1,24 @@
+---
+/** Team logo + linked team name, used inside leaderboard table rows. */
+import TeamLogo from '@/components/ui/TeamLogo.astro';
+
+interface Props {
+  teamId: string;
+  teamName: string;
+  league?: string;
+  logoSize?: number;
+}
+
+const { teamId, teamName, league, logoSize = 20 } = Astro.props;
+---
+
+<div class="flex items-center gap-2 whitespace-nowrap">
+  <TeamLogo teamId={teamId} size={logoSize} />
+  <a
+    href={`/teams/${teamId.toLowerCase()}`}
+    class="font-medium text-text-primary hover:text-accent transition-colors"
+  >
+    {teamName}
+  </a>
+  {league && <span class="text-caption text-text-tertiary">{league}</span>}
+</div>

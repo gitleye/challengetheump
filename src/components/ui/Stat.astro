@@ -21,9 +21,11 @@ const {
   class: cls = '',
 } = Astro.props;
 
+// Large sizes step down on small screens so multi-column stat grids
+// don't overflow the viewport edge.
 const sizeClass = {
-  xl: 'text-stat-xl',
-  lg: 'text-stat-lg',
+  xl: 'text-[30px] sm:text-stat-xl',
+  lg: 'text-[30px] sm:text-stat-lg',
   md: 'text-stat',
 }[size];
 

@@ -1,0 +1,37 @@
+---
+/** Player avatar + linked player name, used inside leaderboard table rows. */
+import PlayerAvatar from '@/components/ui/PlayerAvatar.astro';
+
+interface Props {
+  playerId: number;
+  name: string;
+  teamId: string;
+  /** Show the team abbreviation next to the name. */
+  showTeam?: boolean;
+  avatarSize?: number;
+}
+
+const { playerId, name, teamId, showTeam = false, avatarSize = 28 } = Astro.props;
+---
+
+<div class="flex items-center gap-2">
+  <PlayerAvatar playerId={playerId} name={name} teamId={teamId} size={avatarSize} />
+  {showTeam ? (
+    <div>
+      <a
+        href={`/players/${playerId}`}
+        class="font-medium text-text-primary hover:text-accent transition-colors"
+      >
+        {name}
+      </a>
+      <span class="ml-1.5 text-caption text-text-tertiary">{teamId}</span>
+    </div>
+  ) : (
+    <a
+      href={`/players/${playerId}`}
+      class="font-medium text-text-primary hover:text-accent transition-colors"
+    >
+      {name}
+    </a>
+  )}
+</div>

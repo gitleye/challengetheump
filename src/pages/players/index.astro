@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import PlayerTable from '@/components/players/PlayerTable.astro';
+import EmptyState from '@/components/ui/EmptyState.astro';
 import type { PlayersData } from '@/lib/types';
 import playersData from '@/data/players.json';
 
@@ -22,12 +23,7 @@ const filtered = players.filter((p) => p.challenges.role === 'catcher');
 
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
     {!isDataReady ? (
-      <div class="rounded-lg border-2 border-dashed border-border p-16 text-center">
-        <p class="text-body-lg font-medium text-text-secondary">Data pipeline not yet run</p>
-        <p class="mt-2 text-body-sm text-text-tertiary">
-          Run <code class="bg-elevated px-1.5 py-0.5 rounded text-accent font-mono">python scripts/run.py</code> to populate.
-        </p>
-      </div>
+      <EmptyState />
     ) : (
       <PlayerTable players={filtered} role="catcher" />
     )}

@@ -6,8 +6,8 @@ A public analytics dashboard tracking MLB's 2026 ABS (Automated Ball-Strike) Cha
 
 Live: [challengetheump.com](https://challengetheump.com) | Data: updated daily during the MLB season
 
-![Build](https://github.com/leyeoyelami/challengetheump/actions/workflows/deploy.yml/badge.svg)
-![Data Refresh](https://github.com/leyeoyelami/challengetheump/actions/workflows/daily-data-refresh.yml/badge.svg)
+![Build](https://github.com/gitleye/challengetheump/actions/workflows/deploy.yml/badge.svg)
+![Data Refresh](https://github.com/gitleye/challengetheump/actions/workflows/daily-data-refresh.yml/badge.svg)
 
 ---
 
@@ -28,7 +28,7 @@ Live: [challengetheump.com](https://challengetheump.com) | Data: updated daily d
 
 ```bash
 # Clone
-git clone https://github.com/leyeoyelami/challengetheump
+git clone https://github.com/gitleye/challengetheump
 cd challengetheump
 
 # Install dependencies
@@ -81,7 +81,7 @@ challengetheump/
 │   ├── lib/                     # Savant client, metrics, Pydantic schemas
 │   └── tests/                   # Unit tests for metric math
 ├── src/
-│   ├── components/              # Reusable Astro components (ui/, layout/, players/)
+│   ├── components/              # Reusable Astro components (ui/, layout/, players/, charts/, hero/)
 │   ├── data/                    # Static JSON (committed by pipeline)
 │   ├── layouts/                 # BaseLayout.astro
 │   ├── lib/                     # TypeScript types + helpers

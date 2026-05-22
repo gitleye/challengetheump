@@ -7,8 +7,9 @@ import SampleSizeWarning from '@/components/ui/SampleSizeWarning.astro';
 import Tooltip from '@/components/ui/Tooltip.astro';
 import ShareButton from '@/components/ui/ShareButton.astro';
 import TeamLogo from '@/components/ui/TeamLogo.astro';
+import Breadcrumb from '@/components/ui/Breadcrumb.astro';
 import type { TeamsData, TeamRecord, PlayersData } from '@/lib/types';
-import { formatRate, formatWpa, formatWinPct } from '@/lib/stats';
+import { formatRate, formatWpa, formatWinPct, formatSigned } from '@/lib/stats';
 import teamsData from '@/data/teams.json';
 import playersData from '@/data/players.json';
 
@@ -30,7 +31,7 @@ const teamPlayers = allPlayers
   .sort((a, b) => b.challenges.total_challenges - a.challenges.total_challenges);
 
 const netOt = team.challenges.net_overturns;
-const netOtStr = netOt > 0 ? `+${netOt}` : String(netOt);
+const netOtStr = formatSigned(netOt);
 const hasWarnings = team.sample_warnings && team.sample_warnings.length > 0;
 
 const shareText = `The ${team.team_name} have a ${formatRate(team.challenges.success_rate)} ABS challenge success rate (${formatWpa(team.challenges.challenge_wpa)} Net RV) this season. https://challengetheump.com/teams/${team.team_id.toLowerCase()}`;
@@ -55,13 +56,7 @@ const shareText = `The ${team.team_name} have a ${formatRate(team.challenges.suc
   <!-- Breadcrumb + header ------------------------------------------------- -->
   <section class="border-b border-border">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-10">
-      <nav class="text-body-sm text-text-tertiary mb-6" aria-label="Breadcrumb">
-        <ol class="flex items-center gap-2">
-          <li><a href="/teams" class="hover:text-accent transition-colors">Teams</a></li>
-          <li aria-hidden="true" class="text-text-tertiary">›</li>
-          <li class="text-text-primary font-medium" aria-current="page">{team.team_name}</li>
-        </ol>
-      </nav>
+      <Breadcrumb items={[{ label: 'Teams', href: '/teams' }, { label: team.team_name }]} />
 
       <div class="flex items-start justify-between gap-4">
         <div class="flex items-start gap-4">

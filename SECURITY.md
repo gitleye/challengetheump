@@ -4,7 +4,7 @@
 
 If you discover a security vulnerability in this project, please report it responsibly.
 
-**Email:** leye.oyelami@gmail.com
+**Report privately via GitHub:** open a [new security advisory](https://github.com/gitleye/challengetheump/security/advisories/new) on this repository. Do not open a public issue for security reports.
 
 Please include:
 - A description of the vulnerability

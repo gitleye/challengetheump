@@ -22,6 +22,11 @@ export function formatWpa(wpa: number | null): string {
   return `${sign}${wpa.toFixed(2)}`;
 }
 
+/** Format an integer with an explicit leading "+" for positive values. */
+export function formatSigned(value: number): string {
+  return value > 0 ? `+${value}` : String(value);
+}
+
 /** Format a game time in minutes as "2h 58m". */
 export function formatGameTime(minutes: number | null): string {
   if (minutes === null) return '—';

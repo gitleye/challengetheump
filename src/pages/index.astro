@@ -4,11 +4,10 @@ import Card from '@/components/ui/Card.astro';
 import Stat from '@/components/ui/Stat.astro';
 import Badge from '@/components/ui/Badge.astro';
 import Tooltip from '@/components/ui/Tooltip.astro';
-import Sparkline from '@/components/ui/Sparkline.astro';
 import ScatterPlot from '@/components/charts/ScatterPlot.astro';
 import StrikeZone from '@/components/hero/StrikeZone.astro';
-import TeamLogo from '@/components/ui/TeamLogo.astro';
-import PlayerAvatar from '@/components/ui/PlayerAvatar.astro';
+import TeamNameCell from '@/components/ui/TeamNameCell.astro';
+import MiniLeaderboard from '@/components/players/MiniLeaderboard.astro';
 import type { TeamsData, PlayersData, LeagueSummary } from '@/lib/types';
 import { formatRate, formatWpa, formatWinPct, formatDate, formatDateShort, pearsonR } from '@/lib/stats';
 import teamsData from '@/data/teams.json';
@@ -69,7 +68,7 @@ const gamesThrough = metadata.games_through ? formatDateShort(metadata.games_thr
       style="background-image: linear-gradient(#D4FF3D 1px, transparent 1px), linear-gradient(90deg, #D4FF3D 1px, transparent 1px); background-size: 40px 40px;">
     </div>
 
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-24 pb-16">
       <div class="grid lg:grid-cols-2 gap-8 items-center">
         <!-- Text column -->
         <div class="relative z-10">
@@ -109,50 +108,52 @@ const gamesThrough = metadata.games_through ? formatDateShort(metadata.games_thr
         </div>
 
         <!-- Strike zone visualization -->
-        <div class="relative flex items-center justify-center lg:justify-end">
-          <div class="w-full max-w-sm lg:max-w-md">
+        <div class="flex flex-col items-start">
+          <div class="w-full max-w-md lg:max-w-lg">
             <StrikeZone successRate={overallSuccessRate ?? 0.53} />
-          </div>
 
-          <!-- Legend -->
-          <div class="absolute bottom-0 left-0 flex gap-3 sm:gap-4 text-caption text-text-tertiary flex-wrap" aria-hidden="true">
-            <span class="flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-success inline-block"></span> Strike
-            </span>
-            <span class="flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-warning inline-block"></span> Ball
-            </span>
-            <span class="flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-danger inline-block"></span> Missed call
-            </span>
-            <span class="flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-accent inline-block"></span> Overturned
-            </span>
+            <!-- Legend — seated directly under the zone -->
+            <div class="flex justify-center gap-3 sm:gap-4 text-caption text-text-tertiary flex-wrap mt-1" aria-hidden="true">
+              <span class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-success inline-block"></span> Strike
+              </span>
+              <span class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-warning inline-block"></span> Ball
+              </span>
+              <span class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-danger inline-block"></span> Missed call
+              </span>
+              <span class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-accent inline-block"></span> Overturned
+              </span>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Hero counter stats -->
       {isDataReady && (
-        <div class="grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-border/50">
+        <div class="grid grid-cols-3 gap-6 mt-16 pt-16 border-t border-border/50">
           <Stat
             value={totalChallenges.toLocaleString()}
             label="Challenges Filed"
-            size="lg"
+            size="xl"
             accent
             animate
           />
           <Stat
             value={league.total_overturns?.toLocaleString() ?? '—'}
             label="Calls Overturned"
-            size="lg"
+            size="xl"
             animate
+            class="items-center text-center sm:items-start sm:text-left"
           />
           <Stat
             value={formatRate(overallSuccessRate)}
             label="Overturn Rate"
-            size="lg"
+            size="xl"
             animate
+            class="items-end text-right sm:items-start sm:text-left"
           />
         </div>
       )}
@@ -306,14 +307,11 @@ const gamesThrough = metadata.games_through ? formatDateShort(metadata.games_thr
                 <tr>
                   <td class="text-text-tertiary font-mono">{i + 1}</td>
                   <td>
-                    <div class="flex items-center gap-2 whitespace-nowrap">
-                      <TeamLogo teamId={team.team_id} size={20} />
-                      <a href={`/teams/${team.team_id.toLowerCase()}`}
-                        class="font-medium text-text-primary hover:text-accent transition-colors">
-                        {team.team_name}
-                      </a>
-                      <span class="text-caption text-text-tertiary">{team.league}</span>
-                    </div>
+                    <TeamNameCell
+                      teamId={team.team_id}
+                      teamName={team.team_name}
+                      league={team.league}
+                    />
                   </td>
                   <td class="text-right font-mono font-bold text-accent">
                     {formatWpa(team.challenges.challenge_wpa)}
@@ -344,100 +342,21 @@ const gamesThrough = metadata.games_through ? formatDateShort(metadata.games_thr
         Top Players
       </h2>
       <div class="grid md:grid-cols-2 gap-6">
-        <!-- Top catchers -->
         {topCatchers.length > 0 && (
-          <Card
+          <MiniLeaderboard
             title="Catchers by Overturn Rate"
             cta={{ label: 'All catchers', href: '/players' }}
-            noPadding
-          >
-            <p class="px-6 text-caption text-text-tertiary mb-3">Min 20 challenges</p>
-            <div class="overflow-x-auto">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th class="w-8">#</th>
-                    <th>Name</th>
-                    <th class="text-right">Rate</th>
-                    <th class="text-right">Chall</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {topCatchers.map((p, i) => (
-                    <tr>
-                      <td class="text-text-tertiary font-mono">{i + 1}</td>
-                      <td>
-                        <div class="flex items-center gap-2">
-                          <PlayerAvatar playerId={p.player_id} name={p.name} teamId={p.team_id} size={28} />
-                          <div>
-                            <a href={`/players/${p.player_id}`}
-                              class="font-medium text-text-primary hover:text-accent transition-colors">
-                              {p.name}
-                            </a>
-                            <span class="ml-1.5 text-caption text-text-tertiary">{p.team_id}</span>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="text-right font-mono font-bold text-accent">
-                        {formatRate(p.challenges.success_rate)}
-                      </td>
-                      <td class="text-right font-mono text-text-secondary">
-                        {p.challenges.total_challenges}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </Card>
+            note="Min 20 challenges"
+            players={topCatchers}
+          />
         )}
-
-        <!-- Top batters -->
         {topBatters.length > 0 && (
-          <Card
+          <MiniLeaderboard
             title="Batters by Overturn Rate"
             cta={{ label: 'All batters', href: '/players/batters' }}
-            noPadding
-          >
-            <p class="px-6 text-caption text-text-tertiary mb-3">Min 10 challenges</p>
-            <div class="overflow-x-auto">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th class="w-8">#</th>
-                    <th>Name</th>
-                    <th class="text-right">Rate</th>
-                    <th class="text-right">Chall</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {topBatters.map((p, i) => (
-                    <tr>
-                      <td class="text-text-tertiary font-mono">{i + 1}</td>
-                      <td>
-                        <div class="flex items-center gap-2">
-                          <PlayerAvatar playerId={p.player_id} name={p.name} teamId={p.team_id} size={28} />
-                          <div>
-                            <a href={`/players/${p.player_id}`}
-                              class="font-medium text-text-primary hover:text-accent transition-colors">
-                              {p.name}
-                            </a>
-                            <span class="ml-1.5 text-caption text-text-tertiary">{p.team_id}</span>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="text-right font-mono font-bold text-accent">
-                        {formatRate(p.challenges.success_rate)}
-                      </td>
-                      <td class="text-right font-mono text-text-secondary">
-                        {p.challenges.total_challenges}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </Card>
+            note="Min 10 challenges"
+            players={topBatters}
+          />
         )}
       </div>
     </section>

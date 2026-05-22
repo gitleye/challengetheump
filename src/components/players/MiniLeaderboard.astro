@@ -1,0 +1,52 @@
+---
+/**
+ * Compact "top players" leaderboard card — name, success rate, challenge
+ * count. Used for the catcher and batter previews on the home page.
+ */
+import Card from '@/components/ui/Card.astro';
+import PlayerNameCell from '@/components/ui/PlayerNameCell.astro';
+import { formatRate } from '@/lib/stats';
+import type { PlayerRecord } from '@/lib/types';
+
+interface Props {
+  title: string;
+  cta: { label: string; href: string };
+  /** Optional caption shown above the table (e.g. "Min 20 challenges"). */
+  note?: string;
+  players: PlayerRecord[];
+}
+
+const { title, cta, note, players } = Astro.props;
+---
+
+<Card title={title} cta={cta} noPadding>
+  {note && <p class="px-6 text-caption text-text-tertiary mb-3">{note}</p>}
+  <div class="overflow-x-auto">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th class="w-8">#</th>
+          <th>Name</th>
+          <th class="text-right">Rate</th>
+          <th class="text-right">Chall</th>
+        </tr>
+      </thead>
+      <tbody>
+        {players.map((p, i) => (
+          <tr>
+            <td class="text-text-tertiary font-mono">{i + 1}</td>
+            <td>
+              <PlayerNameCell playerId={p.player_id} name={p.name} teamId={p.team_id} showTeam />
+            </td>
+            <td class="text-right font-mono font-bold text-accent">
+              {formatRate(p.challenges.success_rate)}
+            </td>
+            <td class="text-right font-mono text-text-secondary">
+              {p.challenges.total_challenges}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</Card>

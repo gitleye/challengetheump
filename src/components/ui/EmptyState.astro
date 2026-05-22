@@ -1,0 +1,28 @@
+---
+/**
+ * Dashed-border placeholder shown when a page has no data yet
+ * (typically before the Python pipeline has been run).
+ */
+interface Props {
+  title?: string;
+  /** Shell command shown in the hint. Pass an empty string to omit. */
+  command?: string;
+  class?: string;
+}
+
+const {
+  title = 'Data pipeline not yet run',
+  command = 'python scripts/run.py',
+  class: cls = '',
+} = Astro.props;
+---
+
+<div class:list={['rounded-lg border-2 border-dashed border-border p-16 text-center', cls]}>
+  <p class="text-body-lg font-medium text-text-secondary">{title}</p>
+  {command && (
+    <p class="mt-2 text-body-sm text-text-tertiary">
+      Run <code class="bg-elevated px-1.5 py-0.5 rounded text-accent font-mono">{command}</code> to populate.
+    </p>
+  )}
+  <slot />
+</div>
