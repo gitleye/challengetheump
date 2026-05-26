@@ -52,6 +52,23 @@
       "data_quality": "ok"
     },
     {
+      "player_id": 672275,
+      "name": "Patrick Bailey",
+      "team_id": "SF",
+      "position": "Catcher",
+      "challenges": {
+        "role": "catcher",
+        "total_challenges": 42,
+        "successful_challenges": 24,
+        "success_rate": 0.5714285714285714,
+        "strikeouts_avoided": null,
+        "walks_gained": null,
+        "overturns_generated": 24
+      },
+      "sample_warnings": [],
+      "data_quality": "ok"
+    },
+    {
       "player_id": 669224,
       "name": "Austin Wells",
       "team_id": "NYY",
@@ -86,23 +103,6 @@
       "data_quality": "ok"
     },
     {
-      "player_id": 672275,
-      "name": "Patrick Bailey",
-      "team_id": "SF",
-      "position": "Catcher",
-      "challenges": {
-        "role": "catcher",
-        "total_challenges": 41,
-        "successful_challenges": 23,
-        "success_rate": 0.5609756097560976,
-        "strikeouts_avoided": null,
-        "walks_gained": null,
-        "overturns_generated": 23
-      },
-      "sample_warnings": [],
-      "data_quality": "ok"
-    },
-    {
       "player_id": 669257,
       "name": "Will Smith",
       "team_id": "LAD",
@@ -115,6 +115,23 @@
         "strikeouts_avoided": null,
         "walks_gained": null,
         "overturns_generated": 29
+      },
+      "sample_warnings": [],
+      "data_quality": "ok"
+    },
+    {
+      "player_id": 669127,
+      "name": "Shea Langeliers",
+      "team_id": "ATH",
+      "position": "Catcher",
+      "challenges": {
+        "role": "catcher",
+        "total_challenges": 40,
+        "successful_challenges": 24,
+        "success_rate": 0.6,
+        "strikeouts_avoided": null,
+        "walks_gained": null,
+        "overturns_generated": 24
       },
       "sample_warnings": [],
       "data_quality": "ok"
@@ -137,18 +154,18 @@
       "data_quality": "ok"
     },
     {
-      "player_id": 669127,
-      "name": "Shea Langeliers",
-      "team_id": "ATH",
+      "player_id": 663886,
+      "name": "Tyler Stephenson",
+      "team_id": "CIN",
       "position": "Catcher",
       "challenges": {
         "role": "catcher",
-        "total_challenges": 39,
-        "successful_challenges": 23,
-        "success_rate": 0.5897435897435898,
+        "total_challenges": 38,
+        "successful_challenges": 29,
+        "success_rate": 0.7631578947368421,
         "strikeouts_avoided": null,
         "walks_gained": null,
-        "overturns_generated": 23
+        "overturns_generated": 29
       },
       "sample_warnings": [],
       "data_quality": "ok"
@@ -174,23 +191,6 @@
       "player_id": 521692,
       "name": "Salvador Perez",
       "team_id": "KC",
-      "position": "Catcher",
-      "challenges": {
-        "role": "catcher",
-        "total_challenges": 36,
-        "successful_challenges": 27,
-        "success_rate": 0.75,
-        "strikeouts_avoided": null,
-        "walks_gained": null,
-        "overturns_generated": 27
-      },
-      "sample_warnings": [],
-      "data_quality": "ok"
-    },
-    {
-      "player_id": 663886,
-      "name": "Tyler Stephenson",
-      "team_id": "CIN",
       "position": "Catcher",
       "challenges": {
         "role": "catcher",
@@ -239,6 +239,40 @@
       "data_quality": "ok"
     },
     {
+      "player_id": 686780,
+      "name": "Pedro Pages",
+      "team_id": "STL",
+      "position": "Catcher",
+      "challenges": {
+        "role": "catcher",
+        "total_challenges": 32,
+        "successful_challenges": 22,
+        "success_rate": 0.6875,
+        "strikeouts_avoided": null,
+        "walks_gained": null,
+        "overturns_generated": 22
+      },
+      "sample_warnings": [],
+      "data_quality": "ok"
+    },
+    {
+      "player_id": 686452,
+      "name": "Drew Millas",
+      "team_id": "WSH",
+      "position": "Catcher",
+      "challenges": {
+        "role": "catcher",
+        "total_challenges": 32,
+        "successful_challenges": 14,
+        "success_rate": 0.4375,
+        "strikeouts_avoided": null,
+        "walks_gained": null,
+        "overturns_generated": 14
+      },
+      "sample_warnings": [],
+      "data_quality": "ok"
+    },
+    {
       "player_id": 682663,
       "name": "Agustin Ramirez",
       "team_id": "MIA",
@@ -256,23 +290,6 @@
       "data_quality": "ok"
     },
     {
-      "player_id": 686780,
-      "name": "Pedro Pages",
-      "team_id": "STL",
-      "position": "Catcher",
-      "challenges": {
-        "role": "catcher",
-        "total_challenges": 31,
-        "successful_challenges": 21,
-        "success_rate": 0.6774193548387096,
-        "strikeouts_avoided": null,
-        "walks_gained": null,
-        "overturns_generated": 21
-      },
-      "sample_warnings": [],
-      "data_quality": "ok"
-    },
-    {
       "player_id": 664954,
       "name": "Brett Sullivan",
       "team_id": "COL",
@@ -285,23 +302,6 @@
         "strikeouts_avoided": null,
         "walks_gained": null,
         "overturns_generated": 18
-      },
-      "sample_warnings": [],
-      "data_quality": "ok"
-    },
-    {
-      "player_id": 686452,
-      "name": "Drew Millas",
-      "team_id": "WSH",
-      "position": "Catcher",
-      "challenges": {
-        "role": "catcher",
-        "total_challenges": 31,
-        "successful_challenges": 14,
-        "success_rate": 0.45161290322580644,
-        "strikeouts_avoided": null,
-        "walks_gained": null,
-        "overturns_generated": 14
       },
       "sample_warnings": [],
       "data_quality": "ok"
@@ -477,6 +477,23 @@
       "data_quality": "ok"
     },
     {
+      "player_id": 680779,
+      "name": "Henry Davis",
+      "team_id": "PIT",
+      "position": "Catcher",
+      "challenges": {
+        "role": "catcher",
+        "total_challenges": 26,
+        "successful_challenges": 14,
+        "success_rate": 0.5384615384615384,
+        "strikeouts_avoided": null,
+        "walks_gained": null,
+        "overturns_generated": 14
+      },
+      "sample_warnings": [],
+      "data_quality": "ok"
+    },
+    {
       "player_id": 691788,
       "name": "Joe Mack",
       "team_id": "MIA",
@@ -489,6 +506,23 @@
         "strikeouts_avoided": null,
         "walks_gained": null,
         "overturns_generated": 12
+      },
+      "sample_warnings": [],
+      "data_quality": "ok"
+    },
+    {
+      "player_id": 543877,
+      "name": "Christian Vazquez",
+      "team_id": "HOU",
+      "position": "Catcher",
+      "challenges": {
+        "role": "catcher",
+        "total_challenges": 26,
+        "successful_challenges": 9,
+        "success_rate": 0.34615384615384615,
+        "strikeouts_avoided": null,
+        "walks_gained": null,
+        "overturns_generated": 9
       },
       "sample_warnings": [],
       "data_quality": "ok"
@@ -528,18 +562,35 @@
       "data_quality": "ok"
     },
     {
-      "player_id": 680779,
-      "name": "Henry Davis",
-      "team_id": "PIT",
+      "player_id": 678218,
+      "name": "Brandon Valenzuela",
+      "team_id": "TOR",
       "position": "Catcher",
       "challenges": {
         "role": "catcher",
         "total_challenges": 25,
-        "successful_challenges": 14,
-        "success_rate": 0.56,
+        "successful_challenges": 12,
+        "success_rate": 0.48,
         "strikeouts_avoided": null,
         "walks_gained": null,
-        "overturns_generated": 14
+        "overturns_generated": 12
+      },
+      "sample_warnings": [],
+      "data_quality": "ok"
+    },
+    {
+      "player_id": 620443,
+      "name": "Luis Torrens",
+      "team_id": "NYM",
+      "position": "Catcher",
+      "challenges": {
+        "role": "catcher",
+        "total_challenges": 24,
+        "successful_challenges": 13,
+        "success_rate": 0.5416666666666666,
+        "strikeouts_avoided": null,
+        "walks_gained": null,
+        "overturns_generated": 13
       },
       "sample_warnings": [],
       "data_quality": "ok"
@@ -562,23 +613,6 @@
       "data_quality": "ok"
     },
     {
-      "player_id": 543877,
-      "name": "Christian Vazquez",
-      "team_id": "HOU",
-      "position": "Catcher",
-      "challenges": {
-        "role": "catcher",
-        "total_challenges": 24,
-        "successful_challenges": 7,
-        "success_rate": 0.2916666666666667,
-        "strikeouts_avoided": null,
-        "walks_gained": null,
-        "overturns_generated": 7
-      },
-      "sample_warnings": [],
-      "data_quality": "ok"
-    },
-    {
       "player_id": 671056,
       "name": "Ivan Herrera",
       "team_id": "STL",
@@ -591,40 +625,6 @@
         "strikeouts_avoided": null,
         "walks_gained": null,
         "overturns_generated": 15
-      },
-      "sample_warnings": [],
-      "data_quality": "ok"
-    },
-    {
-      "player_id": 678218,
-      "name": "Brandon Valenzuela",
-      "team_id": "TOR",
-      "position": "Catcher",
-      "challenges": {
-        "role": "catcher",
-        "total_challenges": 23,
-        "successful_challenges": 11,
-        "success_rate": 0.4782608695652174,
-        "strikeouts_avoided": null,
-        "walks_gained": null,
-        "overturns_generated": 11
-      },
-      "sample_warnings": [],
-      "data_quality": "ok"
-    },
-    {
-      "player_id": 620443,
-      "name": "Luis Torrens",
-      "team_id": "NYM",
-      "position": "Catcher",
-      "challenges": {
-        "role": "catcher",
-        "total_challenges": 23,
-        "successful_challenges": 13,
-        "success_rate": 0.5652173913043478,
-        "strikeouts_avoided": null,
-        "walks_gained": null,
-        "overturns_generated": 13
       },
       "sample_warnings": [],
       "data_quality": "ok"
@@ -681,6 +681,23 @@
       "data_quality": "ok"
     },
     {
+      "player_id": 676439,
+      "name": "Hunter Feduccia",
+      "team_id": "TB",
+      "position": "Catcher",
+      "challenges": {
+        "role": "catcher",
+        "total_challenges": 21,
+        "successful_challenges": 11,
+        "success_rate": 0.5238095238095238,
+        "strikeouts_avoided": null,
+        "walks_gained": null,
+        "overturns_generated": 11
+      },
+      "sample_warnings": [],
+      "data_quality": "ok"
+    },
+    {
       "player_id": 623168,
       "name": "Tyler Heineman",
       "team_id": "TOR",
@@ -715,35 +732,35 @@
       "data_quality": "ok"
     },
     {
-      "player_id": 676439,
-      "name": "Hunter Feduccia",
-      "team_id": "TB",
-      "position": "Catcher",
-      "challenges": {
-        "role": "catcher",
-        "total_challenges": 20,
-        "successful_challenges": 11,
-        "success_rate": 0.55,
-        "strikeouts_avoided": null,
-        "walks_gained": null,
-        "overturns_generated": 11
-      },
-      "sample_warnings": [],
-      "data_quality": "ok"
-    },
-    {
       "player_id": 672515,
       "name": "Gabriel Moreno",
       "team_id": "AZ",
       "position": "Catcher",
       "challenges": {
         "role": "catcher",
-        "total_challenges": 18,
+        "total_challenges": 19,
         "successful_challenges": 13,
-        "success_rate": 0.7222222222222222,
+        "success_rate": 0.6842105263157895,
         "strikeouts_avoided": null,
         "walks_gained": null,
         "overturns_generated": 13
+      },
+      "sample_warnings": [],
+      "data_quality": "ok"
+    },
+    {
+      "player_id": 665561,
+      "name": "Rafael Marchan",
+      "team_id": "PHI",
+      "position": "Catcher",
+      "challenges": {
+        "role": "catcher",
+        "total_challenges": 19,
+        "successful_challenges": 10,
+        "success_rate": 0.5263157894736842,
+        "strikeouts_avoided": null,
+        "walks_gained": null,
+        "overturns_generated": 10
       },
       "sample_warnings": [],
       "data_quality": "ok"
@@ -761,23 +778,6 @@
         "strikeouts_avoided": null,
         "walks_gained": null,
         "overturns_generated": 11
-      },
-      "sample_warnings": [],
-      "data_quality": "ok"
-    },
-    {
-      "player_id": 665561,
-      "name": "Rafael Marchan",
-      "team_id": "PHI",
-      "position": "Catcher",
-      "challenges": {
-        "role": "catcher",
-        "total_challenges": 18,
-        "successful_challenges": 10,
-        "success_rate": 0.5555555555555556,
-        "strikeouts_avoided": null,
-        "walks_gained": null,
-        "overturns_generated": 10
       },
       "sample_warnings": [],
       "data_quality": "ok"
@@ -817,15 +817,15 @@
       "data_quality": "ok"
     },
     {
-      "player_id": 592663,
-      "name": "J.T. Realmuto",
-      "team_id": "PHI",
+      "player_id": 643376,
+      "name": "Danny Jansen",
+      "team_id": "TEX",
       "position": "Catcher",
       "challenges": {
         "role": "catcher",
-        "total_challenges": 16,
+        "total_challenges": 17,
         "successful_challenges": 13,
-        "success_rate": 0.8125,
+        "success_rate": 0.7647058823529411,
         "strikeouts_avoided": null,
         "walks_gained": null,
         "overturns_generated": 13
@@ -834,18 +834,18 @@
       "data_quality": "ok"
     },
     {
-      "player_id": 643376,
-      "name": "Danny Jansen",
-      "team_id": "TEX",
+      "player_id": 691011,
+      "name": "Drew Romo",
+      "team_id": "CWS",
       "position": "Catcher",
       "challenges": {
         "role": "catcher",
-        "total_challenges": 16,
-        "successful_challenges": 12,
-        "success_rate": 0.75,
+        "total_challenges": 17,
+        "successful_challenges": 7,
+        "success_rate": 0.4117647058823529,
         "strikeouts_avoided": null,
         "walks_gained": null,
-        "overturns_generated": 12
+        "overturns_generated": 7
       },
       "sample_warnings": [],
       "data_quality": "ok"
@@ -885,6 +885,23 @@
       "data_quality": "ok"
     },
     {
+      "player_id": 701358,
+      "name": "Cam Smith",
+      "team_id": "HOU",
+      "position": "Batter",
+      "challenges": {
+        "role": "batter",
+        "total_challenges": 15,
+        "successful_challenges": 6,
+        "success_rate": 0.4,
+        "strikeouts_avoided": 1,
+        "walks_gained": 0,
+        "overturns_generated": null
+      },
+      "sample_warnings": [],
+      "data_quality": "ok"
+    },
+    {
       "player_id": 694384,
       "name": "Nolan Schanuel",
       "team_id": "LAA",
@@ -913,23 +930,6 @@
         "success_rate": 0.6428571428571429,
         "strikeouts_avoided": 1,
         "walks_gained": 1,
-        "overturns_generated": null
-      },
-      "sample_warnings": [],
-      "data_quality": "ok"
-    },
-    {
-      "player_id": 701358,
-      "name": "Cam Smith",
-      "team_id": "HOU",
-      "position": "Batter",
-      "challenges": {
-        "role": "batter",
-        "total_challenges": 14,
-        "successful_challenges": 6,
-        "success_rate": 0.42857142857142855,
-        "strikeouts_avoided": 1,
-        "walks_gained": 0,
         "overturns_generated": null
       },
       "sample_warnings": [],
@@ -1259,6 +1259,30 @@
       "data_quality": "ok"
     },
     {
+      "player_id": 593428,
+      "name": "Xander Bogaerts",
+      "team_id": "SD",
+      "position": "Batter",
+      "challenges": {
+        "role": "batter",
+        "total_challenges": 9,
+        "successful_challenges": 6,
+        "success_rate": 0.6666666666666666,
+        "strikeouts_avoided": 2,
+        "walks_gained": 0,
+        "overturns_generated": null
+      },
+      "sample_warnings": [
+        {
+          "field": "success_rate",
+          "n": 9,
+          "threshold": 10,
+          "message": "Small sample: 9 challenges (threshold: 10). Success rate may not be reliable."
+        }
+      ],
+      "data_quality": "ok"
+    },
+    {
       "player_id": 677587,
       "name": "Brayan Rocchio",
       "team_id": "CLE",
@@ -1307,17 +1331,17 @@
       "data_quality": "ok"
     },
     {
-      "player_id": 680757,
-      "name": "Steven Kwan",
-      "team_id": "CLE",
+      "player_id": 666397,
+      "name": "Edouard Julien",
+      "team_id": "COL",
       "position": "Batter",
       "challenges": {
         "role": "batter",
         "total_challenges": 9,
-        "successful_challenges": 4,
-        "success_rate": 0.4444444444444444,
+        "successful_challenges": 5,
+        "success_rate": 0.5555555555555556,
         "strikeouts_avoided": 1,
-        "walks_gained": 1,
+        "walks_gained": 0,
         "overturns_generated": null
       },
       "sample_warnings": [
@@ -1342,6 +1366,54 @@
         "success_rate": 0.4444444444444444,
         "strikeouts_avoided": 1,
         "walks_gained": 0,
+        "overturns_generated": null
+      },
+      "sample_warnings": [
+        {
+          "field": "success_rate",
+          "n": 9,
+          "threshold": 10,
+          "message": "Small sample: 9 challenges (threshold: 10). Success rate may not be reliable."
+        }
+      ],
+      "data_quality": "ok"
+    },
+    {
+      "player_id": 680757,
+      "name": "Steven Kwan",
+      "team_id": "CLE",
+      "position": "Batter",
+      "challenges": {
+        "role": "batter",
+        "total_challenges": 9,
+        "successful_challenges": 4,
+        "success_rate": 0.4444444444444444,
+        "strikeouts_avoided": 1,
+        "walks_gained": 1,
+        "overturns_generated": null
+      },
+      "sample_warnings": [
+        {
+          "field": "success_rate",
+          "n": 9,
+          "threshold": 10,
+          "message": "Small sample: 9 challenges (threshold: 10). Success rate may not be reliable."
+        }
+      ],
+      "data_quality": "ok"
+    },
+    {
+      "player_id": 668227,
+      "name": "Randy Arozarena",
+      "team_id": "SEA",
+      "position": "Batter",
+      "challenges": {
+        "role": "batter",
+        "total_challenges": 9,
+        "successful_challenges": 3,
+        "success_rate": 0.3333333333333333,
+        "strikeouts_avoided": 2,
+        "walks_gained": 1,
         "overturns_generated": null
       },
       "sample_warnings": [
@@ -1451,30 +1523,6 @@
       "data_quality": "ok"
     },
     {
-      "player_id": 593428,
-      "name": "Xander Bogaerts",
-      "team_id": "SD",
-      "position": "Batter",
-      "challenges": {
-        "role": "batter",
-        "total_challenges": 8,
-        "successful_challenges": 6,
-        "success_rate": 0.75,
-        "strikeouts_avoided": 2,
-        "walks_gained": 0,
-        "overturns_generated": null
-      },
-      "sample_warnings": [
-        {
-          "field": "success_rate",
-          "n": 8,
-          "threshold": 10,
-          "message": "Small sample: 8 challenges (threshold: 10). Success rate may not be reliable."
-        }
-      ],
-      "data_quality": "ok"
-    },
-    {
       "player_id": 605137,
       "name": "Josh Bell",
       "team_id": "MIN",
@@ -1499,15 +1547,15 @@
       "data_quality": "ok"
     },
     {
-      "player_id": 666397,
-      "name": "Edouard Julien",
-      "team_id": "COL",
+      "player_id": 670764,
+      "name": "Taylor Walls",
+      "team_id": "TB",
       "position": "Batter",
       "challenges": {
         "role": "batter",
         "total_challenges": 8,
-        "successful_challenges": 5,
-        "success_rate": 0.625,
+        "successful_challenges": 4,
+        "success_rate": 0.5,
         "strikeouts_avoided": 1,
         "walks_gained": 0,
         "overturns_generated": null
@@ -1619,30 +1667,6 @@
       "data_quality": "ok"
     },
     {
-      "player_id": 668227,
-      "name": "Randy Arozarena",
-      "team_id": "SEA",
-      "position": "Batter",
-      "challenges": {
-        "role": "batter",
-        "total_challenges": 8,
-        "successful_challenges": 3,
-        "success_rate": 0.375,
-        "strikeouts_avoided": 2,
-        "walks_gained": 1,
-        "overturns_generated": null
-      },
-      "sample_warnings": [
-        {
-          "field": "success_rate",
-          "n": 8,
-          "threshold": 10,
-          "message": "Small sample: 8 challenges (threshold: 10). Success rate may not be reliable."
-        }
-      ],
-      "data_quality": "ok"
-    },
-    {
       "player_id": 642715,
       "name": "Willy Adames",
       "team_id": "SF",
@@ -1718,6 +1742,30 @@
       "player_id": 678882,
       "name": "Ceddanne Rafaela",
       "team_id": "BOS",
+      "position": "Batter",
+      "challenges": {
+        "role": "batter",
+        "total_challenges": 8,
+        "successful_challenges": 2,
+        "success_rate": 0.25,
+        "strikeouts_avoided": 0,
+        "walks_gained": 0,
+        "overturns_generated": null
+      },
+      "sample_warnings": [
+        {
+          "field": "success_rate",
+          "n": 8,
+          "threshold": 10,
+          "message": "Small sample: 8 challenges (threshold: 10). Success rate may not be reliable."
+        }
+      ],
+      "data_quality": "ok"
+    },
+    {
+      "player_id": 547180,
+      "name": "Bryce Harper",
+      "team_id": "PHI",
       "position": "Batter",
       "challenges": {
         "role": "batter",
@@ -1833,56 +1881,8 @@
         }
       ],
       "data_quality": "ok"
-    },
-    {
-      "player_id": 656555,
-      "name": "Rhys Hoskins",
-      "team_id": "CLE",
-      "position": "Batter",
-      "challenges": {
-        "role": "batter",
-        "total_challenges": 7,
-        "successful_challenges": 5,
-        "success_rate": 0.7142857142857143,
-        "strikeouts_avoided": 2,
-        "walks_gained": 0,
-        "overturns_generated": null
-      },
-      "sample_warnings": [
-        {
-          "field": "success_rate",
-          "n": 7,
-          "threshold": 10,
-          "message": "Small sample: 7 challenges (threshold: 10). Success rate may not be reliable."
-        }
-      ],
-      "data_quality": "ok"
-    },
-    {
-      "player_id": 678246,
-      "name": "Miguel Vargas",
-      "team_id": "CWS",
-      "position": "Batter",
-      "challenges": {
-        "role": "batter",
-        "total_challenges": 7,
-        "successful_challenges": 5,
-        "success_rate": 0.7142857142857143,
-        "strikeouts_avoided": 2,
-        "walks_gained": 0,
-        "overturns_generated": null
-      },
-      "sample_warnings": [
-        {
-          "field": "success_rate",
-          "n": 7,
-          "threshold": 10,
-          "message": "Small sample: 7 challenges (threshold: 10). Success rate may not be reliable."
-        }
-      ],
-      "data_quality": "ok"
     }
   ],
-  "last_updated": "2026-05-25T13:54:26.599141Z",
+  "last_updated": "2026-05-26T13:44:40.840866Z",
   "season": 2026
 }
