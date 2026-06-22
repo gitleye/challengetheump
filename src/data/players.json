@@ -24,9 +24,9 @@
       "position": "Catcher",
       "challenges": {
         "role": "catcher",
-        "total_challenges": 73,
+        "total_challenges": 75,
         "successful_challenges": 35,
-        "success_rate": 0.4794520547945205,
+        "success_rate": 0.4666666666666667,
         "strikeouts_avoided": null,
         "walks_gained": null,
         "overturns_generated": 35
@@ -52,35 +52,35 @@
       "data_quality": "ok"
     },
     {
-      "player_id": 663886,
-      "name": "Tyler Stephenson",
-      "team_id": "CIN",
-      "position": "Catcher",
-      "challenges": {
-        "role": "catcher",
-        "total_challenges": 60,
-        "successful_challenges": 42,
-        "success_rate": 0.7,
-        "strikeouts_avoided": null,
-        "walks_gained": null,
-        "overturns_generated": 42
-      },
-      "sample_warnings": [],
-      "data_quality": "ok"
-    },
-    {
       "player_id": 681351,
       "name": "Logan O'Hoppe",
       "team_id": "LAA",
       "position": "Catcher",
       "challenges": {
         "role": "catcher",
-        "total_challenges": 60,
-        "successful_challenges": 36,
-        "success_rate": 0.6,
+        "total_challenges": 62,
+        "successful_challenges": 37,
+        "success_rate": 0.5967741935483871,
         "strikeouts_avoided": null,
         "walks_gained": null,
-        "overturns_generated": 36
+        "overturns_generated": 37
+      },
+      "sample_warnings": [],
+      "data_quality": "ok"
+    },
+    {
+      "player_id": 663886,
+      "name": "Tyler Stephenson",
+      "team_id": "CIN",
+      "position": "Catcher",
+      "challenges": {
+        "role": "catcher",
+        "total_challenges": 61,
+        "successful_challenges": 43,
+        "success_rate": 0.7049180327868853,
+        "strikeouts_avoided": null,
+        "walks_gained": null,
+        "overturns_generated": 43
       },
       "sample_warnings": [],
       "data_quality": "ok"
@@ -160,9 +160,9 @@
       "position": "Catcher",
       "challenges": {
         "role": "catcher",
-        "total_challenges": 53,
+        "total_challenges": 54,
         "successful_challenges": 38,
-        "success_rate": 0.7169811320754716,
+        "success_rate": 0.7037037037037037,
         "strikeouts_avoided": null,
         "walks_gained": null,
         "overturns_generated": 38
@@ -177,12 +177,12 @@
       "position": "Catcher",
       "challenges": {
         "role": "catcher",
-        "total_challenges": 51,
-        "successful_challenges": 24,
-        "success_rate": 0.47058823529411764,
+        "total_challenges": 52,
+        "successful_challenges": 25,
+        "success_rate": 0.4807692307692308,
         "strikeouts_avoided": null,
         "walks_gained": null,
-        "overturns_generated": 24
+        "overturns_generated": 25
       },
       "sample_warnings": [],
       "data_quality": "ok"
@@ -194,12 +194,12 @@
       "position": "Catcher",
       "challenges": {
         "role": "catcher",
-        "total_challenges": 49,
-        "successful_challenges": 34,
-        "success_rate": 0.6938775510204082,
+        "total_challenges": 51,
+        "successful_challenges": 35,
+        "success_rate": 0.6862745098039216,
         "strikeouts_avoided": null,
         "walks_gained": null,
-        "overturns_generated": 34
+        "overturns_generated": 35
       },
       "sample_warnings": [],
       "data_quality": "ok"
@@ -330,12 +330,29 @@
       "position": "Catcher",
       "challenges": {
         "role": "catcher",
-        "total_challenges": 39,
-        "successful_challenges": 15,
-        "success_rate": 0.38461538461538464,
+        "total_challenges": 40,
+        "successful_challenges": 16,
+        "success_rate": 0.4,
         "strikeouts_avoided": null,
         "walks_gained": null,
-        "overturns_generated": 15
+        "overturns_generated": 16
+      },
+      "sample_warnings": [],
+      "data_quality": "ok"
+    },
+    {
+      "player_id": 641680,
+      "name": "Jonah Heim",
+      "team_id": "ATL",
+      "position": "Catcher",
+      "challenges": {
+        "role": "catcher",
+        "total_challenges": 39,
+        "successful_challenges": 23,
+        "success_rate": 0.5897435897435898,
+        "strikeouts_avoided": null,
+        "walks_gained": null,
+        "overturns_generated": 23
       },
       "sample_warnings": [],
       "data_quality": "ok"
@@ -392,9 +409,9 @@
       "data_quality": "ok"
     },
     {
-      "player_id": 641680,
-      "name": "Jonah Heim",
-      "team_id": "ATL",
+      "player_id": 664954,
+      "name": "Brett Sullivan",
+      "team_id": "COL",
       "position": "Catcher",
       "challenges": {
         "role": "catcher",
@@ -438,23 +455,6 @@
         "strikeouts_avoided": null,
         "walks_gained": null,
         "overturns_generated": 22
-      },
-      "sample_warnings": [],
-      "data_quality": "ok"
-    },
-    {
-      "player_id": 664954,
-      "name": "Brett Sullivan",
-      "team_id": "COL",
-      "position": "Catcher",
-      "challenges": {
-        "role": "catcher",
-        "total_challenges": 36,
-        "successful_challenges": 20,
-        "success_rate": 0.5555555555555556,
-        "strikeouts_avoided": null,
-        "walks_gained": null,
-        "overturns_generated": 20
       },
       "sample_warnings": [],
       "data_quality": "ok"
@@ -1276,6 +1276,23 @@
       "data_quality": "ok"
     },
     {
+      "player_id": 656811,
+      "name": "Ryan O'Hearn",
+      "team_id": "PIT",
+      "position": "Batter",
+      "challenges": {
+        "role": "batter",
+        "total_challenges": 13,
+        "successful_challenges": 6,
+        "success_rate": 0.46153846153846156,
+        "strikeouts_avoided": 0,
+        "walks_gained": 0,
+        "overturns_generated": null
+      },
+      "sample_warnings": [],
+      "data_quality": "ok"
+    },
+    {
       "player_id": 694212,
       "name": "Samuel Basallo",
       "team_id": "BAL",
@@ -1361,6 +1378,23 @@
       "data_quality": "ok"
     },
     {
+      "player_id": 647304,
+      "name": "Josh Naylor",
+      "team_id": "SEA",
+      "position": "Batter",
+      "challenges": {
+        "role": "batter",
+        "total_challenges": 13,
+        "successful_challenges": 4,
+        "success_rate": 0.3076923076923077,
+        "strikeouts_avoided": 1,
+        "walks_gained": 1,
+        "overturns_generated": null
+      },
+      "sample_warnings": [],
+      "data_quality": "ok"
+    },
+    {
       "player_id": 605137,
       "name": "Josh Bell",
       "team_id": "MIN",
@@ -1422,23 +1456,6 @@
         "successful_challenges": 6,
         "success_rate": 0.5,
         "strikeouts_avoided": 1,
-        "walks_gained": 0,
-        "overturns_generated": null
-      },
-      "sample_warnings": [],
-      "data_quality": "ok"
-    },
-    {
-      "player_id": 656811,
-      "name": "Ryan O'Hearn",
-      "team_id": "PIT",
-      "position": "Batter",
-      "challenges": {
-        "role": "batter",
-        "total_challenges": 12,
-        "successful_challenges": 6,
-        "success_rate": 0.5,
-        "strikeouts_avoided": 0,
         "walks_gained": 0,
         "overturns_generated": null
       },
@@ -1514,17 +1531,17 @@
       "data_quality": "ok"
     },
     {
-      "player_id": 647304,
-      "name": "Josh Naylor",
-      "team_id": "SEA",
+      "player_id": 650489,
+      "name": "Willi Castro",
+      "team_id": "COL",
       "position": "Batter",
       "challenges": {
         "role": "batter",
         "total_challenges": 12,
-        "successful_challenges": 3,
-        "success_rate": 0.25,
-        "strikeouts_avoided": 1,
-        "walks_gained": 1,
+        "successful_challenges": 4,
+        "success_rate": 0.3333333333333333,
+        "strikeouts_avoided": 0,
+        "walks_gained": 0,
         "overturns_generated": null
       },
       "sample_warnings": [],
@@ -1650,23 +1667,6 @@
       "data_quality": "ok"
     },
     {
-      "player_id": 650489,
-      "name": "Willi Castro",
-      "team_id": "COL",
-      "position": "Batter",
-      "challenges": {
-        "role": "batter",
-        "total_challenges": 11,
-        "successful_challenges": 3,
-        "success_rate": 0.2727272727272727,
-        "strikeouts_avoided": 0,
-        "walks_gained": 0,
-        "overturns_generated": null
-      },
-      "sample_warnings": [],
-      "data_quality": "ok"
-    },
-    {
       "player_id": 575929,
       "name": "Willson Contreras",
       "team_id": "BOS",
@@ -1701,6 +1701,6 @@
       "data_quality": "ok"
     }
   ],
-  "last_updated": "2026-06-21T13:00:06.510343Z",
+  "last_updated": "2026-06-22T15:46:57.486626Z",
   "season": 2026
 }
