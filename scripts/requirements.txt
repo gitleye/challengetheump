@@ -6,7 +6,7 @@ pandas>=3.0.3,<4.0
 numpy>=2.4.6,<3.0
 requests>=2.34.2,<3.0
 pydantic>=2.13.4,<3.0
-structlog>=25.5.0,<26.0
+structlog>=26.1.0,<27.0
 
 # Baseball data
 pybaseball>=2.2.7
