@@ -409,6 +409,23 @@
       "data_quality": "ok"
     },
     {
+      "player_id": 682626,
+      "name": "Francisco Alvarez",
+      "team_id": "NYM",
+      "position": "Catcher",
+      "challenges": {
+        "role": "catcher",
+        "total_challenges": 47,
+        "successful_challenges": 24,
+        "success_rate": 0.5106382978723404,
+        "strikeouts_avoided": null,
+        "walks_gained": null,
+        "overturns_generated": 24
+      },
+      "sample_warnings": [],
+      "data_quality": "ok"
+    },
+    {
       "player_id": 665804,
       "name": "Miguel Amaya",
       "team_id": "CHC",
@@ -421,23 +438,6 @@
         "strikeouts_avoided": null,
         "walks_gained": null,
         "overturns_generated": 29
-      },
-      "sample_warnings": [],
-      "data_quality": "ok"
-    },
-    {
-      "player_id": 682626,
-      "name": "Francisco Alvarez",
-      "team_id": "NYM",
-      "position": "Catcher",
-      "challenges": {
-        "role": "catcher",
-        "total_challenges": 45,
-        "successful_challenges": 23,
-        "success_rate": 0.5111111111111111,
-        "strikeouts_avoided": null,
-        "walks_gained": null,
-        "overturns_generated": 23
       },
       "sample_warnings": [],
       "data_quality": "ok"
@@ -1701,6 +1701,6 @@
       "data_quality": "ok"
     }
   ],
-  "last_updated": "2026-07-16T12:12:49.516703Z",
+  "last_updated": "2026-07-17T12:01:34.946324Z",
   "season": 2026
 }
