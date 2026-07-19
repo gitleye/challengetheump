@@ -1,15 +1,15 @@
 {
-  "total_challenges": 3052,
-  "total_overturns": 1624,
-  "overall_success_rate": 0.5321100917431193,
-  "walk_rate": 0.0483,
+  "total_challenges": 3086,
+  "total_overturns": 1642,
+  "overall_success_rate": 0.5320803629293583,
+  "walk_rate": 0.0477,
   "walk_rate_prior_season": 0.1826,
-  "k_rate": 0.1401,
+  "k_rate": 0.1408,
   "k_rate_prior_season": 0.2356,
   "avg_game_time_min": null,
   "avg_game_time_prior_season_min": null,
   "pitches_outside_zone_called_strikes_pct": null,
-  "last_updated": "2026-07-18T11:41:49.195100Z",
+  "last_updated": "2026-07-19T11:46:45.580841Z",
   "season": 2026,
   "data_quality": "ok"
 }
