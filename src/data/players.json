@@ -69,6 +69,23 @@
       "data_quality": "ok"
     },
     {
+      "player_id": 672275,
+      "name": "Patrick Bailey",
+      "team_id": "SF",
+      "position": "Catcher",
+      "challenges": {
+        "role": "catcher",
+        "total_challenges": 83,
+        "successful_challenges": 47,
+        "success_rate": 0.5662650602409639,
+        "strikeouts_avoided": null,
+        "walks_gained": null,
+        "overturns_generated": 47
+      },
+      "sample_warnings": [],
+      "data_quality": "ok"
+    },
+    {
       "player_id": 696100,
       "name": "Hunter Goodman",
       "team_id": "COL",
@@ -103,18 +120,18 @@
       "data_quality": "ok"
     },
     {
-      "player_id": 672275,
-      "name": "Patrick Bailey",
-      "team_id": "SF",
+      "player_id": 693307,
+      "name": "Dillon Dingler",
+      "team_id": "DET",
       "position": "Catcher",
       "challenges": {
         "role": "catcher",
-        "total_challenges": 81,
-        "successful_challenges": 45,
-        "success_rate": 0.5555555555555556,
+        "total_challenges": 77,
+        "successful_challenges": 53,
+        "success_rate": 0.6883116883116883,
         "strikeouts_avoided": null,
         "walks_gained": null,
-        "overturns_generated": 45
+        "overturns_generated": 53
       },
       "sample_warnings": [],
       "data_quality": "ok"
@@ -149,23 +166,6 @@
         "strikeouts_avoided": null,
         "walks_gained": null,
         "overturns_generated": 47
-      },
-      "sample_warnings": [],
-      "data_quality": "ok"
-    },
-    {
-      "player_id": 693307,
-      "name": "Dillon Dingler",
-      "team_id": "DET",
-      "position": "Catcher",
-      "challenges": {
-        "role": "catcher",
-        "total_challenges": 74,
-        "successful_challenges": 51,
-        "success_rate": 0.6891891891891891,
-        "strikeouts_avoided": null,
-        "walks_gained": null,
-        "overturns_generated": 51
       },
       "sample_warnings": [],
       "data_quality": "ok"
@@ -279,9 +279,9 @@
       "position": "Catcher",
       "challenges": {
         "role": "catcher",
-        "total_challenges": 53,
+        "total_challenges": 54,
         "successful_challenges": 26,
-        "success_rate": 0.49056603773584906,
+        "success_rate": 0.48148148148148145,
         "strikeouts_avoided": null,
         "walks_gained": null,
         "overturns_generated": 26
@@ -432,12 +432,46 @@
       "position": "Catcher",
       "challenges": {
         "role": "catcher",
-        "total_challenges": 48,
+        "total_challenges": 49,
         "successful_challenges": 26,
-        "success_rate": 0.5416666666666666,
+        "success_rate": 0.5306122448979592,
         "strikeouts_avoided": null,
         "walks_gained": null,
         "overturns_generated": 26
+      },
+      "sample_warnings": [],
+      "data_quality": "ok"
+    },
+    {
+      "player_id": 672515,
+      "name": "Gabriel Moreno",
+      "team_id": "AZ",
+      "position": "Catcher",
+      "challenges": {
+        "role": "catcher",
+        "total_challenges": 48,
+        "successful_challenges": 33,
+        "success_rate": 0.6875,
+        "strikeouts_avoided": null,
+        "walks_gained": null,
+        "overturns_generated": 33
+      },
+      "sample_warnings": [],
+      "data_quality": "ok"
+    },
+    {
+      "player_id": 680777,
+      "name": "Ryan Jeffers",
+      "team_id": "MIN",
+      "position": "Catcher",
+      "challenges": {
+        "role": "catcher",
+        "total_challenges": 48,
+        "successful_challenges": 31,
+        "success_rate": 0.6458333333333334,
+        "strikeouts_avoided": null,
+        "walks_gained": null,
+        "overturns_generated": 31
       },
       "sample_warnings": [],
       "data_quality": "ok"
@@ -486,40 +520,6 @@
         "total_challenges": 47,
         "successful_challenges": 29,
         "success_rate": 0.6170212765957447,
-        "strikeouts_avoided": null,
-        "walks_gained": null,
-        "overturns_generated": 29
-      },
-      "sample_warnings": [],
-      "data_quality": "ok"
-    },
-    {
-      "player_id": 672515,
-      "name": "Gabriel Moreno",
-      "team_id": "AZ",
-      "position": "Catcher",
-      "challenges": {
-        "role": "catcher",
-        "total_challenges": 46,
-        "successful_challenges": 32,
-        "success_rate": 0.6956521739130435,
-        "strikeouts_avoided": null,
-        "walks_gained": null,
-        "overturns_generated": 32
-      },
-      "sample_warnings": [],
-      "data_quality": "ok"
-    },
-    {
-      "player_id": 680777,
-      "name": "Ryan Jeffers",
-      "team_id": "MIN",
-      "position": "Catcher",
-      "challenges": {
-        "role": "catcher",
-        "total_challenges": 46,
-        "successful_challenges": 29,
-        "success_rate": 0.6304347826086957,
         "strikeouts_avoided": null,
         "walks_gained": null,
         "overturns_generated": 29
@@ -698,6 +698,23 @@
       "data_quality": "ok"
     },
     {
+      "player_id": 672386,
+      "name": "Alejandro Kirk",
+      "team_id": "TOR",
+      "position": "Catcher",
+      "challenges": {
+        "role": "catcher",
+        "total_challenges": 38,
+        "successful_challenges": 26,
+        "success_rate": 0.6842105263157895,
+        "strikeouts_avoided": null,
+        "walks_gained": null,
+        "overturns_generated": 26
+      },
+      "sample_warnings": [],
+      "data_quality": "ok"
+    },
+    {
       "player_id": 596142,
       "name": "Gary Sanchez",
       "team_id": "MIL",
@@ -710,23 +727,6 @@
         "strikeouts_avoided": null,
         "walks_gained": null,
         "overturns_generated": 20
-      },
-      "sample_warnings": [],
-      "data_quality": "ok"
-    },
-    {
-      "player_id": 672386,
-      "name": "Alejandro Kirk",
-      "team_id": "TOR",
-      "position": "Catcher",
-      "challenges": {
-        "role": "catcher",
-        "total_challenges": 37,
-        "successful_challenges": 25,
-        "success_rate": 0.6756756756756757,
-        "strikeouts_avoided": null,
-        "walks_gained": null,
-        "overturns_generated": 25
       },
       "sample_warnings": [],
       "data_quality": "ok"
@@ -1140,6 +1140,23 @@
       "data_quality": "ok"
     },
     {
+      "player_id": 686555,
+      "name": "Isaac Collins",
+      "team_id": "KC",
+      "position": "Batter",
+      "challenges": {
+        "role": "batter",
+        "total_challenges": 19,
+        "successful_challenges": 8,
+        "success_rate": 0.42105263157894735,
+        "strikeouts_avoided": 4,
+        "walks_gained": 1,
+        "overturns_generated": null
+      },
+      "sample_warnings": [],
+      "data_quality": "ok"
+    },
+    {
       "player_id": 672580,
       "name": "Maikel Garcia",
       "team_id": "KC",
@@ -1185,23 +1202,6 @@
         "success_rate": 0.5555555555555556,
         "strikeouts_avoided": 6,
         "walks_gained": 5,
-        "overturns_generated": null
-      },
-      "sample_warnings": [],
-      "data_quality": "ok"
-    },
-    {
-      "player_id": 686555,
-      "name": "Isaac Collins",
-      "team_id": "KC",
-      "position": "Batter",
-      "challenges": {
-        "role": "batter",
-        "total_challenges": 18,
-        "successful_challenges": 7,
-        "success_rate": 0.3888888888888889,
-        "strikeouts_avoided": 4,
-        "walks_gained": 1,
         "overturns_generated": null
       },
       "sample_warnings": [],
@@ -1701,6 +1701,6 @@
       "data_quality": "ok"
     }
   ],
-  "last_updated": "2026-07-23T12:17:15.828237Z",
+  "last_updated": "2026-07-24T12:10:14.520599Z",
   "season": 2026
 }
