@@ -3,7 +3,7 @@
 # Note: Python 3.12 is used in CI (GitHub Actions); 3.14 is supported locally.
 
 pandas>=3.0.3,<4.0
-numpy>=2.4.6,<3.0
+numpy>=2.5.2,<3.0
 requests>=2.34.2,<3.0
 pydantic>=2.13.4,<3.0
 structlog>=25.5.0,<26.0
