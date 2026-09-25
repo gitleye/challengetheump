@@ -1,194 +1,194 @@
 {
   "snapshots": [
     {
-      "date": "2026-09-24",
-      "league_success_rate": 0.5395732298739089,
-      "league_total_challenges": 10310,
-      "league_total_overturns": 5563
+      "date": "2026-09-25",
+      "league_success_rate": 0.539878483942521,
+      "league_total_challenges": 10369,
+      "league_total_overturns": 5598
     }
   ],
   "team_snapshots": [
     {
-      "date": "2026-09-24",
+      "date": "2026-09-25",
       "team_id": "CIN",
-      "rolling_30d_challenge_wpa": 10.7006,
-      "rolling_30d_success_rate": 0.6155988857938719
+      "rolling_30d_challenge_wpa": 11.0067,
+      "rolling_30d_success_rate": 0.6160220994475138
     },
     {
-      "date": "2026-09-24",
+      "date": "2026-09-25",
       "team_id": "ATH",
-      "rolling_30d_challenge_wpa": 10.077,
-      "rolling_30d_success_rate": 0.6054794520547945
+      "rolling_30d_challenge_wpa": 10.0305,
+      "rolling_30d_success_rate": 0.6049046321525886
     },
     {
-      "date": "2026-09-24",
+      "date": "2026-09-25",
       "team_id": "CHC",
-      "rolling_30d_challenge_wpa": 9.3822,
-      "rolling_30d_success_rate": 0.5933734939759037
+      "rolling_30d_challenge_wpa": 9.2291,
+      "rolling_30d_success_rate": 0.5915915915915916
     },
     {
-      "date": "2026-09-24",
+      "date": "2026-09-25",
       "team_id": "DET",
       "rolling_30d_challenge_wpa": 7.6296,
       "rolling_30d_success_rate": 0.577639751552795
     },
     {
-      "date": "2026-09-24",
+      "date": "2026-09-25",
       "team_id": "TEX",
-      "rolling_30d_challenge_wpa": 6.4645,
-      "rolling_30d_success_rate": 0.5809859154929577
+      "rolling_30d_challenge_wpa": 6.4685,
+      "rolling_30d_success_rate": 0.5804195804195804
     },
     {
-      "date": "2026-09-24",
+      "date": "2026-09-25",
       "team_id": "KC",
-      "rolling_30d_challenge_wpa": 3.7569,
-      "rolling_30d_success_rate": 0.5552147239263804
+      "rolling_30d_challenge_wpa": 4.1532,
+      "rolling_30d_success_rate": 0.5565749235474006
     },
     {
-      "date": "2026-09-24",
+      "date": "2026-09-25",
       "team_id": "AZ",
-      "rolling_30d_challenge_wpa": 3.4103,
-      "rolling_30d_success_rate": 0.5986622073578596
+      "rolling_30d_challenge_wpa": 3.6093,
+      "rolling_30d_success_rate": 0.6013289036544851
     },
     {
-      "date": "2026-09-24",
+      "date": "2026-09-25",
       "team_id": "ATL",
-      "rolling_30d_challenge_wpa": 3.0831,
-      "rolling_30d_success_rate": 0.5371621621621622
+      "rolling_30d_challenge_wpa": 3.0688,
+      "rolling_30d_success_rate": 0.5353535353535354
     },
     {
-      "date": "2026-09-24",
+      "date": "2026-09-25",
       "team_id": "NYY",
-      "rolling_30d_challenge_wpa": 2.3338,
-      "rolling_30d_success_rate": 0.5510204081632653
+      "rolling_30d_challenge_wpa": 2.1796,
+      "rolling_30d_success_rate": 0.549618320610687
     },
     {
-      "date": "2026-09-24",
+      "date": "2026-09-25",
       "team_id": "LAD",
-      "rolling_30d_challenge_wpa": 1.8142,
-      "rolling_30d_success_rate": 0.5511551155115512
+      "rolling_30d_challenge_wpa": 1.9764,
+      "rolling_30d_success_rate": 0.5522875816993464
     },
     {
-      "date": "2026-09-24",
+      "date": "2026-09-25",
+      "team_id": "PHI",
+      "rolling_30d_challenge_wpa": 1.2535,
+      "rolling_30d_success_rate": 0.5661538461538461
+    },
+    {
+      "date": "2026-09-25",
       "team_id": "SF",
       "rolling_30d_challenge_wpa": 0.8506,
       "rolling_30d_success_rate": 0.5138461538461538
     },
     {
-      "date": "2026-09-24",
-      "team_id": "PHI",
-      "rolling_30d_challenge_wpa": 0.7995,
-      "rolling_30d_success_rate": 0.5611285266457681
-    },
-    {
-      "date": "2026-09-24",
+      "date": "2026-09-25",
       "team_id": "STL",
-      "rolling_30d_challenge_wpa": 0.3771,
-      "rolling_30d_success_rate": 0.49640287769784175
+      "rolling_30d_challenge_wpa": 0.4379,
+      "rolling_30d_success_rate": 0.4982078853046595
     },
     {
-      "date": "2026-09-24",
+      "date": "2026-09-25",
       "team_id": "BOS",
-      "rolling_30d_challenge_wpa": 0.1123,
-      "rolling_30d_success_rate": 0.544891640866873
+      "rolling_30d_challenge_wpa": 0.3133,
+      "rolling_30d_success_rate": 0.5457317073170732
     },
     {
-      "date": "2026-09-24",
-      "team_id": "COL",
-      "rolling_30d_challenge_wpa": -0.1436,
-      "rolling_30d_success_rate": 0.5406824146981627
-    },
-    {
-      "date": "2026-09-24",
+      "date": "2026-09-25",
       "team_id": "TOR",
       "rolling_30d_challenge_wpa": -0.1482,
       "rolling_30d_success_rate": 0.5522388059701493
     },
     {
-      "date": "2026-09-24",
+      "date": "2026-09-25",
+      "team_id": "COL",
+      "rolling_30d_challenge_wpa": -0.2247,
+      "rolling_30d_success_rate": 0.5404699738903395
+    },
+    {
+      "date": "2026-09-25",
       "team_id": "LAA",
-      "rolling_30d_challenge_wpa": -0.2986,
-      "rolling_30d_success_rate": 0.5401662049861495
+      "rolling_30d_challenge_wpa": -0.6013,
+      "rolling_30d_success_rate": 0.5384615384615384
     },
     {
-      "date": "2026-09-24",
+      "date": "2026-09-25",
       "team_id": "MIA",
-      "rolling_30d_challenge_wpa": -0.6907,
-      "rolling_30d_success_rate": 0.5631313131313131
+      "rolling_30d_challenge_wpa": -0.8423,
+      "rolling_30d_success_rate": 0.5617128463476071
     },
     {
-      "date": "2026-09-24",
+      "date": "2026-09-25",
       "team_id": "MIN",
       "rolling_30d_challenge_wpa": -0.9254,
       "rolling_30d_success_rate": 0.5497737556561086
     },
     {
-      "date": "2026-09-24",
+      "date": "2026-09-25",
       "team_id": "BAL",
       "rolling_30d_challenge_wpa": -1.7146,
       "rolling_30d_success_rate": 0.4953560371517028
     },
     {
-      "date": "2026-09-24",
+      "date": "2026-09-25",
       "team_id": "HOU",
-      "rolling_30d_challenge_wpa": -3.3194,
-      "rolling_30d_success_rate": 0.5226666666666666
+      "rolling_30d_challenge_wpa": -2.8584,
+      "rolling_30d_success_rate": 0.5251989389920424
     },
     {
-      "date": "2026-09-24",
+      "date": "2026-09-25",
       "team_id": "SEA",
-      "rolling_30d_challenge_wpa": -3.5968,
-      "rolling_30d_success_rate": 0.5092592592592593
+      "rolling_30d_challenge_wpa": -3.4038,
+      "rolling_30d_success_rate": 0.5121951219512195
     },
     {
-      "date": "2026-09-24",
-      "team_id": "MIL",
-      "rolling_30d_challenge_wpa": -3.8907,
-      "rolling_30d_success_rate": 0.5217391304347826
-    },
-    {
-      "date": "2026-09-24",
+      "date": "2026-09-25",
       "team_id": "WSH",
       "rolling_30d_challenge_wpa": -3.951,
       "rolling_30d_success_rate": 0.5015015015015015
     },
     {
-      "date": "2026-09-24",
-      "team_id": "TB",
-      "rolling_30d_challenge_wpa": -5.3383,
-      "rolling_30d_success_rate": 0.5331325301204819
+      "date": "2026-09-25",
+      "team_id": "MIL",
+      "rolling_30d_challenge_wpa": -4.1539,
+      "rolling_30d_success_rate": 0.518918918918919
     },
     {
-      "date": "2026-09-24",
+      "date": "2026-09-25",
       "team_id": "NYM",
-      "rolling_30d_challenge_wpa": -5.4394,
-      "rolling_30d_success_rate": 0.5159574468085106
+      "rolling_30d_challenge_wpa": -5.3157,
+      "rolling_30d_success_rate": 0.5185185185185185
     },
     {
-      "date": "2026-09-24",
+      "date": "2026-09-25",
+      "team_id": "TB",
+      "rolling_30d_challenge_wpa": -5.4805,
+      "rolling_30d_success_rate": 0.5299401197604791
+    },
+    {
+      "date": "2026-09-25",
       "team_id": "CLE",
-      "rolling_30d_challenge_wpa": -6.0078,
-      "rolling_30d_success_rate": 0.48502994011976047
+      "rolling_30d_challenge_wpa": -5.521,
+      "rolling_30d_success_rate": 0.4896142433234421
     },
     {
-      "date": "2026-09-24",
+      "date": "2026-09-25",
       "team_id": "SD",
-      "rolling_30d_challenge_wpa": -6.1453,
-      "rolling_30d_success_rate": 0.5075528700906344
+      "rolling_30d_challenge_wpa": -6.7721,
+      "rolling_30d_success_rate": 0.5045045045045045
     },
     {
-      "date": "2026-09-24",
+      "date": "2026-09-25",
       "team_id": "CWS",
-      "rolling_30d_challenge_wpa": -11.1274,
-      "rolling_30d_success_rate": 0.4930232558139535
+      "rolling_30d_challenge_wpa": -10.7676,
+      "rolling_30d_success_rate": 0.49770642201834864
     },
     {
-      "date": "2026-09-24",
+      "date": "2026-09-25",
       "team_id": "PIT",
-      "rolling_30d_challenge_wpa": -11.6878,
-      "rolling_30d_success_rate": 0.4797687861271676
+      "rolling_30d_challenge_wpa": -11.9574,
+      "rolling_30d_success_rate": 0.47701149425287354
     }
   ],
-  "last_updated": "2026-09-24T15:32:25.161166Z",
+  "last_updated": "2026-09-25T15:37:03.527269Z",
   "season": 2026
 }
