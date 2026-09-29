@@ -18,34 +18,8 @@
         "success_rate": 0.6162162162162163,
         "usage_rate": null,
         "net_overturns": 38,
-        "challenge_wpa": 10.8081,
+        "challenge_wpa": 10.2141,
         "strikeouts_overturned": 68,
-        "walks_gained": 33
-      },
-      "rolling_30d": null,
-      "sample_warnings": [],
-      "data_quality": "ok"
-    },
-    {
-      "team_id": "ATH",
-      "team_name": "Athletics",
-      "team_city": "Sacramento",
-      "division": "AL West",
-      "league": "AL",
-      "wins": 64,
-      "losses": 98,
-      "win_pct": 0.3951,
-      "win_pct_expected": null,
-      "challenges": {
-        "total_challenges": 373,
-        "offense_challenges": 155,
-        "defense_challenges": 218,
-        "successful_challenges": 225,
-        "success_rate": 0.6032171581769437,
-        "usage_rate": null,
-        "net_overturns": 37,
-        "challenge_wpa": 9.8331,
-        "strikeouts_overturned": 77,
         "walks_gained": 33
       },
       "rolling_30d": null,
@@ -70,9 +44,35 @@
         "success_rate": 0.5887573964497042,
         "usage_rate": null,
         "net_overturns": -3,
-        "challenge_wpa": 9.3744,
+        "challenge_wpa": 9.1609,
         "strikeouts_overturned": 49,
         "walks_gained": 25
+      },
+      "rolling_30d": null,
+      "sample_warnings": [],
+      "data_quality": "ok"
+    },
+    {
+      "team_id": "ATH",
+      "team_name": "Athletics",
+      "team_city": "Sacramento",
+      "division": "AL West",
+      "league": "AL",
+      "wins": 64,
+      "losses": 98,
+      "win_pct": 0.3951,
+      "win_pct_expected": null,
+      "challenges": {
+        "total_challenges": 373,
+        "offense_challenges": 155,
+        "defense_challenges": 218,
+        "successful_challenges": 225,
+        "success_rate": 0.6032171581769437,
+        "usage_rate": null,
+        "net_overturns": 37,
+        "challenge_wpa": 9.1569,
+        "strikeouts_overturned": 77,
+        "walks_gained": 33
       },
       "rolling_30d": null,
       "sample_warnings": [],
@@ -96,7 +96,7 @@
         "success_rate": 0.5740181268882175,
         "usage_rate": null,
         "net_overturns": -23,
-        "challenge_wpa": 7.7246,
+        "challenge_wpa": 7.8166,
         "strikeouts_overturned": 51,
         "walks_gained": 19
       },
@@ -122,7 +122,7 @@
         "success_rate": 0.5802047781569966,
         "usage_rate": null,
         "net_overturns": -20,
-        "challenge_wpa": 6.7806,
+        "challenge_wpa": 6.2147,
         "strikeouts_overturned": 59,
         "walks_gained": 17
       },
@@ -148,7 +148,7 @@
         "success_rate": 0.5542168674698795,
         "usage_rate": null,
         "net_overturns": 12,
-        "challenge_wpa": 4.0046,
+        "challenge_wpa": 3.9515,
         "strikeouts_overturned": 46,
         "walks_gained": 28
       },
@@ -174,7 +174,7 @@
         "success_rate": 0.5974025974025974,
         "usage_rate": null,
         "net_overturns": 2,
-        "challenge_wpa": 3.5361,
+        "challenge_wpa": 3.3091,
         "strikeouts_overturned": 45,
         "walks_gained": 15
       },
@@ -200,8 +200,34 @@
         "success_rate": 0.5313531353135313,
         "usage_rate": null,
         "net_overturns": -14,
-        "challenge_wpa": 2.6409,
+        "challenge_wpa": 1.8541,
         "strikeouts_overturned": 48,
+        "walks_gained": 24
+      },
+      "rolling_30d": null,
+      "sample_warnings": [],
+      "data_quality": "ok"
+    },
+    {
+      "team_id": "NYY",
+      "team_name": "New York Yankees",
+      "team_city": "Bronx",
+      "division": "AL East",
+      "league": "AL",
+      "wins": 93,
+      "losses": 68,
+      "win_pct": 0.5776,
+      "win_pct_expected": null,
+      "challenges": {
+        "total_challenges": 397,
+        "offense_challenges": 185,
+        "defense_challenges": 212,
+        "successful_challenges": 217,
+        "success_rate": 0.5465994962216625,
+        "usage_rate": null,
+        "net_overturns": -6,
+        "challenge_wpa": 1.8296,
+        "strikeouts_overturned": 58,
         "walks_gained": 24
       },
       "rolling_30d": null,
@@ -226,35 +252,9 @@
         "success_rate": 0.5735735735735735,
         "usage_rate": null,
         "net_overturns": 22,
-        "challenge_wpa": 2.0389,
+        "challenge_wpa": 1.6022,
         "strikeouts_overturned": 40,
         "walks_gained": 21
-      },
-      "rolling_30d": null,
-      "sample_warnings": [],
-      "data_quality": "ok"
-    },
-    {
-      "team_id": "NYY",
-      "team_name": "New York Yankees",
-      "team_city": "Bronx",
-      "division": "AL East",
-      "league": "AL",
-      "wins": 93,
-      "losses": 68,
-      "win_pct": 0.5776,
-      "win_pct_expected": null,
-      "challenges": {
-        "total_challenges": 397,
-        "offense_challenges": 185,
-        "defense_challenges": 212,
-        "successful_challenges": 217,
-        "success_rate": 0.5465994962216625,
-        "usage_rate": null,
-        "net_overturns": -6,
-        "challenge_wpa": 1.7549,
-        "strikeouts_overturned": 58,
-        "walks_gained": 24
       },
       "rolling_30d": null,
       "sample_warnings": [],
@@ -278,7 +278,7 @@
         "success_rate": 0.5451612903225806,
         "usage_rate": null,
         "net_overturns": -43,
-        "challenge_wpa": 1.5427,
+        "challenge_wpa": 1.1776,
         "strikeouts_overturned": 53,
         "walks_gained": 22
       },
@@ -304,35 +304,9 @@
         "success_rate": 0.5476190476190477,
         "usage_rate": null,
         "net_overturns": 12,
-        "challenge_wpa": 0.8638,
+        "challenge_wpa": 0.6074,
         "strikeouts_overturned": 69,
         "walks_gained": 26
-      },
-      "rolling_30d": null,
-      "sample_warnings": [],
-      "data_quality": "ok"
-    },
-    {
-      "team_id": "STL",
-      "team_name": "St. Louis Cardinals",
-      "team_city": "St. Louis",
-      "division": "NL Central",
-      "league": "NL",
-      "wins": 77,
-      "losses": 85,
-      "win_pct": 0.4753,
-      "win_pct_expected": null,
-      "challenges": {
-        "total_challenges": 285,
-        "offense_challenges": 134,
-        "defense_challenges": 151,
-        "successful_challenges": 141,
-        "success_rate": 0.49473684210526314,
-        "usage_rate": null,
-        "net_overturns": -77,
-        "challenge_wpa": 0.4711,
-        "strikeouts_overturned": 44,
-        "walks_gained": 20
       },
       "rolling_30d": null,
       "sample_warnings": [],
@@ -356,8 +330,34 @@
         "success_rate": 0.5134328358208955,
         "usage_rate": null,
         "net_overturns": -37,
-        "challenge_wpa": 0.4568,
+        "challenge_wpa": 0.2394,
         "strikeouts_overturned": 42,
+        "walks_gained": 20
+      },
+      "rolling_30d": null,
+      "sample_warnings": [],
+      "data_quality": "ok"
+    },
+    {
+      "team_id": "STL",
+      "team_name": "St. Louis Cardinals",
+      "team_city": "St. Louis",
+      "division": "NL Central",
+      "league": "NL",
+      "wins": 77,
+      "losses": 85,
+      "win_pct": 0.4753,
+      "win_pct_expected": null,
+      "challenges": {
+        "total_challenges": 285,
+        "offense_challenges": 134,
+        "defense_challenges": 151,
+        "successful_challenges": 141,
+        "success_rate": 0.49473684210526314,
+        "usage_rate": null,
+        "net_overturns": -77,
+        "challenge_wpa": 0.204,
+        "strikeouts_overturned": 44,
         "walks_gained": 20
       },
       "rolling_30d": null,
@@ -382,7 +382,7 @@
         "success_rate": 0.5414507772020726,
         "usage_rate": null,
         "net_overturns": 38,
-        "challenge_wpa": 0.0609,
+        "challenge_wpa": -0.3359,
         "strikeouts_overturned": 63,
         "walks_gained": 23
       },
@@ -408,7 +408,7 @@
         "success_rate": 0.5529411764705883,
         "usage_rate": null,
         "net_overturns": -2,
-        "challenge_wpa": -0.154,
+        "challenge_wpa": -0.4717,
         "strikeouts_overturned": 50,
         "walks_gained": 22
       },
@@ -434,7 +434,7 @@
         "success_rate": 0.5646766169154229,
         "usage_rate": null,
         "net_overturns": 52,
-        "challenge_wpa": -0.4316,
+        "challenge_wpa": -0.5487,
         "strikeouts_overturned": 64,
         "walks_gained": 28
       },
@@ -460,7 +460,7 @@
         "success_rate": 0.5365853658536586,
         "usage_rate": null,
         "net_overturns": 51,
-        "challenge_wpa": -1.171,
+        "challenge_wpa": -1.3287,
         "strikeouts_overturned": 56,
         "walks_gained": 34
       },
@@ -486,7 +486,7 @@
         "success_rate": 0.5466666666666666,
         "usage_rate": null,
         "net_overturns": 62,
-        "challenge_wpa": -1.4135,
+        "challenge_wpa": -1.5968,
         "strikeouts_overturned": 72,
         "walks_gained": 43
       },
@@ -512,7 +512,7 @@
         "success_rate": 0.49693251533742333,
         "usage_rate": null,
         "net_overturns": -40,
-        "challenge_wpa": -1.4428,
+        "challenge_wpa": -1.8911,
         "strikeouts_overturned": 54,
         "walks_gained": 25
       },
@@ -538,7 +538,7 @@
         "success_rate": 0.522077922077922,
         "usage_rate": null,
         "net_overturns": 12,
-        "challenge_wpa": -2.9698,
+        "challenge_wpa": -3.0359,
         "strikeouts_overturned": 37,
         "walks_gained": 19
       },
@@ -564,7 +564,7 @@
         "success_rate": 0.5059171597633136,
         "usage_rate": null,
         "net_overturns": -21,
-        "challenge_wpa": -3.4835,
+        "challenge_wpa": -3.5323,
         "strikeouts_overturned": 43,
         "walks_gained": 18
       },
@@ -590,7 +590,7 @@
         "success_rate": 0.5275590551181102,
         "usage_rate": null,
         "net_overturns": 6,
-        "challenge_wpa": -3.552,
+        "challenge_wpa": -3.7512,
         "strikeouts_overturned": 51,
         "walks_gained": 23
       },
@@ -616,7 +616,7 @@
         "success_rate": 0.5074626865671642,
         "usage_rate": null,
         "net_overturns": -15,
-        "challenge_wpa": -3.9945,
+        "challenge_wpa": -4.1889,
         "strikeouts_overturned": 60,
         "walks_gained": 22
       },
@@ -642,7 +642,7 @@
         "success_rate": 0.48672566371681414,
         "usage_rate": null,
         "net_overturns": -56,
-        "challenge_wpa": -5.5016,
+        "challenge_wpa": -5.7558,
         "strikeouts_overturned": 42,
         "walks_gained": 18
       },
@@ -668,7 +668,7 @@
         "success_rate": 0.5278592375366569,
         "usage_rate": null,
         "net_overturns": -2,
-        "challenge_wpa": -6.0012,
+        "challenge_wpa": -6.2117,
         "strikeouts_overturned": 39,
         "walks_gained": 14
       },
@@ -694,7 +694,7 @@
         "success_rate": 0.5130208333333334,
         "usage_rate": null,
         "net_overturns": 20,
-        "challenge_wpa": -6.1001,
+        "challenge_wpa": -6.44,
         "strikeouts_overturned": 50,
         "walks_gained": 23
       },
@@ -720,7 +720,7 @@
         "success_rate": 0.501466275659824,
         "usage_rate": null,
         "net_overturns": 3,
-        "challenge_wpa": -7.2224,
+        "challenge_wpa": -7.5021,
         "strikeouts_overturned": 47,
         "walks_gained": 13
       },
@@ -746,7 +746,7 @@
         "success_rate": 0.4943310657596372,
         "usage_rate": null,
         "net_overturns": 13,
-        "challenge_wpa": -11.247,
+        "challenge_wpa": -11.5387,
         "strikeouts_overturned": 51,
         "walks_gained": 18
       },
@@ -772,7 +772,7 @@
         "success_rate": 0.4704225352112676,
         "usage_rate": null,
         "net_overturns": -21,
-        "challenge_wpa": -12.7701,
+        "challenge_wpa": -12.8504,
         "strikeouts_overturned": 49,
         "walks_gained": 17
       },
@@ -781,6 +781,6 @@
       "data_quality": "ok"
     }
   ],
-  "last_updated": "2026-09-28T18:17:34.252884Z",
+  "last_updated": "2026-09-29T16:40:21.396522Z",
   "season": 2026
 }
