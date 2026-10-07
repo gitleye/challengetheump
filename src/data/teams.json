@@ -642,7 +642,7 @@
         "success_rate": 0.48672566371681414,
         "usage_rate": null,
         "net_overturns": -56,
-        "challenge_wpa": -5.7558,
+        "challenge_wpa": -5.7561,
         "strikeouts_overturned": 42,
         "walks_gained": 18
       },
@@ -781,6 +781,6 @@
       "data_quality": "ok"
     }
   ],
-  "last_updated": "2026-10-06T16:58:18.897938Z",
+  "last_updated": "2026-10-07T17:34:17.973499Z",
   "season": 2026
 }
