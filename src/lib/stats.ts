@@ -109,3 +109,28 @@ export function isInSeason(date: Date = new Date()): boolean {
   const month = date.getMonth() + 1; // 1-indexed
   return month >= 3 && month <= 10;
 }
+
+/**
+ * Teams in playoff position: the top 3 division winners plus the 3 best remaining
+ * records per league (MLB's 6-team-per-league format). Derived from wins, so
+ * tiebreakers are not modelled — close calls may differ from the official bracket.
+ */
+export function playoffTeamIds(
+  teams: { team_id: string; league: string; division: string; wins: number }[],
+): Set<string> {
+  const ids = new Set<string>();
+  for (const league of ['AL', 'NL']) {
+    const inLeague = teams.filter((t) => t.league === league);
+    const byDivision = new Map<string, typeof inLeague>();
+    for (const t of inLeague) {
+      byDivision.set(t.division, [...(byDivision.get(t.division) ?? []), t]);
+    }
+    const winners = [...byDivision.values()].map((d) => d.reduce((a, b) => (b.wins > a.wins ? b : a)));
+    const wildCards = inLeague
+      .filter((t) => !winners.includes(t))
+      .sort((a, b) => b.wins - a.wins)
+      .slice(0, 3);
+    for (const t of [...winners, ...wildCards]) ids.add(t.team_id);
+  }
+  return ids;
+}

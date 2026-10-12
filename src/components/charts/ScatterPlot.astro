@@ -3,6 +3,7 @@ interface Point {
   x: number;
   y: number;
   label: string;
+  playoff?: boolean;
 }
 
 interface Props {
@@ -44,6 +45,13 @@ const chartData = JSON.stringify({ points, xLabel, yLabel });
     </button>
   </div>
 
+  {points.some((p) => p.playoff) && (
+    <p class="mt-2 flex items-center gap-2 text-caption text-text-tertiary">
+      <span class="inline-block w-3 h-3 rounded-full border-2 border-text-primary" aria-hidden="true"></span>
+      Ringed teams are in playoff position
+    </p>
+  )}
+
   <details class="mt-2">
     <summary class="text-caption text-text-tertiary cursor-pointer hover:text-text-secondary">
       View as table
@@ -55,6 +63,7 @@ const chartData = JSON.stringify({ points, xLabel, yLabel });
             <th class="text-left py-1 px-2 text-text-tertiary">Team</th>
             <th class="text-right py-1 px-2 text-text-tertiary">{xLabel}</th>
             <th class="text-right py-1 px-2 text-text-tertiary">{yLabel}</th>
+            <th class="text-right py-1 px-2 text-text-tertiary">Playoffs</th>
           </tr>
         </thead>
         <tbody>
@@ -63,6 +72,7 @@ const chartData = JSON.stringify({ points, xLabel, yLabel });
               <td class="py-1 px-2 text-text-secondary">{p.label}</td>
               <td class="py-1 px-2 text-right font-mono text-text-primary">{p.x.toFixed(2)}</td>
               <td class="py-1 px-2 text-right font-mono text-text-primary">{p.y.toFixed(3)}</td>
+              <td class="py-1 px-2 text-right text-text-secondary">{p.playoff ? 'Yes' : '—'}</td>
             </tr>
           ))}
         </tbody>
@@ -184,6 +194,15 @@ const chartData = JSON.stringify({ points, xLabel, yLabel });
             ctx.textBaseline = 'middle';
             ctx.fillText(label, x, y);
 
+            // Outer ring marks teams in playoff position
+            if (p.points[i]?.playoff) {
+              ctx.beginPath();
+              ctx.arc(x, y, radius + 4, 0, Math.PI * 2);
+              ctx.strokeStyle = isLight ? '#0F0F14' : '#F5F5F7';
+              ctx.lineWidth = 2;
+              ctx.stroke();
+            }
+
             ctx.globalAlpha = 1;
           });
           ctx.restore();
@@ -259,7 +278,7 @@ const chartData = JSON.stringify({ points, xLabel, yLabel });
                 title: (items) => {
                   const idx = items[0]?.dataIndex;
                   const abbr = p.points[idx]?.label || '';
-                  return teamNames[abbr] || abbr;
+                  return (teamNames[abbr] || abbr) + (p.points[idx]?.playoff ? ' · playoff position' : '');
                 },
                 label: (item) => {
                   return [
