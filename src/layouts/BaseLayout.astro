@@ -79,10 +79,22 @@ const fullTitle = title === 'Home'
     <!-- Inline theme script — must run before first paint to prevent flash -->
     <script is:inline>
       (function () {
-        var stored = localStorage.getItem('theme');
-        var theme = stored === 'light' ? 'light' : 'dark';
-        document.documentElement.classList.remove('dark', 'light');
-        document.documentElement.classList.add(theme);
+        function currentTheme() {
+          var stored = null;
+          try { stored = localStorage.getItem('theme'); } catch {}
+          if (stored === 'light' || stored === 'dark') return stored;
+          return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        }
+        function apply(root) {
+          root.classList.remove('dark', 'light');
+          root.classList.add(currentTheme());
+        }
+        apply(document.documentElement);
+        // ClientRouter replaces <html> attributes with the incoming page's, which
+        // drops the theme class. Re-apply it to the incoming document before swap.
+        document.addEventListener('astro:before-swap', function (e) {
+          apply(e.newDocument.documentElement);
+        });
       })();
     </script>
 
@@ -112,41 +124,55 @@ const fullTitle = title === 'Home'
     <Footer lastUpdated={metadata.last_updated} season={metadata.season} />
 
     <!-- Count-up animation for stat numbers -->
-    <script is:inline>
-    (function() {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        document.querySelectorAll('[data-count-up]').forEach(function(el) {
-          var t = parseFloat(el.dataset.countTarget);
-          var p = el.dataset.countPrefix || '';
-          var s = el.dataset.countSuffix || '';
-          el.textContent = p + (t % 1 === 0 ? t.toLocaleString() : t.toFixed(1)) + s;
-        });
-        return;
-      }
-      var observed = new Set();
-      var observer = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-          if (!entry.isIntersecting || observed.has(entry.target)) return;
-          observed.add(entry.target);
-          var el = entry.target;
-          var target = parseFloat(el.dataset.countTarget);
-          var prefix = el.dataset.countPrefix || '';
-          var suffix = el.dataset.countSuffix || '';
-          var isInt = target % 1 === 0;
-          var duration = 1200;
-          var start = performance.now();
-          function ease(t) { return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2; }
-          function tick(now) {
-            var p = Math.min((now - start) / duration, 1);
-            var v = ease(p) * target;
-            el.textContent = prefix + (isInt ? Math.round(v).toLocaleString() : v.toFixed(1)) + suffix;
-            if (p < 1) requestAnimationFrame(tick);
-          }
-          requestAnimationFrame(tick);
-        });
-      }, { threshold: 0.3 });
-      document.querySelectorAll('[data-count-up]').forEach(function(el) { observer.observe(el); });
-    })();
+    <script>
+      import { initPerPage } from '../lib/page-init';
+
+      initPerPage(() => {
+        const els = Array.from(document.querySelectorAll<HTMLElement>('[data-count-up]'));
+        const format = (v: number, isInt: boolean, prefix: string, suffix: string) =>
+          prefix + (isInt ? Math.round(v).toLocaleString() : v.toFixed(1)) + suffix;
+
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          els.forEach((el) => {
+            const target = parseFloat(el.dataset.countTarget || '0');
+            el.textContent = format(target, target % 1 === 0, el.dataset.countPrefix || '', el.dataset.countSuffix || '');
+          });
+          return;
+        }
+
+        let cancelled = false;
+        const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+              observer.unobserve(entry.target);
+              const el = entry.target as HTMLElement;
+              const target = parseFloat(el.dataset.countTarget || '0');
+              const prefix = el.dataset.countPrefix || '';
+              const suffix = el.dataset.countSuffix || '';
+              const isInt = target % 1 === 0;
+              const duration = 1200;
+              const start = performance.now();
+              const tick = (now: number) => {
+                if (cancelled) return;
+                const p = Math.min((now - start) / duration, 1);
+                el.textContent = format(ease(p) * target, isInt, prefix, suffix);
+                if (p < 1) requestAnimationFrame(tick);
+              };
+              requestAnimationFrame(tick);
+            });
+          },
+          { threshold: 0.3 },
+        );
+        els.forEach((el) => observer.observe(el));
+
+        return () => {
+          cancelled = true;
+          observer.disconnect();
+        };
+      });
     </script>
   </body>
 </html>

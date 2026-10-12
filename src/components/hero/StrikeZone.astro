@@ -151,7 +151,7 @@ const svgSequence = sequence.map((p) => ({
 const sequenceJson = JSON.stringify(svgSequence);
 ---
 
-<div class:list={['abs-hero', cls]} data-strike-zone>
+<div class:list={['abs-hero', cls]} data-strike-zone data-sequence={sequenceJson}>
   <!-- 3D zone SVG -->
   <div class="abs-zone-wrap">
     <svg
@@ -502,144 +502,166 @@ const sequenceJson = JSON.stringify(svgSequence);
   }
 </style>
 
-<script is:inline define:vars={{ sequenceJson }}>
-(function() {
-  var container = document.querySelector('[data-strike-zone]');
-  if (!container) return;
-  var svg = container.querySelector('.abs-zone-svg');
-  var dot = document.getElementById('abs-pitch-dot');
-  var ring = document.getElementById('abs-impact-ring');
-  var trailGroup = document.getElementById('abs-trail-dots');
-  var callDot = document.getElementById('abs-call-dot');
-  var callText = document.getElementById('abs-call-text');
-  var challengeLine = document.getElementById('abs-challenge-line');
-  var challengeText = document.getElementById('abs-challenge-text');
-  if (!svg || !dot || !callDot || !callText) return;
+<script>
+  import { initPerPage } from '../../lib/page-init';
 
-  var sequence = JSON.parse(sequenceJson);
-  var idx = 0;
-  var trails = [];
-  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  interface SvgPitch {
+    cx: number;
+    cy: number;
+    umpCall: 'STRIKE' | 'BALL';
+    truth: 'STRIKE' | 'BALL';
+    challenged: boolean;
+    overturned: boolean;
+    missedCall: boolean;
+  }
 
-  function showPitch() {
-    var p = sequence[idx % sequence.length];
+  initPerPage(() => {
+    const container = document.querySelector<HTMLElement>('[data-strike-zone]');
+    if (!container) return;
+    const svg = container.querySelector<SVGElement>('.abs-zone-svg');
+    const dot = document.getElementById('abs-pitch-dot');
+    const ring = document.getElementById('abs-impact-ring');
+    const trailGroup = document.getElementById('abs-trail-dots');
+    const callDot = document.getElementById('abs-call-dot');
+    const callText = document.getElementById('abs-call-text');
+    const challengeLine = document.getElementById('abs-challenge-line');
+    const challengeText = document.getElementById('abs-challenge-text');
+    if (!svg || !dot || !callDot || !callText) return;
 
-    // Reset dot — start low, toward the camera, below the zone.
-    dot.classList.remove('impact');
-    dot.setAttribute('r', '0');
-    dot.setAttribute('cx', String(200));
-    dot.setAttribute('cy', String(425));
-    dot.style.opacity = '1';
+    const sequence: SvgPitch[] = JSON.parse(container.dataset.sequence || '[]');
+    if (sequence.length === 0) return;
 
-    // Fly into the front face, then impact.
-    setTimeout(function() {
-      dot.setAttribute('cx', String(p.cx));
-      dot.setAttribute('cy', String(p.cy));
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const timers: number[] = [];
+    const later = (fn: () => void, ms: number) => {
+      timers.push(window.setTimeout(fn, ms));
+    };
+    const trails: Element[] = [];
+    let idx = 0;
 
-      setTimeout(function() {
-        dot.classList.add('impact');
+    function showPitch() {
+      const p = sequence[idx % sequence.length];
 
-        if (ring) {
-          ring.setAttribute('cx', String(p.cx));
-          ring.setAttribute('cy', String(p.cy));
-          ring.classList.remove('pop');
-          void ring.offsetWidth; // force reflow to restart animation
-          ring.classList.add('pop');
+      // Reset dot — start low, toward the camera, below the zone.
+      dot!.classList.remove('impact');
+      dot!.setAttribute('r', '0');
+      dot!.setAttribute('cx', '200');
+      dot!.setAttribute('cy', '425');
+      dot!.style.opacity = '1';
+
+      // Fly into the front face, then impact.
+      later(() => {
+        dot!.setAttribute('cx', String(p.cx));
+        dot!.setAttribute('cy', String(p.cy));
+
+        later(() => {
+          dot!.classList.add('impact');
+
+          if (ring) {
+            ring.setAttribute('cx', String(p.cx));
+            ring.setAttribute('cy', String(p.cy));
+            ring.classList.remove('pop');
+            void ring.getBoundingClientRect(); // force reflow to restart animation
+            ring.classList.add('pop');
+          }
+        }, reducedMotion ? 0 : 120);
+      }, reducedMotion ? 0 : 50);
+
+      // Show the ump's call after the ball arrives.
+      later(() => {
+        callDot!.setAttribute('class', 'abs-call-dot ' + (p.umpCall === 'STRIKE' ? 'strike' : 'ball'));
+        callText!.textContent = p.umpCall;
+
+        if (p.challenged && challengeLine && challengeText) {
+          later(() => {
+            challengeLine.classList.remove('hidden');
+            challengeText.textContent = 'CHALLENGED';
+
+            later(() => {
+              if (p.overturned) {
+                callDot!.setAttribute('class', 'abs-call-dot overturned');
+                callText!.textContent = p.truth;
+                challengeText.textContent = 'OVERTURNED';
+              } else {
+                challengeText.textContent = 'CONFIRMED';
+              }
+            }, reducedMotion ? 0 : 800);
+          }, reducedMotion ? 0 : 600);
+        } else if (p.missedCall && challengeLine && challengeText) {
+          later(() => {
+            challengeLine.classList.remove('hidden');
+            challengeText.textContent = 'NOT CHALLENGED';
+          }, reducedMotion ? 0 : 600);
+        } else if (challengeLine) {
+          challengeLine.classList.add('hidden');
         }
-      }, reducedMotion ? 0 : 120);
-    }, reducedMotion ? 0 : 50);
+      }, reducedMotion ? 0 : 400);
 
-    // Show the ump's call after the ball arrives.
-    setTimeout(function() {
-      callDot.className = 'abs-call-dot ' + (p.umpCall === 'STRIKE' ? 'strike' : 'ball');
-      callText.textContent = p.umpCall;
+      // Shrink to a trail dot after a delay.
+      later(() => {
+        dot!.classList.remove('impact');
+        dot!.setAttribute('r', '4');
+        dot!.style.opacity = '0.5';
 
-      if (p.challenged && challengeLine && challengeText) {
-        setTimeout(function() {
-          challengeLine.classList.remove('hidden');
-          challengeText.textContent = 'CHALLENGED';
+        // Trail dot color by outcome:
+        //   Green  = correct strike call
+        //   Yellow = correct ball call
+        //   Red    = missed call (bad call, never challenged)
+        //   Accent = overturned via challenge
+        const trail = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        trail.setAttribute('cx', String(p.cx));
+        trail.setAttribute('cy', String(p.cy));
+        trail.setAttribute('r', '3');
 
-          setTimeout(function() {
-            if (p.overturned) {
-              callDot.className = 'abs-call-dot overturned';
-              callText.textContent = p.truth;
-              challengeText.textContent = 'OVERTURNED';
-            } else {
-              challengeText.textContent = 'CONFIRMED';
-            }
-          }, reducedMotion ? 0 : 800);
-        }, reducedMotion ? 0 : 600);
-      } else if (p.missedCall && challengeLine && challengeText) {
-        setTimeout(function() {
-          challengeLine.classList.remove('hidden');
-          challengeText.textContent = 'NOT CHALLENGED';
-        }, reducedMotion ? 0 : 600);
-      } else if (challengeLine) {
-        challengeLine.classList.add('hidden');
-      }
-    }, reducedMotion ? 0 : 400);
+        let trailColor: string;
+        let trailOpacity = '0.4';
+        if (p.challenged && p.overturned) {
+          trailColor = '#D4FF3D';
+          trailOpacity = '0.6';
+        } else if (p.missedCall) {
+          trailColor = '#EF4444';
+          trailOpacity = '0.5';
+        } else if (p.umpCall === 'STRIKE') {
+          trailColor = '#22C55E';
+        } else {
+          trailColor = '#FACC15';
+        }
 
-    // Shrink to a trail dot after a delay.
-    setTimeout(function() {
-      dot.classList.remove('impact');
-      dot.setAttribute('r', '4');
-      dot.style.opacity = '0.5';
+        trail.setAttribute('fill', trailColor);
+        trail.setAttribute('opacity', trailOpacity);
+        if (trailGroup) trailGroup.appendChild(trail);
+        trails.push(trail);
 
-      // Trail dot color by outcome:
-      //   Green  = correct strike call
-      //   Yellow = correct ball call
-      //   Red    = missed call (bad call, never challenged)
-      //   Accent = overturned via challenge
-      var trail = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      trail.setAttribute('cx', String(p.cx));
-      trail.setAttribute('cy', String(p.cy));
-      trail.setAttribute('r', '3');
+        if (trails.length > 8) {
+          trails.shift()?.remove();
+        }
+      }, reducedMotion ? 100 : 2800);
 
-      var trailColor;
-      var trailOpacity = '0.4';
-      if (p.challenged && p.overturned) {
-        trailColor = '#D4FF3D';
-        trailOpacity = '0.6';
-      } else if (p.missedCall) {
-        trailColor = '#EF4444';
-        trailOpacity = '0.5';
-      } else if (p.umpCall === 'STRIKE') {
-        trailColor = '#22C55E';
-      } else {
-        trailColor = '#FACC15';
-      }
+      idx++;
+    }
 
-      trail.setAttribute('fill', trailColor);
-      trail.setAttribute('opacity', trailOpacity);
-      if (trailGroup) trailGroup.appendChild(trail);
-      trails.push(trail);
+    showPitch();
+    const interval = window.setInterval(showPitch, reducedMotion ? 3000 : 4000);
 
-      if (trails.length > 8) {
-        var old = trails.shift();
-        if (old && old.parentNode) old.parentNode.removeChild(old);
-      }
-    }, reducedMotion ? 100 : 2800);
+    // Parallax — disabled on touch and reduced motion.
+    const isTouch = 'ontouchstart' in window;
+    const onMouseMove = (e: MouseEvent) => {
+      const rect = container.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = (e.clientX - cx) / (rect.width / 2);
+      const dy = (e.clientY - cy) / (rect.height / 2);
+      const rotY = dx * -4 - 4;
+      const rotX = dy * 3 + 6;
+      svg.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+    };
+    const parallax = !isTouch && !reducedMotion;
+    if (parallax) document.addEventListener('mousemove', onMouseMove);
 
-    idx++;
-  }
-
-  showPitch();
-  var interval = reducedMotion ? 3000 : 4000;
-  setInterval(showPitch, interval);
-
-  // Parallax — disabled on touch and reduced motion.
-  var isTouch = 'ontouchstart' in window;
-  if (!isTouch && !reducedMotion) {
-    document.addEventListener('mousemove', function(e) {
-      var rect = container.getBoundingClientRect();
-      var cx = rect.left + rect.width / 2;
-      var cy = rect.top + rect.height / 2;
-      var dx = (e.clientX - cx) / (rect.width / 2);
-      var dy = (e.clientY - cy) / (rect.height / 2);
-      var rotY = dx * -4 - 4;
-      var rotX = dy * 3 + 6;
-      svg.style.transform = 'rotateX(' + rotX + 'deg) rotateY(' + rotY + 'deg)';
-    });
-  }
-})();
+    return () => {
+      window.clearInterval(interval);
+      timers.forEach((t) => window.clearTimeout(t));
+      if (parallax) document.removeEventListener('mousemove', onMouseMove);
+    };
+  });
 </script>

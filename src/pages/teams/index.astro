@@ -147,85 +147,90 @@ const sorted = [...teams].sort(
 </style>
 
 <script>
-  // League filter
-  const filterBar = document.getElementById('filter-bar');
-  const table = document.getElementById('teams-table');
-  if (filterBar && table) {
-    const rows = Array.from(table.querySelectorAll('tbody tr')) as HTMLTableRowElement[];
-    const buttons = filterBar.querySelectorAll('.filter-btn');
+  import { initPerPage } from '../../lib/page-init';
 
-    const activeClass = 'bg-accent text-black';
-    const inactiveClass = 'bg-elevated border border-border text-text-secondary hover:text-text-primary hover:border-accent/50';
+  // Rebind on every page view: the table is replaced by each ClientRouter swap.
+  initPerPage(() => {
+    // League filter
+    const filterBar = document.getElementById('filter-bar');
+    const table = document.getElementById('teams-table');
+    if (filterBar && table) {
+      const rows = Array.from(table.querySelectorAll('tbody tr')) as HTMLTableRowElement[];
+      const buttons = filterBar.querySelectorAll('.filter-btn');
 
-    buttons.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const filter = (btn as HTMLElement).dataset.filter || 'all';
+      const activeClass = 'bg-accent text-black';
+      const inactiveClass = 'bg-elevated border border-border text-text-secondary hover:text-text-primary hover:border-accent/50';
 
-        // Update button styles
-        buttons.forEach((b) => {
-          b.className = `filter-btn px-3 py-1.5 rounded-md text-body-sm font-medium transition-colors ${inactiveClass}`;
-        });
-        btn.className = `filter-btn active px-3 py-1.5 rounded-md text-body-sm font-medium transition-colors ${activeClass}`;
+      buttons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const filter = (btn as HTMLElement).dataset.filter || 'all';
 
-        // Filter rows
-        let rank = 1;
-        rows.forEach((row) => {
-          const league = row.dataset.league;
-          const show = filter === 'all' || league === filter;
-          row.style.display = show ? '' : 'none';
-          if (show) {
-            const rankCell = row.querySelector('.rank-cell');
-            if (rankCell) rankCell.textContent = String(rank++);
-          }
-        });
-      });
-    });
+          // Update button styles
+          buttons.forEach((b) => {
+            b.className = `filter-btn px-3 py-1.5 rounded-md text-body-sm font-medium transition-colors ${inactiveClass}`;
+          });
+          btn.className = `filter-btn active px-3 py-1.5 rounded-md text-body-sm font-medium transition-colors ${activeClass}`;
 
-    // Column sorting
-    const headers = table.querySelectorAll('th.sortable');
-    let currentSort = 'wpa';
-    let sortDir = 'desc';
-
-    headers.forEach((th) => {
-      th.addEventListener('click', () => {
-        const col = (th as HTMLElement).dataset.col || '';
-        if (currentSort === col) {
-          sortDir = sortDir === 'desc' ? 'asc' : 'desc';
-        } else {
-          currentSort = col;
-          sortDir = 'desc';
-        }
-
-        // Update header indicators
-        headers.forEach((h) => h.classList.remove('sort-asc', 'sort-desc'));
-        th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
-
-        // Sort rows
-        const tbody = table.querySelector('tbody')!;
-        const sortedRows = [...rows].sort((a, b) => {
-          let av: string | number, bv: string | number;
-          if (col === 'name') {
-            av = a.dataset.name || '';
-            bv = b.dataset.name || '';
-            return sortDir === 'asc'
-              ? (av as string).localeCompare(bv as string)
-              : (bv as string).localeCompare(av as string);
-          }
-          av = parseFloat(a.dataset[col] || '0') || 0;
-          bv = parseFloat(b.dataset[col] || '0') || 0;
-          return sortDir === 'asc' ? av - bv : bv - av;
-        });
-
-        // Re-render
-        let rank = 1;
-        sortedRows.forEach((row) => {
-          tbody.appendChild(row);
-          if (row.style.display !== 'none') {
-            const rankCell = row.querySelector('.rank-cell');
-            if (rankCell) rankCell.textContent = String(rank++);
-          }
+          // Filter rows
+          let rank = 1;
+          rows.forEach((row) => {
+            const league = row.dataset.league;
+            const show = filter === 'all' || league === filter;
+            row.style.display = show ? '' : 'none';
+            if (show) {
+              const rankCell = row.querySelector('.rank-cell');
+              if (rankCell) rankCell.textContent = String(rank++);
+            }
+          });
         });
       });
-    });
-  }
+
+      // Column sorting
+      const headers = table.querySelectorAll('th.sortable');
+      let currentSort = 'wpa';
+      let sortDir = 'desc';
+
+      headers.forEach((th) => {
+        th.addEventListener('click', () => {
+          const col = (th as HTMLElement).dataset.col || '';
+          if (currentSort === col) {
+            sortDir = sortDir === 'desc' ? 'asc' : 'desc';
+          } else {
+            currentSort = col;
+            sortDir = 'desc';
+          }
+
+          // Update header indicators
+          headers.forEach((h) => h.classList.remove('sort-asc', 'sort-desc'));
+          th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+
+          // Sort rows
+          const tbody = table.querySelector('tbody')!;
+          const sortedRows = [...rows].sort((a, b) => {
+            let av: string | number, bv: string | number;
+            if (col === 'name') {
+              av = a.dataset.name || '';
+              bv = b.dataset.name || '';
+              return sortDir === 'asc'
+                ? (av as string).localeCompare(bv as string)
+                : (bv as string).localeCompare(av as string);
+            }
+            av = parseFloat(a.dataset[col] || '0') || 0;
+            bv = parseFloat(b.dataset[col] || '0') || 0;
+            return sortDir === 'asc' ? av - bv : bv - av;
+          });
+
+          // Re-render
+          let rank = 1;
+          sortedRows.forEach((row) => {
+            tbody.appendChild(row);
+            if (row.style.display !== 'none') {
+              const rankCell = row.querySelector('.rank-cell');
+              if (rankCell) rankCell.textContent = String(rank++);
+            }
+          });
+        });
+      });
+    }
+  });
 </script>

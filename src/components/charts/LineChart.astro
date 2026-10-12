@@ -33,6 +33,8 @@ const chartData = JSON.stringify({ labels, datasets });
   {title && <p class="text-body-sm font-medium text-text-secondary mb-3">{title}</p>}
   <canvas
     id={chartId}
+    data-line-chart={chartData}
+    data-y-label={yLabel}
     height={height}
     aria-label={title || 'Line chart'}
     role="img"
@@ -70,15 +72,9 @@ const chartData = JSON.stringify({ labels, datasets });
   </details>
 </div>
 
-<script define:vars={{ chartId, chartData, yLabel }} is:inline>
-  (function () {
-    window.__lineQueue = window.__lineQueue || [];
-    window.__lineQueue.push({ chartId: chartId, chartData: chartData, yLabel: yLabel });
-  })();
-</script>
-
 <script>
   import Chart from 'chart.js/auto';
+  import { initPerPage } from '../../lib/page-init';
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
   const lineChartInstances: Record<string, any> = {};
@@ -161,10 +157,30 @@ const chartData = JSON.stringify({ labels, datasets });
     }
   }
 
-  const queue = (window as any).__lineQueue || [];
-  queue.forEach((item: any) => renderLine(item.chartId, item.chartData, item.yLabel));
+  // Charts on the page currently on screen. Read from the DOM on every page view:
+  // this module only executes once per session under ClientRouter.
+  let pageCharts: { chartId: string; chartData: string; yLabel: string | undefined }[] = [];
+
+  initPerPage(() => {
+    pageCharts = Array.from(
+      document.querySelectorAll<HTMLCanvasElement>('canvas[data-line-chart]'),
+    ).map((c) => ({
+      chartId: c.id,
+      chartData: c.dataset.lineChart || '',
+      yLabel: c.dataset.yLabel || undefined,
+    }));
+    pageCharts.forEach((item) => renderLine(item.chartId, item.chartData, item.yLabel));
+
+    return () => {
+      pageCharts.forEach((item) => {
+        lineChartInstances[item.chartId]?.destroy();
+        delete lineChartInstances[item.chartId];
+      });
+      pageCharts = [];
+    };
+  });
 
   window.addEventListener('theme-changed', () => {
-    queue.forEach((item: any) => renderLine(item.chartId, item.chartData, item.yLabel));
+    pageCharts.forEach((item) => renderLine(item.chartId, item.chartData, item.yLabel));
   });
 </script>
