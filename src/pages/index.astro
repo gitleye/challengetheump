@@ -9,7 +9,7 @@ import StrikeZone from '@/components/hero/StrikeZone.astro';
 import TeamNameCell from '@/components/ui/TeamNameCell.astro';
 import MiniLeaderboard from '@/components/players/MiniLeaderboard.astro';
 import type { TeamsData, PlayersData, LeagueSummary } from '@/lib/types';
-import { formatRate, formatWpa, formatWinPct, formatDate, formatDateShort, pearsonR } from '@/lib/stats';
+import { formatRate, formatWpa, formatWinPct, formatDate, formatDateShort, pearsonR, playoffTeamIds } from '@/lib/stats';
 import teamsData from '@/data/teams.json';
 import playersData from '@/data/players.json';
 import leagueData from '@/data/league.json';
@@ -41,12 +41,14 @@ const topBatters = players
   .slice(0, 5);
 
 // Scatter data: challenge net run value vs win %
+const playoffIds = playoffTeamIds(teams);
 const scatterPoints = teams
   .filter((t) => t.challenges.challenge_wpa !== null && t.challenges.total_challenges > 0)
   .map((t) => ({
     x: t.challenges.challenge_wpa!,
     y: t.win_pct,
     label: t.team_id,
+    playoff: playoffIds.has(t.team_id),
   }));
 
 // Correlation coefficient
@@ -244,7 +246,7 @@ const gamesThrough = metadata.games_through ? formatDateShort(metadata.games_thr
           <div id="scatter-desc">
             <p class="text-body-sm text-text-secondary mb-4">
               Each badge is a team. The x-axis shows how much run value they've extracted from ABS challenges;
-              the y-axis shows their win percentage. Click a team to highlight it.
+              the y-axis shows their win percentage. Ringed teams are in playoff position. Click a team to highlight it.
             </p>
           </div>
 
@@ -264,7 +266,7 @@ const gamesThrough = metadata.games_through ? formatDateShort(metadata.games_thr
                 Pearson r = {rStr}.
                 {rMeaningful
                   ? ' There is a moderate correlation — teams that extract more value from challenges tend to win more. But correlation is not causation: better teams may simply challenge more effectively.'
-                  : ' The correlation is weak. So far, challenge performance does not strongly predict winning. This could change as the sample grows.'}
+                  : ' The correlation is weak. So far, challenge performance does not strongly predict winning, and the line is close to flat: sitting above it mostly means winning more than average, which playoff teams do by definition.'}
                 <a href="/methodology" class="text-accent hover:underline ml-1">Methodology</a>
               </p>
             </div>
