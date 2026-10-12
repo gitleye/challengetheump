@@ -46,19 +46,26 @@ const { text, class: cls = '' } = Astro.props;
 
 <script is:inline>
 (function() {
-  if (document.getElementById('tooltip-popup-el')) return;
-
-  var popup = document.createElement('div');
-  popup.id = 'tooltip-popup-el';
-  popup.className = 'tooltip-popup';
-  popup.setAttribute('role', 'tooltip');
-  document.body.appendChild(popup);
+  // The popup lives in <body>, which ClientRouter replaces on navigation, so
+  // look it up (or recreate it) on use instead of holding one reference.
+  function getPopup() {
+    var el = document.getElementById('tooltip-popup-el');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'tooltip-popup-el';
+      el.className = 'tooltip-popup';
+      el.setAttribute('role', 'tooltip');
+      document.body.appendChild(el);
+    }
+    return el;
+  }
 
   var hideTimer;
 
   function show(trigger) {
     var text = trigger.getAttribute('data-tooltip');
     if (!text) return;
+    var popup = getPopup();
     popup.textContent = text;
     popup.classList.add('visible');
 
@@ -75,7 +82,7 @@ const { text, class: cls = '' } = Astro.props;
   }
 
   function hide() {
-    popup.classList.remove('visible');
+    getPopup().classList.remove('visible');
   }
 
   document.addEventListener('mouseenter', function(e) {

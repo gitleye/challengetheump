@@ -32,7 +32,7 @@ const chartData = JSON.stringify({ points, xLabel, yLabel });
 <div class:list={['relative', cls]}>
   {title && <p class="text-body-sm font-medium text-text-secondary mb-3">{title}</p>}
   <div class="relative">
-    <canvas id={chartId} height={height} aria-label={title || 'Scatter plot'} role="img"></canvas>
+    <canvas id={chartId} data-scatter-chart={chartData} height={height} aria-label={title || 'Scatter plot'} role="img"></canvas>
     <button
       id={`${chartId}-clear`}
       class="absolute top-2 right-2 hidden px-2 py-1 rounded text-caption font-medium
@@ -71,15 +71,9 @@ const chartData = JSON.stringify({ points, xLabel, yLabel });
   </details>
 </div>
 
-<script define:vars={{ chartId, chartData }} is:inline>
-  (function () {
-    window.__scatterQueue = window.__scatterQueue || [];
-    window.__scatterQueue.push({ chartId: chartId, chartData: chartData });
-  })();
-</script>
-
 <script>
   import Chart from 'chart.js/auto';
+  import { initPerPage } from '../../lib/page-init';
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
   const chartInstances: Record<string, any> = {};
@@ -327,13 +321,28 @@ const chartData = JSON.stringify({ points, xLabel, yLabel });
     }
   }
 
-  // Process any queued scatter charts
-  const queue = (window as any).__scatterQueue || [];
-  queue.forEach((item: any) => renderScatter(item.chartId, item.chartData));
+  // Charts on the page currently on screen. Read from the DOM on every page view:
+  // this module only executes once per session under ClientRouter.
+  let pageCharts: { chartId: string; chartData: string }[] = [];
+
+  initPerPage(() => {
+    pageCharts = Array.from(
+      document.querySelectorAll<HTMLCanvasElement>('canvas[data-scatter-chart]'),
+    ).map((c) => ({ chartId: c.id, chartData: c.dataset.scatterChart || '' }));
+    pageCharts.forEach((item) => renderScatter(item.chartId, item.chartData));
+
+    return () => {
+      pageCharts.forEach((item) => {
+        chartInstances[item.chartId]?.destroy();
+        delete chartInstances[item.chartId];
+      });
+      pageCharts = [];
+    };
+  });
 
   // Re-render all charts when theme changes
   window.addEventListener('theme-changed', () => {
-    queue.forEach((item: any) => {
+    pageCharts.forEach((item) => {
       if (chartInstances[item.chartId]) {
         chartInstances[item.chartId].destroy();
       }

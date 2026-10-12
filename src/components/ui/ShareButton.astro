@@ -26,31 +26,34 @@ const { text, class: cls = '' } = Astro.props;
 </button>
 
 <script>
-  document.querySelectorAll('.share-btn').forEach((btn) => {
-    btn.addEventListener('click', async () => {
-      const text = (btn as HTMLElement).dataset.shareText || '';
-      const label = btn.querySelector('.share-label');
-      try {
-        await navigator.clipboard.writeText(text);
-        if (label) {
-          label.textContent = 'Copied!';
-          setTimeout(() => { label.textContent = 'Share'; }, 2000);
-        }
-      } catch {
-        // Fallback for older browsers
-        const ta = document.createElement('textarea');
-        ta.value = text;
-        ta.style.position = 'fixed';
-        ta.style.opacity = '0';
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        document.body.removeChild(ta);
-        if (label) {
-          label.textContent = 'Copied!';
-          setTimeout(() => { label.textContent = 'Share'; }, 2000);
-        }
-      }
-    });
+  // Delegated: buttons are replaced on every ClientRouter swap, and this module
+  // only executes once per session.
+  document.addEventListener('click', async (e) => {
+    const btn = e.target instanceof Element ? e.target.closest<HTMLElement>('.share-btn') : null;
+    if (!btn) return;
+
+    const text = btn.dataset.shareText || '';
+    const label = btn.querySelector('.share-label');
+    const flash = () => {
+      if (!label) return;
+      label.textContent = 'Copied!';
+      setTimeout(() => { label.textContent = 'Share'; }, 2000);
+    };
+
+    try {
+      await navigator.clipboard.writeText(text);
+      flash();
+    } catch {
+      // Fallback for older browsers
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      flash();
+    }
   });
 </script>

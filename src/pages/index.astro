@@ -416,39 +416,49 @@ const gamesThrough = metadata.games_through ? formatDateShort(metadata.games_thr
   </section>
 
   <!-- Scatter expand/collapse toggle -->
-  <script is:inline>
-  (function() {
-    var btn = document.getElementById('scatter-expand-btn');
-    var wrap = document.getElementById('scatter-chart-wrap');
-    var desc = document.getElementById('scatter-desc');
-    var note = document.getElementById('scatter-note');
-    var label = document.getElementById('scatter-expand-label');
-    var icon = document.getElementById('scatter-expand-icon');
-    if (!btn || !wrap) return;
+  <script>
+    import { initPerPage } from '../lib/page-init';
 
-    var expanded = true;
-    btn.addEventListener('click', function() {
-      expanded = !expanded;
-      if (expanded) {
-        wrap.style.height = '440px';
-        btn.setAttribute('aria-expanded', 'true');
-        if (label) label.textContent = 'Collapse';
-        if (icon) icon.style.transform = 'rotate(45deg)';
-        if (desc) desc.classList.remove('hidden');
-        if (note) note.classList.remove('hidden');
-      } else {
-        wrap.style.height = '240px';
-        btn.setAttribute('aria-expanded', 'false');
-        if (label) label.textContent = 'Expand';
-        if (icon) icon.style.transform = '';
-        if (desc) desc.classList.add('hidden');
-        if (note) note.classList.add('hidden');
-      }
-      // Trigger Chart.js resize after height transition
-      setTimeout(function() {
-        window.dispatchEvent(new Event('resize'));
-      }, 320);
+    initPerPage(() => {
+      const btn = document.getElementById('scatter-expand-btn');
+      const wrap = document.getElementById('scatter-chart-wrap');
+      const desc = document.getElementById('scatter-desc');
+      const note = document.getElementById('scatter-note');
+      const label = document.getElementById('scatter-expand-label');
+      const icon = document.getElementById('scatter-expand-icon');
+      if (!btn || !wrap) return;
+
+      let expanded = true;
+      let resizeTimer: number | undefined;
+      const onClick = () => {
+        expanded = !expanded;
+        if (expanded) {
+          wrap.style.height = '440px';
+          btn.setAttribute('aria-expanded', 'true');
+          if (label) label.textContent = 'Collapse';
+          if (icon) icon.style.transform = 'rotate(45deg)';
+          if (desc) desc.classList.remove('hidden');
+          if (note) note.classList.remove('hidden');
+        } else {
+          wrap.style.height = '240px';
+          btn.setAttribute('aria-expanded', 'false');
+          if (label) label.textContent = 'Expand';
+          if (icon) icon.style.transform = '';
+          if (desc) desc.classList.add('hidden');
+          if (note) note.classList.add('hidden');
+        }
+        // Trigger Chart.js resize after height transition
+        window.clearTimeout(resizeTimer);
+        resizeTimer = window.setTimeout(() => {
+          window.dispatchEvent(new Event('resize'));
+        }, 320);
+      };
+      btn.addEventListener('click', onClick);
+
+      return () => {
+        btn.removeEventListener('click', onClick);
+        window.clearTimeout(resizeTimer);
+      };
     });
-  })();
   </script>
 </BaseLayout>

@@ -43,45 +43,65 @@
 </style>
 
 <script>
-  // The toggle is rendered more than once (desktop + mobile header), so this
-  // single bundled script must wire up every instance — no element IDs.
+  // The toggle is rendered more than once (desktop + mobile header) and the
+  // header is replaced on every ClientRouter navigation, so this module (which
+  // only executes once) must not hold element references or bind to buttons.
+  // It listens on `document`, which survives swaps.
   const html = document.documentElement;
-  const toggles = document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]');
-  const lightIcons = document.querySelectorAll('.theme-icon-light');
-  const darkIcons = document.querySelectorAll('.theme-icon-dark');
 
   function getTheme(): 'dark' | 'light' {
-    const stored = localStorage.getItem('theme');
-    if (stored === 'dark' || stored === 'light') return stored;
+    try {
+      const stored = localStorage.getItem('theme');
+      if (stored === 'dark' || stored === 'light') return stored;
+    } catch {
+      // storage unavailable — fall through to the OS preference
+    }
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  function syncIcons() {
+    const isLight = html.classList.contains('light');
+    document
+      .querySelectorAll('.theme-icon-light')
+      .forEach((icon) => icon.classList.toggle('hidden', !isLight));
+    document
+      .querySelectorAll('.theme-icon-dark')
+      .forEach((icon) => icon.classList.toggle('hidden', isLight));
   }
 
   function applyTheme(theme: 'dark' | 'light') {
     const isLight = theme === 'light';
     html.classList.toggle('light', isLight);
     html.classList.toggle('dark', !isLight);
-    lightIcons.forEach((icon) => icon.classList.toggle('hidden', !isLight));
-    darkIcons.forEach((icon) => icon.classList.toggle('hidden', isLight));
+    syncIcons();
   }
 
-  applyTheme(getTheme());
+  document.addEventListener('click', (e) => {
+    if (!(e.target instanceof Element) || !e.target.closest('[data-theme-toggle]')) return;
 
-  toggles.forEach((toggle) => {
-    toggle.addEventListener('click', () => {
-      const next = html.classList.contains('light') ? 'dark' : 'light';
+    const next = html.classList.contains('light') ? 'dark' : 'light';
+    try {
       localStorage.setItem('theme', next);
+    } catch {
+      // storage unavailable — theme still applies for this page view
+    }
 
-      // Enable smooth transition on all elements
-      html.classList.add('theme-transition');
-      applyTheme(next);
+    // Enable smooth transition on all elements
+    html.classList.add('theme-transition');
+    applyTheme(next);
 
-      // Remove transition class after animation completes to avoid
-      // interfering with other transitions (hover effects, etc.)
-      setTimeout(() => {
-        html.classList.remove('theme-transition');
-      }, 450);
+    // Remove transition class after animation completes to avoid
+    // interfering with other transitions (hover effects, etc.)
+    setTimeout(() => {
+      html.classList.remove('theme-transition');
+    }, 450);
 
-      window.dispatchEvent(new CustomEvent('theme-changed', { detail: next }));
-    });
+    window.dispatchEvent(new CustomEvent('theme-changed', { detail: next }));
   });
+
+  // The incoming page's header is server-rendered with the default icon state.
+  document.addEventListener('astro:after-swap', syncIcons);
+  document.addEventListener('astro:page-load', syncIcons);
+
+  applyTheme(getTheme());
 </script>
