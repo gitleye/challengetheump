@@ -1,8 +1,11 @@
 {
-  "last_updated": "2026-11-01T16:56:25.602043Z",
+  "last_updated": "2026-11-02T20:32:19.828412Z",
   "season": 2026,
-  "data_quality": "ok",
-  "stale_sources": [],
+  "data_quality": "missing",
+  "stale_sources": [
+    "all \u2014 off-season"
+  ],
   "pipeline_version": "0.1.0",
-  "games_through": "2026-11-01"
+  "games_through": null,
+  "_note": "Season 2026 is not active. Data will populate once games begin."
 }
